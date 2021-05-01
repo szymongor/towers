@@ -1,18 +1,25 @@
-import { bro } from './bro';
+import { board } from './board';
 import Icon from './images/Tower.png';
 
-console.log(bro('Pro'));
 
-
-
- function component() {
-   const element = document.createElement('div');
+async function draw() {
   const myIcon = new Image();
   myIcon.src = Icon;
 
-  element.appendChild(myIcon);
+  var boardItem = board();
+  var ctx = boardItem.getContext('2d');
 
-   return element;
- }
+  ctx.fillStyle = 'rgb(200, 130, 30)';
+  ctx.fillRect(10, 10, 100, 100, 100, 100);
 
- document.body.appendChild(component());
+  await new Promise(r => setTimeout(r, 100));
+
+  ctx.drawImage(myIcon, 30, 30, 50, 80);
+  document.body.appendChild(boardItem);
+
+}
+
+draw()
+
+
+
