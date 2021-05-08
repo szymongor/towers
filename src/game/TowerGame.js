@@ -7,7 +7,6 @@ class TowerGame extends Phaser.Scene
         super();
         this.map = {};
         this.towers = [];
-        this.iter = 0;
     }
 
     //load assets
@@ -18,21 +17,35 @@ class TowerGame extends Phaser.Scene
       
     create () {
         this.camera = this.cameras.main.setSize(800, 600);
-        // this.tower = this.add.sprite(400, 180, 'tower' );
-        // this.tower.scale =0.2;
         this.drawMap(this.registry.map);
+        this.selectSprite();
     }
 
+    selectSprite() {
+        this.input.on('gameobjectover', this.gameObjectOver(this));
+
+        this.input.on('gameobjectout', function (pointer, gameObject) {
+            gameObject.clearTint();
+            gameObject.highlight.destroy();
+        });
+    }
+
+    gameObjectOver(game) {
+        return (pointer, gameObject) => {
+                var spriteB = game.add.sprite(gameObject.x, gameObject.y, gameObject.texture );
+                spriteB.setScale(0.25,0.22)
+                spriteB.setTintFill(0xffffff);
+                spriteB.setDepth(-1);
+                gameObject.highlight = spriteB;
+            }
+    }
+    
+
     update() {
-        // var halfWidth = 800 / 2;
-        // var quarterWidth = halfWidth / 2;
-        // var halfHeight = 600 / 2;
-        // var quarterHeight = halfHeight / 2;
+        this.mouseScroll();
+    }
 
-        // this.camera.scrollX = (halfWidth - quarterWidth + (Math.cos(this.iter) * quarterWidth))|0;
-        // this.camera.scrollY = (halfHeight - quarterHeight + (Math.sin(this.iter) * quarterHeight))|0;
-
-        // this.iter += 0.02;
+    mouseScroll() {
         if (this.game.input.activePointer.isDown) {	
             if (this.game.origDragPoint) {		
                 // move the camera by the amount the mouse has moved since last update		
@@ -47,7 +60,9 @@ class TowerGame extends Phaser.Scene
         console.log(map);
         map.forEach(mapElement => {
             console.log("x: "+ mapElement.x);
+            
             var tower = this.add.sprite(mapElement.x, mapElement.y, 'tower' );
+            this.towers.push(tower.setInteractive());
             tower.scale =0.2;
     
         });
