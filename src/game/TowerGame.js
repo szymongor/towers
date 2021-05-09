@@ -1,18 +1,19 @@
 import Phaser from 'phaser';
 import towerPng from '../images/Tower.png';
+import { UnitTypes } from './Unit';
+import { buildingObjectOver, buildingObjectOut } from './UnitsControls';
 
 class TowerGame extends Phaser.Scene
 {
     constructor () {
         super();
         this.map = {};
-        this.towers = [];
+        this.gameUnits = [];
     }
 
     //load assets
     preload () {
         this.load.image('tower',towerPng);
-
     }
       
     create () {
@@ -22,22 +23,13 @@ class TowerGame extends Phaser.Scene
     }
 
     selectSprite() {
-        this.input.on('gameobjectover', this.gameObjectOver(this));
-
-        this.input.on('gameobjectout', function (pointer, gameObject) {
-            gameObject.clearTint();
-            gameObject.highlight.destroy();
+        this.input.on('gameobjectover', (pointer, gameObject) => {
+            gameObject.gameObjectOver(pointer, gameObject);
         });
-    }
 
-    gameObjectOver(game) {
-        return (pointer, gameObject) => {
-                var spriteB = game.add.sprite(gameObject.x, gameObject.y, gameObject.texture );
-                spriteB.setScale(0.25,0.22)
-                spriteB.setTintFill(0xffffff);
-                spriteB.setDepth(-1);
-                gameObject.highlight = spriteB;
-            }
+        this.input.on('gameobjectout', (pointer, gameObject) => {
+            gameObject.gameObjectOut(pointer, gameObject);
+        });
     }
     
 
@@ -58,15 +50,29 @@ class TowerGame extends Phaser.Scene
 
     drawMap(map) {
         console.log(map);
-        map.forEach(mapElement => {
-            console.log("x: "+ mapElement.x);
-            
-            var tower = this.add.sprite(mapElement.x, mapElement.y, 'tower' );
-            this.towers.push(tower.setInteractive());
-            tower.scale =0.2;
-    
+        map.units.forEach(unit => {
+            var gameUnit = this.createGameUnit(this, unit);
+            this.gameUnits.push(gameUnit);
+        
         });
     }
+
+    createGameUnit(game, unit) {
+        var gameUnit = game.add.sprite(unit.x, unit.y, unit.name);
+        gameUnit.scale =0.2;
+        switch(unit.type) {
+            case UnitTypes.BUILDING :
+                gameUnit.gameObjectOver = buildingObjectOver(this);
+                gameUnit.gameObjectOut = buildingObjectOut(this);
+                gameUnit.setInteractive();
+                break;
+            default :
+                gameUnit.gameObjectOver = (pointer, gameObject) => {};
+                gameUnit.gameObjectOut = (pointer, gameObject) => {};
+        }
+        return gameUnit;
+    }
+
 }
 
 const createTowerGame = (map) => {
