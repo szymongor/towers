@@ -17,8 +17,22 @@ class TowerGame extends Phaser.Scene
     }
       
     create () {
+        var mapBoard = this.registry.map;
         this.camera = this.cameras.main.setSize(800, 600);
-        this.drawMap(this.registry.map);
+
+        const minimapDimensions = { x: 200, y: 200};
+        var minimapZoom = { x: minimapDimensions.x / mapBoard.height , y: minimapDimensions.y / mapBoard.width};    
+        this.minimap = this.cameras.add(600, 0, minimapDimensions.x, minimapDimensions.y)
+            .setZoom(minimapZoom.x, minimapZoom.y).setName('mini');
+        this.minimap.setOrigin(0,0);
+        this.minimap.setBackgroundColor(0x002244);
+
+        this.r3 = this.add.rectangle(this.camera.x, this.camera.y, 800, 600);
+        this.r3.setOrigin(0,0);
+
+        this.r3.setStrokeStyle(5, 0xFFFFFF);
+
+        this.drawMap(mapBoard);
         this.selectSprite();
     }
 
@@ -34,18 +48,26 @@ class TowerGame extends Phaser.Scene
     
 
     update() {
-        this.mouseScroll();
+        this.mapScroll();
     }
 
-    mouseScroll() {
+    mapScroll() {
         if (this.game.input.activePointer.isDown) {	
             if (this.game.origDragPoint) {		
                 // move the camera by the amount the mouse has moved since last update		
                 this.camera.scrollX += this.game.origDragPoint.x - this.game.input.activePointer.position.x;		
-                this.camera.scrollY += this.game.origDragPoint.y - this.game.input.activePointer.position.y;	}	
-                // set new drag origin to current position	
+                this.camera.scrollY += this.game.origDragPoint.y - this.game.input.activePointer.position.y;
+                this.r3.x += this.game.origDragPoint.x - this.game.input.activePointer.position.x;
+                this.r3.y += this.game.origDragPoint.y - this.game.input.activePointer.position.y;
+            	}	
+                // set new drag origin to current position
+                
                 this.game.origDragPoint = this.game.input.activePointer.position.clone();}
                 else {	this.game.origDragPoint = null;}
+    }
+
+    miniMapRect() {
+        // this.minimap.
     }
 
     drawMap(map) {
