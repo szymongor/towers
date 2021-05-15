@@ -27,4 +27,14 @@ const mapScroll = function(gameEngine, camera) {
         else {	game.origDragPoint = null;}
 }
 
-export { createMainCamera, mapScroll }
+const createMiniMapCamera = function(gameEngine, mapBoard, heigh, width, xPos, yPos) {
+    var minimapZoom = { x: heigh/ mapBoard.height , y: width / mapBoard.width};
+    var minimap = gameEngine.cameras.add(xPos, yPos, heigh, width)
+        .setZoom(minimapZoom.x, minimapZoom.y).setName('mini');
+    minimap.setOrigin(0,0);
+    minimap.setBackgroundColor(0x002244);
+
+    return minimap;
+}
+
+export { createMainCamera, mapScroll, createMiniMapCamera }

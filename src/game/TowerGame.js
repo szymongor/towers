@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import towerPng from '../images/Tower.png';
 import { UnitTypes } from './Unit';
 import { buildingObjectOver, buildingObjectOut } from './UnitsControls';
-import { createMainCamera, mapScroll } from './CameraControls';
+import { createMainCamera, mapScroll, createMiniMapCamera } from './CameraControls';
 
 class TowerGame extends Phaser.Scene
 {
@@ -27,12 +27,9 @@ class TowerGame extends Phaser.Scene
         this.cameras.main = createMainCamera(this, 800, 600, mapBoard.height, mapBoard.width)
         
 
-        const minimapDimensions = { x: 200, y: 200};
-        var minimapZoom = { x: minimapDimensions.x / mapBoard.height , y: minimapDimensions.y / mapBoard.width};    
-        this.minimap = this.cameras.add(600, 0, minimapDimensions.x, minimapDimensions.y)
-            .setZoom(minimapZoom.x, minimapZoom.y).setName('mini');
-        this.minimap.setOrigin(0,0);
-        this.minimap.setBackgroundColor(0x002244);
+        this.cameras.minimap = createMiniMapCamera(this, mapBoard, 200, 200, 600, 0);   
+        
+        
 
 
         this.drawMap(mapBoard);
