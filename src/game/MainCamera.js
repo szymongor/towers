@@ -2,6 +2,7 @@ import towerPng from '../images/Tower.png';
 import { UnitTypes } from './Unit';
 import { buildingObjectOver, buildingObjectOut } from './UnitsControls';
 import { createMainCamera, mapScroll, createMiniMapCamera } from './CameraControls';
+import { GameDimensions } from  './GameDimensions';
 
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
@@ -19,9 +20,9 @@ class MainCamera extends Phaser.Scene {
     create() {
         console.log("Created main camera");
         var mapBoard = this.registry.map;
-
-        this.cameras.main = createMainCamera(this, 800-200, 600, mapBoard.height, mapBoard.width);
-        this.cameras.minimap = createMiniMapCamera(this, mapBoard, 200, 200, 600, 0);
+        
+        this.cameras.main = createMainCamera(this, mapBoard);
+        this.cameras.minimap = createMiniMapCamera(this, mapBoard);
 
         this.drawMap(mapBoard);
         this.selectSprite();

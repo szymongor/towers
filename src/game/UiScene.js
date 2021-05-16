@@ -1,10 +1,9 @@
 import Phaser from 'phaser';
+import { GameDimensions } from  './GameDimensions';
 
 class UiScene extends Phaser.Scene {
-    constructor(handle, parent, x, y) {
+    constructor(handle, parent) {
         super(handle);
-        this.x = x;
-        this.y = y;
         Phaser.Scene.call(this, { key: 'UIScene', active: true });
     }
 
@@ -13,18 +12,15 @@ class UiScene extends Phaser.Scene {
     }
 
     create() {
-        this.width = 200;
-        this.height = 400;
-        this.originX = this.x-this.width;
-        this.originY = this.y-this.height;
-        var viewRectangle = this.add.rectangle(this.originX, this.originY, this.width, this.height);
+        this.originX = GameDimensions.gameWidth-GameDimensions.uiSceneWidth;
+        this.originY = GameDimensions.gameHeight-GameDimensions.uiSceneHeight;
+        var viewRectangle = this.add.rectangle(this.originX, this.originY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
         viewRectangle.setOrigin(0,0);
         viewRectangle.setDepth(1);
         viewRectangle.setStrokeStyle(5, 0xFFFFFF);
         console.log("Created UI Scene: ");
 
         var info = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', fill: '#FFFFFF' });
-
     }
 
     update() {

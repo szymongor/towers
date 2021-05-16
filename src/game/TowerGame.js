@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { MainCamera } from './MainCamera';
 import { UiScene } from './UiScene';
+import { GameDimensions } from  './GameDimensions';
 
 class TowerGame extends Phaser.Scene {
 
@@ -46,8 +47,12 @@ const createTowerGame = (map) => {
     const config = {
         type: Phaser.AUTO,
         parent: 'phaser-example',
-        width: 800,
-        height: 600,
+        width: GameDimensions.gameWidth,
+        height: GameDimensions.gameHeight,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH
+        },
         scene: TowerGame
     };
 
