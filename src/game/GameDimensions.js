@@ -8,4 +8,7 @@ var GameDimensions = {
 GameDimensions.minimapWidth = GameDimensions.uiSceneWidth;
 GameDimensions.minimapHeight =  GameDimensions.gameHeight - GameDimensions.uiSceneHeight;
 
+GameDimensions.mainCameraWidth = GameDimensions.gameWidth - GameDimensions.uiSceneWidth;
+GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
+
 export { GameDimensions };

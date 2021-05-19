@@ -23,7 +23,6 @@ class TowerGame extends Phaser.Scene {
     createWindow() {
         this.addMainCamera();
         this.addUiScene();
-        
     }
 
     addMainCamera() {

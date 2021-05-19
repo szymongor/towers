@@ -7,9 +7,10 @@ import { GameDimensions } from  './GameDimensions';
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
         super(handle);
-        this.map = {};
+        this.mapBoard;
         this.gameUnits = [];
         this.cameras = {};
+        this.active = false;
     }
 
     //load assets
@@ -19,28 +20,30 @@ class MainCamera extends Phaser.Scene {
 
     create() {
         console.log("Created main camera");
-        var mapBoard = this.registry.map;
+        this.mapBoard = this.registry.map;
         
-        this.cameras.main = createMainCamera(this, mapBoard);
-        this.cameras.minimap = createMiniMapCamera(this, mapBoard);
+        this.cameras.main = createMainCamera(this, this.mapBoard);
+        this.cameras.minimap = createMiniMapCamera(this, this.mapBoard);
 
-        this.drawMap(mapBoard);
+        this.drawMap(this.mapBoard);
         this.selectSprite();
     }
 
     selectSprite() {
         this.input.on('gameobjectover', (pointer, gameObject) => {
-            gameObject.gameObjectOver(pointer, gameObject);
+            if(gameObject.gameObjectOver) {
+                gameObject.gameObjectOver(pointer, gameObject);
+            }
         });
 
         this.input.on('gameobjectout', (pointer, gameObject) => {
-            gameObject.gameObjectOut(pointer, gameObject);
+            if(gameObject.gameObjectOut) {
+                gameObject.gameObjectOut(pointer, gameObject);
+            }
         });
     }
 
-
     update() {
-        mapScroll(this, this.cameras.main);
     }
 
     drawMap(map) {
@@ -48,7 +51,6 @@ class MainCamera extends Phaser.Scene {
         map.units.forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
             this.gameUnits.push(gameUnit);
-
         });
     }
 

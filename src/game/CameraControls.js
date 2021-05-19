@@ -11,29 +11,39 @@ const createMainCamera = function(game, mapBoard) {
     main.setBounds(0, 0, xBound, yBound);
     main.setName('main');
 
-    main.viewRectangle = game.add.rectangle(0, 0, mainCameraWidth, mainCameraHeight);
+    main.viewRectangle = game.add.rectangle(0, 0, GameDimensions.mainCameraWidth, GameDimensions.mainCameraHeight);
     main.viewRectangle.setOrigin(0,0);
     main.viewRectangle.setDepth(1);
     main.viewRectangle.setStrokeStyle(5, 0xFFFFFF);
+    main.ignore(main.viewRectangle);
+    createMainCameraZone(game, main);
+
     return main;
 };
 
-const mapScroll = function(gameEngine, camera) {
-    var game = gameEngine.game;
-    if (game.input.activePointer.isDown) {	
-        if (game.origDragPoint) {		
-            // move the camera by the amount the mouse has moved since last update		
-                camera.scrollX += game.origDragPoint.x - game.input.activePointer.position.x;		
-                camera.scrollY += game.origDragPoint.y - game.input.activePointer.position.y;
-                camera.viewRectangle.x = camera.scrollX
-                camera.viewRectangle.y = camera.scrollY;
-            }	
-            // set new drag origin to current position
-            
-            game.origDragPoint = game.input.activePointer.position.clone();
-        }
-        else {	game.origDragPoint = null;}
+const createMainCameraZone = function(gameScene, camera) {
+    var cameraZone = gameScene.add.zone(0, 0, GameDimensions.mainCameraWidth, GameDimensions.mainCameraHeight)
+        .setOrigin(0).setName('mainCameraZone').setInteractive().setDepth(-2);
+    cameraZone.setScrollFactor(0,0);
+    cameraZone.camera = camera;
+    cameraZone.gameObjectOut = (a,b) => {};
+    cameraZone.gameObjectOver = (a,b) => {};
+
+    cameraZone.on('pointermove',mapScroll(camera)); 
+    return cameraZone;
+
 }
+
+const mapScroll = function(camera) {
+    return (p) => {
+    if (!p.isDown) return;
+        camera.scrollX -= (p.x - p.prevPosition.x) / camera.zoom;
+        camera.scrollY -= (p.y - p.prevPosition.y) / camera.zoom;
+        camera.viewRectangle.x = camera.scrollX
+        camera.viewRectangle.y = camera.scrollY;
+    };
+}
+
 
 const createMiniMapCamera = function(gameEngine, mapBoard) {
 
@@ -50,7 +60,19 @@ const createMiniMapCamera = function(gameEngine, mapBoard) {
     minimap.setOrigin(0,0);
     minimap.setBackgroundColor(0x002244);
 
+    var cameraZone = gameEngine.add.zone(xPos, yPos, width, height)
+        .setOrigin(0).setName('minimapCameraZone').setInteractive().setDepth(0);
+
+    cameraZone.on('pointermove', miniMapScroll(minimap));
+
     return minimap;
 }
 
-export { createMainCamera, mapScroll, createMiniMapCamera }
+const miniMapScroll = function(camera) {
+    return (p) => {
+        //todo
+        return;
+    };
+}
+
+export { createMainCamera, createMiniMapCamera }
