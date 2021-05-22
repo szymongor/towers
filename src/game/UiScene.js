@@ -21,6 +21,10 @@ class UiScene extends Phaser.Scene {
         console.log("Created UI Scene: ");
 
         var info = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', fill: '#FFFFFF' });
+        var selectedUnitInfo = this.add.text(this.originX, this.originY+48, 'Dupa', { font: '48px Arial', fill: '#FFFFFF' });
+
+        this.scene.get('mainCamera')
+        .events.on('unitselected', (gameUnit) => { selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y});
     }
 
     update() {

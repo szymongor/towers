@@ -1,8 +1,7 @@
 import towerPng from '../images/Tower.png';
 import { UnitTypes } from './Unit';
-import { buildingObjectOver, buildingObjectOut } from './UnitsControls';
-import { createMainCamera, mapScroll, createMiniMapCamera } from './CameraControls';
-import { GameDimensions } from  './GameDimensions';
+import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
+import { createMainCamera, createMiniMapCamera } from './CameraControls';
 
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
@@ -41,6 +40,16 @@ class MainCamera extends Phaser.Scene {
                 gameObject.gameObjectOut(pointer, gameObject);
             }
         });
+
+        //highlight selected unit
+        this.events.on('unitselected',(gameUnit) => {
+            if(this.selectedUnit != null) {
+                this.selectedUnit.deselectUnit();
+            }
+
+            this.selectedUnit = gameUnit;
+            gameUnit.selectUnit();
+        })
     }
 
     update() {
@@ -56,11 +65,15 @@ class MainCamera extends Phaser.Scene {
 
     createGameUnit(game, unit) {
         var gameUnit = game.add.sprite(unit.x, unit.y, unit.name);
+        gameUnit.unit = unit;
         gameUnit.scale = 0.2;
         switch (unit.type) {
             case UnitTypes.BUILDING:
                 gameUnit.gameObjectOver = buildingObjectOver(this);
                 gameUnit.gameObjectOut = buildingObjectOut(this);
+                gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
+                gameUnit.selectUnit = selectUnit(this);
+                gameUnit.deselectUnit = deselectUnit();
                 gameUnit.setInteractive();
                 break;
             default:
