@@ -11,7 +11,8 @@ class Unit {
 } 
 
 const UnitTypes = {
-    "BUILDING" : "BUILDING"
+    "BUILDING" : "BUILDING",
+    "TREE": "TREE"
 }
 
 export { Unit, UnitTypes };

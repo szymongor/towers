@@ -1,8 +1,12 @@
 var GameDimensions = {
-    gameWidth: 800,
+    gameWidth: 1000,
     gameHeight: 600,
     uiSceneWidth: 200,
     uiSceneHeight: 400,
+    grid: {
+        tileSize: 50,
+        grassTileSize: 100
+    }
 };
 
 GameDimensions.minimapWidth = GameDimensions.uiSceneWidth;
