@@ -1,4 +1,4 @@
-import towerPng from '../images/Tower.png';
+import towerPng from '../images/tower.png';
 import grassPng from '../images/grass1.png';
 import tree1 from '../images/tree1.png';
 import tree2 from '../images/tree2.png';
@@ -15,6 +15,7 @@ class MainCamera extends Phaser.Scene {
         this.gameUnits = [];
         this.cameras = {};
         this.active = false;
+        this.cursorFollow;
     }
 
     //load assets
@@ -55,13 +56,32 @@ class MainCamera extends Phaser.Scene {
             if(this.selectedUnit != null) {
                 this.selectedUnit.deselectUnit();
             }
+            if(gameUnit) {
+                this.selectedUnit = gameUnit;
+                gameUnit.selectUnit();
+            } else {
+                if(this.cursorFollow) {
+                    this.cursorFollow.destroy();
+                    this.cursorFollow = null;
+                }
+            }
+        })
 
-            this.selectedUnit = gameUnit;
-            gameUnit.selectUnit();
+        this.scene.get('UIScene').events.on('buildtower', () => {
+            this.cursorFollow = this.add.sprite(0, 0, 'tower'); // generic img
+            this.cursorFollow.setTintFill(0x00ff00);
+            this.cursorFollow.setScale(0.5); //TODO - get from unit
+            this.cursorFollow.setOrigin(0);
         })
     }
 
     update() {
+        //TODO - export to UiControls
+        if(this.cursorFollow) {
+            var x = Math.floor((this.input.mousePointer.x+this.cameras.main.scrollX)/50)*50; //TODO - calculate from Dimensions
+            var y = Math.floor(((this.input.mousePointer.y+this.cameras.main.scrollY))/50)*50;
+            this.cursorFollow.setPosition(x, y);
+        }
     }
 
     drawMap(map) {
@@ -89,13 +109,13 @@ class MainCamera extends Phaser.Scene {
         gameUnit.unit = unit;
         switch (unit.type) {
             case UnitTypes.BUILDING:
-                gameUnit.scale = 0.2;
                 gameUnit.gameObjectOver = buildingObjectOver(this);
                 gameUnit.gameObjectOut = buildingObjectOut(this);
                 gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
-                gameUnit.selectUnit = selectUnit(this);
+                gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit();
-                gameUnit.setDepth(2);
+                gameUnit.setScale(unit.getScale());
+                gameUnit.setOrigin(0);
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.TREE:

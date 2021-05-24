@@ -5,7 +5,8 @@ var GameDimensions = {
     uiSceneHeight: 400,
     grid: {
         tileSize: 50,
-        grassTileSize: 100
+        grassTileSize: 100,
+        buildingSize: 200
     }
 };
 

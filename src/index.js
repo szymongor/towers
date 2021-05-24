@@ -1,9 +1,6 @@
-
-
 import { MapBoard } from './game/MapBoard';
 import { createTowerGame } from './game/TowerGame';
 import { Unit, UnitTypes } from './game/Unit';
-import { GameDimensions } from  './game/GameDimensions';
 
 
 var buildingsPositions = [
@@ -17,23 +14,10 @@ var buildingsPositions = [
   {x: 200, y: 150}
 ];
 
-var treesPositions = [];
-
-for(let i = 0 ; i < 200 ; i ++) {
-  let x = getRandomPosition(2000);
-  let y = getRandomPosition(2000);
-  let name = Math.floor(Math.random() *3) +1;
-  treesPositions.push({x: x, y: y, name: name});
-}
-
-var units = buildingsPositions.map(p => new Unit(p.x, p.y, 'tower', UnitTypes.BUILDING));
-var units = units.concat( treesPositions.map(p => new Unit(p.x, p.y, 'tree'+p.name, UnitTypes.TREE)));
+var units = buildingsPositions.map(p => new Unit(p.x, p.y, 'tower', UnitTypes.BUILDING, 2));
+var units = units.concat( MapBoard.randomTrees(200, 2000, 2000));
 
 var mapBoard = new MapBoard(2000, 2000, units);
 
 
 const towerGame = createTowerGame(mapBoard);
-
-function getRandomPosition(max) {
-  return ((Math.floor(Math.random() * max/GameDimensions.grid.tileSize))*GameDimensions.grid.tileSize)+GameDimensions.grid.tileSize/2
-}

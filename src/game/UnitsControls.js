@@ -3,9 +3,10 @@ import { GameObjects } from "phaser";
 const buildingObjectOver = function(gameScene) {
     return (pointer, gameObject) => {
             var highlightSprite = gameScene.add.sprite(gameObject.x, gameObject.y, gameObject.texture );
-            highlightSprite.setScale(0.25,0.22)
             highlightSprite.setTintFill(0xffffff);
             highlightSprite.setDepth(-2);
+            highlightSprite.setOrigin(0);
+            highlightSprite.setScale(gameObject.unit.getScale())
             gameObject.highlight = highlightSprite;
         }
 };
@@ -17,12 +18,13 @@ const buildingObjectOut = function(gameScene) {
     }
 };
 
-const selectUnit = function(gameScene) {
+const selectUnit = function(gameScene, unit) {
     return function() {
         var highlightSprite = gameScene.add.sprite(this.x, this.y, this.texture );
-            highlightSprite.setScale(0.25,0.22)
             highlightSprite.setTintFill(0x00ffdd);
             highlightSprite.setDepth(-1);
+            highlightSprite.setOrigin(0);
+            highlightSprite.setScale(unit.getScale())
             this.highlightSelected = highlightSprite;
     }
 }

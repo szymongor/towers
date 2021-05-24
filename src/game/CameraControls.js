@@ -1,4 +1,5 @@
 import { GameDimensions } from  './GameDimensions';
+import { selectUnitEmitEvent } from './UnitsControls';
 
 const createMainCamera = function(game, mapBoard) {
 
@@ -29,7 +30,8 @@ const createMainCameraZone = function(gameScene, camera) {
     cameraZone.gameObjectOut = (a,b) => {};
     cameraZone.gameObjectOver = (a,b) => {};
 
-    cameraZone.on('pointermove',mapScroll(camera)); 
+    cameraZone.on('pointermove', mapScroll(camera));
+    cameraZone.on('pointerdown', selectUnitEmitEvent(gameScene, null));
     return cameraZone;
 
 }
