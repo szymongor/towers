@@ -6,7 +6,7 @@ var GameDimensions = {
     grid: {
         tileSize: 50,
         grassTileSize: 100,
-        buildingSize: 200
+        imgSize: 200
     }
 };
 

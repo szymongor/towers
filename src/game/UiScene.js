@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GameDimensions } from  './GameDimensions';
 import towerPng from '../images/tower.png';
+import { UnitFactory } from './engine/UnitFactory';
 
 class UiScene extends Phaser.Scene {
     constructor(handle, parent) {
@@ -43,8 +44,7 @@ class UiScene extends Phaser.Scene {
     towerButtonClick(button, scene) {
         return () => {
             button.setTintFill(0x00ffff);
-            scene.events.emit('buildtower',{});
-
+            scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
         }
 
     }
@@ -71,6 +71,10 @@ class UiScene extends Phaser.Scene {
 
     update() {
     }
+}
+
+UiScene.Events = {
+    "BUILDBUILDING":"BUILDBUILDING"
 }
 
 export { UiScene };

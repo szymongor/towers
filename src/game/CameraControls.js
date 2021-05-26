@@ -47,7 +47,7 @@ const mapScroll = function(camera) {
 }
 
 
-const createMiniMapCamera = function(gameEngine, mapBoard) {
+const createMiniMapCamera = function(gameScene, gameEngine) {
 
     var width = GameDimensions.minimapWidth;
     var height = GameDimensions.minimapHeight;
@@ -55,14 +55,16 @@ const createMiniMapCamera = function(gameEngine, mapBoard) {
     var xPos = GameDimensions.gameWidth - width;
     var yPos = 0;
 
+    var mapBoard = gameEngine.getMap();
+
     var minimapZoom = { x: height/ mapBoard.height,
          y: width / mapBoard.width};
-    var minimap = gameEngine.cameras.add(xPos, yPos, width, height)
+    var minimap = gameScene.cameras.add(xPos, yPos, width, height)
         .setZoom(minimapZoom.x, minimapZoom.y).setName('mini');
     minimap.setOrigin(0,0);
     minimap.setBackgroundColor(0x002244);
 
-    var cameraZone = gameEngine.add.zone(xPos, yPos, width, height)
+    var cameraZone = gameScene.add.zone(xPos, yPos, width, height)
         .setOrigin(0).setName('minimapCameraZone').setInteractive().setDepth(0);
 
     cameraZone.on('pointermove', miniMapScroll(minimap));

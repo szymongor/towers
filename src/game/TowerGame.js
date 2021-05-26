@@ -41,7 +41,7 @@ class TowerGame extends Phaser.Scene {
 
 }
 
-const createTowerGame = (map) => {
+const createTowerGame = (gameEngine) => {
 
     const config = {
         type: Phaser.AUTO,
@@ -56,7 +56,7 @@ const createTowerGame = (map) => {
     };
 
     const game = new Phaser.Game(config);
-    game.registry.map = map;
+    game.registry.gameEngine = gameEngine;
     return game;
 }
 

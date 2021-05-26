@@ -3,15 +3,16 @@ import grassPng from '../images/grass1.png';
 import tree1 from '../images/tree1.png';
 import tree2 from '../images/tree2.png';
 import tree3 from '../images/tree3.png';
-import { UnitTypes } from './Unit';
+import { UnitTypes } from './engine/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions } from  './GameDimensions';
+import { UiScene } from './UiScene';
 
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
         super(handle);
-        this.mapBoard;
+        this.gameEngine;
         this.gameUnits = [];
         this.cameras = {};
         this.active = false;
@@ -29,12 +30,12 @@ class MainCamera extends Phaser.Scene {
 
     create() {
         console.log("Created main camera");
-        this.mapBoard = this.registry.map;
+        this.gameEngine = this.registry.gameEngine;
         
-        this.cameras.main = createMainCamera(this, this.mapBoard);
-        this.cameras.minimap = createMiniMapCamera(this, this.mapBoard);
+        this.cameras.main = createMainCamera(this, this.gameEngine);
+        this.cameras.minimap = createMiniMapCamera(this, this.gameEngine);
 
-        this.drawMap(this.mapBoard);
+        this.drawMap(this.gameEngine);
         this.selectSprite();
     }
 
@@ -67,10 +68,16 @@ class MainCamera extends Phaser.Scene {
             }
         })
 
-        this.scene.get('UIScene').events.on('buildtower', () => {
-            this.cursorFollow = this.add.sprite(0, 0, 'tower'); // generic img
+        //TODO - export to UiControls
+        this.scene.get('UIScene').events.on(UiScene.Events.BUILDBUILDING, (e) => {
+            if(this.cursorFollow) {
+                this.cursorFollow.destroy();
+            }
+            let unitPrototype = this.gameEngine.unitFactory.of(e.building);
+            this.cursorFollow = this.add.sprite(0, 0, unitPrototype.name);
+            this.cursorFollow.unitPrototype = unitPrototype;
             this.cursorFollow.setTintFill(0x00ff00);
-            this.cursorFollow.setScale(0.5); //TODO - get from unit
+            this.cursorFollow.setScale(unitPrototype.getScale());
             this.cursorFollow.setOrigin(0);
         })
     }
@@ -78,14 +85,20 @@ class MainCamera extends Phaser.Scene {
     update() {
         //TODO - export to UiControls
         if(this.cursorFollow) {
-            var x = Math.floor((this.input.mousePointer.x+this.cameras.main.scrollX)/50)*50; //TODO - calculate from Dimensions
-            var y = Math.floor(((this.input.mousePointer.y+this.cameras.main.scrollY))/50)*50;
+            let tileSize = GameDimensions.grid.tileSize;
+            var x = Math.floor((this.input.mousePointer.x+this.cameras.main.scrollX)/tileSize)*tileSize;
+            var y = Math.floor(((this.input.mousePointer.y+this.cameras.main.scrollY))/tileSize)*tileSize;
             this.cursorFollow.setPosition(x, y);
+            if(!this.gameEngine.canPlaceUnit(x, y, this.cursorFollow.unitPrototype)) {
+                this.cursorFollow.setTintFill(0xff0000);
+            } else {
+                this.cursorFollow.setTintFill(0x00ff00);
+            }
         }
     }
 
-    drawMap(map) {
-        console.log(map);
+    drawMap(gameEngine) {
+        var map = gameEngine.getMap();
         map.units.forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
             this.gameUnits.push(gameUnit);
@@ -107,6 +120,8 @@ class MainCamera extends Phaser.Scene {
     createGameUnit(game, unit) {
         var gameUnit = game.add.sprite(unit.x, unit.y, unit.name);
         gameUnit.unit = unit;
+        gameUnit.setScale(unit.getScale());
+        gameUnit.setOrigin(0);
         switch (unit.type) {
             case UnitTypes.BUILDING:
                 gameUnit.gameObjectOver = buildingObjectOver(this);
@@ -114,13 +129,13 @@ class MainCamera extends Phaser.Scene {
                 gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
                 gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit();
-                gameUnit.setScale(unit.getScale());
-                gameUnit.setOrigin(0);
+                
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.TREE:
                 gameUnit.selectUnit = selectUnit(this);
                 gameUnit.deselectUnit = deselectUnit();
+                
 
                 break;
             default:
