@@ -2,13 +2,14 @@ import { MapBoard } from './MapBoard';
 import { Unit, UnitTypes } from './Unit';
 import { GameDimensions } from '../GameDimensions';
 import { UnitFactory } from './UnitFactory';
+import { Player } from './Player';
 
 class GameEngine {
 
     constructor() {
         this.unitFactory = new UnitFactory();
         this.mapBoard = this.createMapBoard();
-    
+        this.players = [new Player(1), new Player(2)];
     }
 
     createMapBoard() {
@@ -49,6 +50,15 @@ class GameEngine {
             }
         }
         return false;
+    }
+
+    placeBuilding(unitPrototype, playerOwner) {
+        if(this.canPlaceUnit(unitPrototype.x, unitPrototype.y, unitPrototype)) {
+            let unit = this.unitFactory.of(unitPrototype.unitName, unitPrototype.x, unitPrototype.y, playerOwner);
+            this.mapBoard.units.push(unit);
+            return unit;
+        }
+        
     }
 
 }

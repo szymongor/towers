@@ -1,12 +1,12 @@
 import { GameDimensions } from  './GameDimensions';
-import { selectUnitEmitEvent } from './UnitsControls';
+import { deselectUnitEmitEvent } from './UnitsControls';
 
-const createMainCamera = function(game, mapBoard) {
+const createMainCamera = function(game, gameEngine) {
 
     var mainCameraWidth = GameDimensions.gameWidth - GameDimensions.uiSceneWidth;
     var mainCameraHeight = GameDimensions.gameHeight;
-    var xBound = mapBoard.height;
-    var yBound = mapBoard.width;
+    var xBound = gameEngine.mapBoard.height;
+    var yBound = gameEngine.mapBoard.width;
 
     var main = game.cameras.main.setSize(mainCameraWidth, mainCameraHeight);
     main.setBounds(0, 0, xBound, yBound);
@@ -30,8 +30,9 @@ const createMainCameraZone = function(gameScene, camera) {
     cameraZone.gameObjectOut = (a,b) => {};
     cameraZone.gameObjectOver = (a,b) => {};
 
+    
     cameraZone.on('pointermove', mapScroll(camera));
-    cameraZone.on('pointerdown', selectUnitEmitEvent(gameScene, null));
+    cameraZone.on('pointerdown', deselectUnitEmitEvent(gameScene, null));
     return cameraZone;
 
 }
@@ -41,7 +42,8 @@ const mapScroll = function(camera) {
     if (!p.isDown) return;
         camera.scrollX -= (p.x - p.prevPosition.x) / camera.zoom;
         camera.scrollY -= (p.y - p.prevPosition.y) / camera.zoom;
-        camera.viewRectangle.x = camera.scrollX
+
+        camera.viewRectangle.x = camera.scrollX;
         camera.viewRectangle.y = camera.scrollY;
     };
 }

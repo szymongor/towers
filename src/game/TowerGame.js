@@ -2,6 +2,12 @@ import Phaser from 'phaser';
 import { MainCamera } from './MainCamera';
 import { UiScene } from './UiScene';
 import { GameDimensions } from  './GameDimensions';
+import grass1Png from '../images/grass1.png';
+import tree1Png from '../images/tree1.png';
+import tree2Png from '../images/tree2.png';
+import tree3Png from '../images/tree3.png';
+import towerPng from '../images/tower.png';
+import sawmillPng from '../images/sawmill.png';
 
 class TowerGame extends Phaser.Scene {
 
@@ -10,6 +16,10 @@ class TowerGame extends Phaser.Scene {
     }
 
     preload() {
+        this.load.image('grass', grass1Png);
+        this.load.image('tree1', tree1Png);
+        this.load.image('tree2', tree2Png);
+        this.load.image('tree3', tree3Png);
 
     }
 

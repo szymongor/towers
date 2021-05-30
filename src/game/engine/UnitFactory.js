@@ -13,6 +13,11 @@ class UnitFactory {
                 name: 'tree',
                 size: 1,
                 type: UnitTypes.TREE
+            },
+            sawmill: {
+                name: 'sawmill',
+                size: 1,
+                type: UnitTypes.BUILDING
             }
         }
     }
@@ -34,11 +39,13 @@ class UnitFactory {
             null, )
     }
 
-    of(type) {
-        return new Unit(null, null, 
+    of(type, x, y, player) {
+        return new Unit(x, y, 
             this.unitConfig[type].name, 
             this.unitConfig[type].type, 
-            this.unitConfig[type].size
+            this.unitConfig[type].size,
+            player,
+            type
             );
     }
 
@@ -46,7 +53,8 @@ class UnitFactory {
 
 UnitFactory.Units = {
     "TOWER":"tower",
-    "TREE":"tree"
+    "TREE":"tree",
+    "SAWMILL":"sawmill"
 }
 
 export { UnitFactory };

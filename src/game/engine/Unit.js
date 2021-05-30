@@ -2,13 +2,14 @@ import { GameDimensions } from  '../GameDimensions';
 
 class Unit {
 
-    constructor (xPos, yPos, name, type, size, player) {
+    constructor (xPos, yPos, name, type, size, player, unitName) {
         this.x = xPos;
         this.y = yPos;
         this.name = name;
         this.type = type;
         this.size = size;
         this.player = player;
+        this.unitName = unitName
     }
 
     getScale() {

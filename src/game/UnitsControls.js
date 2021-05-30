@@ -37,11 +37,21 @@ const deselectUnit = function() {
 }
 
 const selectUnitEmitEvent = function(gameScene, gameObject) {
+    
     return function() {
         gameScene.events.emit('unitselected', gameObject);
     }
 }
 
+const deselectUnitEmitEvent = function(gameScene, gameObject) {
+    
+    return function() {
+        if(gameScene.cursorFollow == null) {
+            gameScene.events.emit('deselect', gameObject);
+        }
+    }
+}
 
 
-export { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit}
+
+export { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit, deselectUnitEmitEvent}

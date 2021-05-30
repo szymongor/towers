@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { GameDimensions } from  './GameDimensions';
-import towerPng from '../images/tower.png';
 import { UnitFactory } from './engine/UnitFactory';
+import towerPng from '../images/tower.png';
+import sawmillPng from '../images/sawmill.png';
 
 class UiScene extends Phaser.Scene {
     constructor(handle, parent) {
@@ -12,7 +13,9 @@ class UiScene extends Phaser.Scene {
 
     //load assets
     preload() {
-        this.load.image('button', towerPng);
+        //TODO Load images in TowerGame
+        this.load.image('sawmill', sawmillPng);
+        this.load.image('tower', towerPng);
     }
 
     create() {
@@ -28,17 +31,28 @@ class UiScene extends Phaser.Scene {
         this.selectedUnitInfo = this.add.text(this.originX, this.originY+48, 
             '', { font: '48px Arial', fill: '#FFFFFF' });
 
+        //TODO get Events from event bus
         this.scene.get('mainCamera')
         .events.on('unitselected', this.unitSelected(this));
 
-        var button = this.add.image(this.originX, this.originY+50, 'button')
+        //TODO get Events from event bus
+        this.scene.get('mainCamera')
+        .events.on('deselect', this.unitSelected(this));
+
+        var buttonTower = this.add.image(this.originX, this.originY+50, 'tower')
         .setOrigin(0)
         .setScale(0.25)
         .setInteractive();
 
-        button.on(Phaser.Input.Events.POINTER_DOWN, this.towerButtonClick(button, this));
+        var buttonSawmill = this.add.image(this.originX+50, this.originY+50, 'sawmill')
+        .setOrigin(0)
+        .setScale(0.25)
+        .setInteractive();
 
-        this.uiButtons.push(button);
+        buttonTower.on(Phaser.Input.Events.POINTER_DOWN, this.towerButtonClick(buttonTower, this));
+        buttonSawmill.on(Phaser.Input.Events.POINTER_DOWN, this.sawmillButtonClick(buttonSawmill, this));
+
+        this.uiButtons.push(buttonTower, buttonSawmill);
     }
 
     towerButtonClick(button, scene) {
@@ -46,7 +60,13 @@ class UiScene extends Phaser.Scene {
             button.setTintFill(0x00ffff);
             scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
         }
+    }
 
+    sawmillButtonClick(button, scene) {
+        return () => {
+            button.setTintFill(0x00ffff);
+            scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.SAWMILL});
+        }
     }
 
     unitSelected(uiScene) {
@@ -66,7 +86,6 @@ class UiScene extends Phaser.Scene {
                 });
             }
         }
-        
     }
 
     update() {
