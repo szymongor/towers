@@ -39,14 +39,15 @@ class UiScene extends Phaser.Scene {
         this.scene.get('mainCamera')
         .events.on('deselect', this.unitSelected(this));
 
+
         var buttonTower = this.add.image(this.originX, this.originY+50, 'tower')
         .setOrigin(0)
-        .setScale(0.25)
+        .setScale(0.25) //TODO - set from dims
         .setInteractive();
 
         var buttonSawmill = this.add.image(this.originX+50, this.originY+50, 'sawmill')
         .setOrigin(0)
-        .setScale(0.25)
+        .setScale(0.25) //TODO - set from dims
         .setInteractive();
 
         buttonTower.on(Phaser.Input.Events.POINTER_DOWN, this.towerButtonClick(buttonTower, this));
@@ -57,6 +58,7 @@ class UiScene extends Phaser.Scene {
 
     towerButtonClick(button, scene) {
         return () => {
+            scene.clearButtonsTint(scene);
             button.setTintFill(0x00ffff);
             scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
         }
@@ -64,6 +66,7 @@ class UiScene extends Phaser.Scene {
 
     sawmillButtonClick(button, scene) {
         return () => {
+            scene.clearButtonsTint(scene);
             button.setTintFill(0x00ffff);
             scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.SAWMILL});
         }
@@ -71,21 +74,26 @@ class UiScene extends Phaser.Scene {
 
     unitSelected(uiScene) {
         return (gameUnit) => {
+            uiScene.clearButtonsTint(uiScene);
             if(gameUnit) {
                 uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y
                 uiScene.uiButtons.forEach(btn => {
                     btn.setVisible(false);
-                    btn.clearTint();
                 });
     
             } else {
                 uiScene.selectedUnitInfo.text ='';
                 uiScene.uiButtons.forEach(btn => {
                     btn.setVisible(true);
-                    btn.clearTint();
                 });
             }
         }
+    }
+
+    clearButtonsTint(uiScene) {
+        uiScene.uiButtons.forEach(btn => {
+            btn.clearTint();
+        });
     }
 
     update() {
