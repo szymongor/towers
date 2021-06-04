@@ -88,7 +88,7 @@ class MainCamera extends Phaser.Scene {
     placeUnit(scene) {
         return () => {
             if(scene.cursorFollow && scene.cursorFollow.action == MainCamera.UiMode.BUILD_BUILDING) {
-                let unit = scene.gameEngine.placeBuilding(scene.cursorFollow.unitPrototype, null);
+                let unit = scene.gameEngine.placeBuilding(scene.cursorFollow.unitPrototype);
                 if(unit) {
                     scene.createGameUnit(scene, unit);
                 }

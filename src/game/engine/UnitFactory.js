@@ -7,7 +7,17 @@ class UnitFactory {
             tower: {
                 name: 'tower',
                 size: 2,
-                type: UnitTypes.BUILDING
+                type: UnitTypes.BUILDING,
+                cost: [
+                    {
+                        name: "wood",
+                        value: 200
+                    },
+                    {
+                        name: "stone",
+                        value: 200
+                    }
+                ]
             },
             tree: {
                 name: 'tree',
@@ -17,7 +27,17 @@ class UnitFactory {
             sawmill: {
                 name: 'sawmill',
                 size: 1,
-                type: UnitTypes.BUILDING
+                type: UnitTypes.BUILDING,
+                cost: [
+                    {
+                        name: "wood",
+                        value: 50
+                    },
+                    {
+                        name: "stone",
+                        value: 25
+                    }
+                ]
             }
         }
     }
@@ -47,6 +67,10 @@ class UnitFactory {
             player,
             type
             );
+    }
+
+    getConfig(type) {
+        return this.unitConfig[type];
     }
 
 }

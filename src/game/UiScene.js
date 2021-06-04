@@ -19,6 +19,7 @@ class UiScene extends Phaser.Scene {
     }
 
     create() {
+        this.gameEngine = this.registry.gameEngine;
         this.originX = GameDimensions.gameWidth-GameDimensions.uiSceneWidth;
         this.originY = GameDimensions.gameHeight-GameDimensions.uiSceneHeight;
         var viewRectangle = this.add.rectangle(this.originX, this.originY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
@@ -58,17 +59,21 @@ class UiScene extends Phaser.Scene {
 
     towerButtonClick(button, scene) {
         return () => {
-            scene.clearButtonsTint(scene);
-            button.setTintFill(0x00ffff);
-            scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
+            if(scene.gameEngine.canBuild(UnitFactory.Units.TOWER)) {
+                scene.clearButtonsTint(scene);
+                button.setTintFill(0x00ffff);
+                scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
+            }
         }
     }
 
     sawmillButtonClick(button, scene) {
         return () => {
-            scene.clearButtonsTint(scene);
-            button.setTintFill(0x00ffff);
-            scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.SAWMILL});
+            if(scene.gameEngine.canBuild(UnitFactory.Units.SAWMILL)) {
+                scene.clearButtonsTint(scene);
+                button.setTintFill(0x00ffff);
+                scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.SAWMILL});
+            }
         }
     }
 
