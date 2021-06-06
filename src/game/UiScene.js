@@ -59,20 +59,24 @@ class UiScene extends Phaser.Scene {
 
     towerButtonClick(button, scene) {
         return () => {
+            scene.clearButtonsTint(scene);
             if(scene.gameEngine.canBuild(UnitFactory.Units.TOWER)) {
-                scene.clearButtonsTint(scene);
                 button.setTintFill(0x00ffff);
                 scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.TOWER});
+            } else {
+                scene.events.emit(UiScene.Events.DESELECT_BUILDING,{});
             }
         }
     }
 
     sawmillButtonClick(button, scene) {
         return () => {
+            scene.clearButtonsTint(scene);
             if(scene.gameEngine.canBuild(UnitFactory.Units.SAWMILL)) {
-                scene.clearButtonsTint(scene);
                 button.setTintFill(0x00ffff);
                 scene.events.emit(UiScene.Events.BUILDBUILDING,{building: UnitFactory.Units.SAWMILL});
+            } else {
+                scene.events.emit(UiScene.Events.DESELECT_BUILDING,{});
             }
         }
     }
@@ -106,7 +110,8 @@ class UiScene extends Phaser.Scene {
 }
 
 UiScene.Events = {
-    "BUILDBUILDING":"BUILDBUILDING"
+    "BUILDBUILDING":"BUILDBUILDING",
+    "DESELECT_BUILDING":"DESELECT_BUILDING"
 }
 
 export { UiScene };

@@ -5,6 +5,7 @@ import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit,
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions } from  './GameDimensions';
 import { UiScene } from './UiScene';
+import { EventRegistry } from './engine/events/EventsRegistry';
 
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
@@ -35,6 +36,7 @@ class MainCamera extends Phaser.Scene {
 
         this.drawMap(this.gameEngine);
         this.selectSprite();
+        this.registerUnitPlaced(this);
     }
 
     selectSprite() {
@@ -83,15 +85,39 @@ class MainCamera extends Phaser.Scene {
             this.cursorFollow.setOrigin(0);
             this.cursorFollow.action = MainCamera.UiMode.BUILD_BUILDING;
         })
+
+        this.scene.get('UIScene').events.on(UiScene.Events.DESELECT_BUILDING, (e) => {
+            if(this.cursorFollow) {
+                this.cursorFollow.destroy();
+            }
+            this.cursorFollow = null;
+        })
+    }
+
+    registerUnitPlaced() {
+        let subscriber = {
+            call: this.unitPlaced(this)
+        }
+        this.gameEngine.events.subscribe(EventRegistry.events.PLACE_BUILDING, subscriber);
+    }
+
+    unitPlaced(scene) {
+        return (event) => {
+            let unit = event.data.unitPrototype;
+            if(unit) {
+                scene.createGameUnit(scene, unit);
+            }
+        }
+        
     }
 
     placeUnit(scene) {
         return () => {
             if(scene.cursorFollow && scene.cursorFollow.action == MainCamera.UiMode.BUILD_BUILDING) {
-                let unit = scene.gameEngine.placeBuilding(scene.cursorFollow.unitPrototype);
-                if(unit) {
-                    scene.createGameUnit(scene, unit);
-                }
+                let unit = scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
+                // if(unit) {
+                //     scene.createGameUnit(scene, unit);
+                // }
                 selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
 
             }
