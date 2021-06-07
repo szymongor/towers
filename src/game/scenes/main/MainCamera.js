@@ -1,11 +1,11 @@
-import towerPng from '../images/tower.png';
-import sawmillPng from '../images/sawmill.png';
-import { UnitTypes } from './engine/Unit';
+import { UnitTypes } from '../../engine/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
-import { GameDimensions } from  './GameDimensions';
-import { UiScene } from './UiScene';
-import { EventRegistry } from './engine/events/EventsRegistry';
+import { GameDimensions, Scenes } from  '../../GameDimensions';
+import { UiScene } from '../ui/UiScene';
+
+import { UiSceneEvents } from '../ui/UiSceneEvents';
+import { EventRegistry } from '../../engine/events/EventsRegistry';
 
 class MainCamera extends Phaser.Scene {
     constructor(handle, parent) {
@@ -19,24 +19,18 @@ class MainCamera extends Phaser.Scene {
 
     //load assets
     preload() {
-
-        //TODO Load images in TowerGame
-        this.load.image('tower', towerPng);
-        this.load.image('sawmill', sawmillPng);
-        
-
     }
 
     create() {
-        console.log("Created main camera");
         this.gameEngine = this.registry.gameEngine;
         
         this.cameras.main = createMainCamera(this, this.gameEngine);
         this.cameras.minimap = createMiniMapCamera(this, this.gameEngine);
 
         this.drawMap(this.gameEngine);
-        this.selectSprite();
+        
         this.registerUnitPlaced(this);
+        this.selectSprite();
     }
 
     selectSprite() {
@@ -71,14 +65,17 @@ class MainCamera extends Phaser.Scene {
         this.input.on(Phaser.Input.Events.POINTER_DOWN, this.placeUnit(this));
 
 
-        //TODO get Events from event bus
+        
+    }
+
+    registerOuterEvents() {
         //TODO - export to UiControls
-        this.scene.get('UIScene').events.on(UiScene.Events.BUILDBUILDING, (e) => {
+        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.BUILDBUILDING, (e) => {
             if(this.cursorFollow) {
                 this.cursorFollow.destroy();
             }
             let unitPrototype = this.gameEngine.unitFactory.of(e.building);
-            this.cursorFollow = this.add.sprite(0, 0, unitPrototype.name);
+            this.cursorFollow = this.add.sprite(-100, -100, unitPrototype.name);
             this.cursorFollow.unitPrototype = unitPrototype;
             this.cursorFollow.setTintFill(0x00ff00);
             this.cursorFollow.setScale(unitPrototype.getScale());
@@ -86,12 +83,13 @@ class MainCamera extends Phaser.Scene {
             this.cursorFollow.action = MainCamera.UiMode.BUILD_BUILDING;
         })
 
-        this.scene.get('UIScene').events.on(UiScene.Events.DESELECT_BUILDING, (e) => {
+        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.DESELECT_BUILDING, (e) => {
             if(this.cursorFollow) {
                 this.cursorFollow.destroy();
             }
             this.cursorFollow = null;
         })
+
     }
 
     registerUnitPlaced() {
@@ -135,7 +133,7 @@ class MainCamera extends Phaser.Scene {
                 this.cursorFollow.setPosition(x, y);
                 this.cursorFollow.unitPrototype.x = x;
                 this.cursorFollow.unitPrototype.y = y;
-                if(!this.gameEngine.canPlaceUnit(x, y, this.cursorFollow.unitPrototype)) {
+                if(!this.gameEngine.canPlaceUnit(this.cursorFollow.unitPrototype)) {
                     this.cursorFollow.setTintFill(0xff0000);
                 } else {
                     this.cursorFollow.setTintFill(0x00ff00);

@@ -1,5 +1,5 @@
 import { GameEngine } from './game/engine/GameEngine';
-import { createTowerGame } from './game/TowerGame';
+import { createTowerGame } from './game/scenes/TowerGame';
 
 
 

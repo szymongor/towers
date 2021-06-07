@@ -1,4 +1,4 @@
-import { GameDimensions } from  './GameDimensions';
+import { GameDimensions } from  '../../GameDimensions';
 import { deselectUnitEmitEvent } from './UnitsControls';
 
 const createMainCamera = function(game, gameEngine) {
@@ -16,6 +16,10 @@ const createMainCamera = function(game, gameEngine) {
     main.viewRectangle.setOrigin(0,0);
     main.viewRectangle.setDepth(1);
     main.viewRectangle.setStrokeStyle(5, 0xFFFFFF);
+    main.viewRectangle.moveTo = function(x, y) {
+        this.setPosition(x,y);
+        this.geom.setPosition(x,y);
+    }
     main.ignore(main.viewRectangle);
     createMainCameraZone(game, main);
 
@@ -43,8 +47,7 @@ const mapScroll = function(camera) {
         camera.scrollX -= (p.x - p.prevPosition.x) / camera.zoom;
         camera.scrollY -= (p.y - p.prevPosition.y) / camera.zoom;
 
-        camera.viewRectangle.x = camera.scrollX;
-        camera.viewRectangle.y = camera.scrollY;
+        camera.viewRectangle.moveTo(camera.scrollX,camera.scrollY);
     };
 }
 

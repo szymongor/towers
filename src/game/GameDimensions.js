@@ -16,4 +16,9 @@ GameDimensions.minimapHeight =  GameDimensions.gameHeight - GameDimensions.uiSce
 GameDimensions.mainCameraWidth = GameDimensions.gameWidth - GameDimensions.uiSceneWidth;
 GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
 
-export { GameDimensions };
+var Scenes = {
+    "UIScene":"UIScene",
+    "MainCamera":"MainCamera"
+}
+
+export { GameDimensions, Scenes };

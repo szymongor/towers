@@ -15,7 +15,7 @@ class UnitFactory {
                     },
                     {
                         name: "stone",
-                        value: 200
+                        value: 20
                     }
                 ]
             },
