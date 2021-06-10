@@ -27,6 +27,6 @@ class EventRegistry {
 
 EventRegistry.events = {
     "ORDER_BUILDING": "ORDER_BUILDING",
-    "PLACE_BUILDING": "PLACE_BUILDING"
+    "BUILDING_PLACED": "BUILDING_PLACED"
 }
 export { EventRegistry }

@@ -24,16 +24,14 @@ class UiScene extends Phaser.Scene {
         var info = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', fill: '#FFFFFF' });
         this.selectedUnitInfo = this.add.text(this.originX, this.originY+48, 
             '', { font: '48px Arial', fill: '#FFFFFF' });
-            
+
         createBaseUIButtons(this);
     }
 
     registerOuterEvents() {
-        //TODO get Events from event bus
         this.scene.get(Scenes.MainCamera)
         .events.on('unitselected', this.unitSelected(this));
 
-        //TODO get Events from event bus
         this.scene.get(Scenes.MainCamera)
         .events.on('deselect', this.unitSelected(this));
     }

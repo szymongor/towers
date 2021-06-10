@@ -96,14 +96,14 @@ class MainCamera extends Phaser.Scene {
         let subscriber = {
             call: this.unitPlaced(this)
         }
-        this.gameEngine.events.subscribe(EventRegistry.events.PLACE_BUILDING, subscriber);
+        this.gameEngine.events.subscribe(EventRegistry.events.BUILDING_PLACED, subscriber);
     }
 
     unitPlaced(scene) {
         return (event) => {
             let unit = event.data.unitPrototype;
             if(unit) {
-                scene.createGameUnit(scene, unit);
+                scene.gameUnits.push(scene.createGameUnit(scene, unit));
             }
         }
         
@@ -123,6 +123,7 @@ class MainCamera extends Phaser.Scene {
     }
 
     update() {
+        this.updateProgress(this);
         //TODO - export to UiControls
         if(this.cursorFollow) {
             let tileSize = GameDimensions.grid.tileSize;
@@ -139,8 +140,32 @@ class MainCamera extends Phaser.Scene {
                     this.cursorFollow.setTintFill(0x00ff00);
                 }
             }
-            
         }
+    }
+
+    updateProgress(scene) {
+        
+        scene.gameUnits.forEach(gameUnit => {
+            if(gameUnit.unit.state.construction) {
+                let u = gameUnit.unit;
+                let tileSize = GameDimensions.grid.tileSize;
+                let w = u.size * tileSize;
+                if(gameUnit.progressBar == null) {
+                    
+                    let x = u.x;
+                    let y = u.y;
+                    let w = u.size * tileSize;
+                    let bar = scene.add.rectangle(x, y, w * u.getProgress(), 8,0x42c5f5);
+                    bar.setOrigin(0);
+                    gameUnit.progressBar = bar;
+                } else {
+                    gameUnit.progressBar.setSize( w * u.getProgress(), 8);
+                }
+                
+
+            }
+        })
+
     }
 
     drawMap(gameEngine) {
@@ -164,10 +189,12 @@ class MainCamera extends Phaser.Scene {
     }
 
     createGameUnit(game, unit) {
-        var gameUnit = game.add.sprite(unit.x, unit.y, unit.name);
+        var gameUnit = game.add.sprite(unit.x, unit.y, unit.getTexture());
         gameUnit.unit = unit;
+        unit.gameUnit = gameUnit;
         gameUnit.setScale(unit.getScale());
         gameUnit.setOrigin(0);
+
         switch (unit.type) {
             case UnitTypes.BUILDING:
                 gameUnit.gameObjectOver = buildingObjectOver(this);

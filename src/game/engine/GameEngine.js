@@ -14,7 +14,6 @@ class GameEngine {
         this.players = [new Player(1), new Player(2)];
         this.events = new EventRegistry();
         this.registerOrderBuildingFlow();
-        this.registerPlaceBuildingFlow();
     }
 
     getPlayer() {
@@ -94,10 +93,12 @@ class GameEngine {
             ownerPlayer = player;
         }
         if(this.canPlaceUnit(unitPrototype)) {
-            let unit = this.unitFactory.of(unitPrototype.unitName, 
+            let unit = this.unitFactory.constructionOf(unitPrototype.unitName, 
                 unitPrototype.x, 
                 unitPrototype.y, 
                 ownerPlayer);
+            let unitCosts = this.unitFactory.getConfig(unitPrototype.unitName).cost;
+            this.chargeResources(ownerPlayer, unitCosts)
             this.mapBoard.units.push(unit);
             return unit;
         }
@@ -116,27 +117,40 @@ class GameEngine {
             let player = event.data.player;
             if(gameEngine.canBuild(prototype.unitName, player) 
             && gameEngine.canPlaceUnit(prototype)) {
-                let placeBuildingEvent = new GameEvent(EventRegistry.events.PLACE_BUILDING, event.data);
+                let data = {
+                    player: event.data.player,
+                    unitPrototype: gameEngine.placeBuilding(prototype, player)
+                };
+                let placeBuildingEvent = new GameEvent(EventRegistry.events.BUILDING_PLACED, data);
                 gameEngine.events.emit(placeBuildingEvent);
             }
         }
         
     }
 
-    registerPlaceBuildingFlow() {
-        var subscriber = {
-            call: this.receivePlaceBuilding(this)
-        }
-        this.events.subscribe(EventRegistry.events.PLACE_BUILDING, subscriber);
+    chargeResources(player, costs) {
+        
+        costs.forEach(cost  => {
+            player.resources[cost.name] -= cost.value;
+        })
     }
 
-    receivePlaceBuilding(gameEngine) {
-        return (event) => {
-            let prototype = event.data.unitPrototype;
-            let player = event.data.player;
-            gameEngine.placeBuilding(prototype, player);
-        }
-        
+    update() {
+        //TODO receiving resources from owned units;
+        this.getPlayer().resources['wood'] += 2;
+
+        this.updateConstruction();
+    }
+
+    updateConstruction() {
+        this.mapBoard.units.forEach(unit => {
+            if(unit.state.construction) {
+                let finished = unit.processTasks();
+                if(finished) {
+                    unit.updateTexture();
+                }
+            }
+        })
     }
 
 }

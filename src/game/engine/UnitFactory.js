@@ -17,12 +17,8 @@ class UnitFactory {
                         name: "stone",
                         value: 20
                     }
-                ]
-            },
-            tree: {
-                name: 'tree',
-                size: 1,
-                type: UnitTypes.TREE
+                ],
+                constructionTime: 20
             },
             sawmill: {
                 name: 'sawmill',
@@ -37,7 +33,13 @@ class UnitFactory {
                         name: "stone",
                         value: 25
                     }
-                ]
+                ],
+                constructionTime: 15
+            },
+            tree: {
+                name: 'tree',
+                size: 1,
+                type: UnitTypes.TREE
             }
         }
     }
@@ -67,6 +69,16 @@ class UnitFactory {
             player,
             type
             );
+    }
+
+    constructionOf(type, x, y, player) {
+        let constructedUnit = this.of(type, x, y, player);
+        constructedUnit.state.construction = true;
+        constructedUnit.state.progress = {
+            limit: this.unitConfig[type].constructionTime,
+            value: 0
+        }
+        return constructedUnit;
     }
 
     getConfig(type) {
