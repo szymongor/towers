@@ -1,6 +1,29 @@
 import { Unit, UnitTypes } from "./Unit";
+import { Cost } from './GameEngine';
+import { Player } from "./Player";
+
+enum UnitName {
+    TOWER = "tower",
+    TREE = "tree",
+    SAWMILL = "sawmill"
+}
+
+interface UnitsConfig {
+    [key: string]: UnitConfig;
+}
+
+interface UnitConfig {
+    name: string;
+    size: number;
+    type: UnitTypes;
+    cost: Cost[];
+    constructionTime: number;
+}
 
 class UnitFactory {
+
+    unitConfig: UnitsConfig;
+    static Units: { [key: string]: UnitName };
 
     constructor () {
         this.unitConfig = {
@@ -39,29 +62,33 @@ class UnitFactory {
             tree: {
                 name: 'tree',
                 size: 1,
-                type: UnitTypes.TREE
+                type: UnitTypes.TREE,
+                cost: [],
+                constructionTime: 0
             }
         }
     }
 
-    createTower(x, y, player) {
+    createTower(x: number, y: number, player: Player) {
+        let unitName = '';
         return new Unit(x, y, 
             this.unitConfig.tower.name, 
             this.unitConfig.tower.type, 
             this.unitConfig.tower.size, 
-            player)
+            player, unitName);
     }
 
-    createTree(x, y) {
+    createTree(x: number, y: number) {
         let name = Math.floor(Math.random() *3) +1;
+        let unitName = '';
         return new Unit(x, y, 
             this.unitConfig.tree.name+name, 
             this.unitConfig.tree.type, 
             this.unitConfig.tree.size, 
-            null, )
+            null, unitName);
     }
 
-    of(type, x, y, player) {
+    of(type: UnitName, x: number, y: number, player: Player) {
         return new Unit(x, y, 
             this.unitConfig[type].name, 
             this.unitConfig[type].type, 
@@ -71,7 +98,7 @@ class UnitFactory {
             );
     }
 
-    constructionOf(type, x, y, player) {
+    constructionOf(type: UnitName, x: number, y: number, player: Player) {
         let constructedUnit = this.of(type, x, y, player);
         constructedUnit.state.construction = true;
         constructedUnit.state.progress = {
@@ -81,16 +108,16 @@ class UnitFactory {
         return constructedUnit;
     }
 
-    getConfig(type) {
+    getConfig(type: UnitName) {
         return this.unitConfig[type];
     }
 
 }
 
 UnitFactory.Units = {
-    "TOWER":"tower",
-    "TREE":"tree",
-    "SAWMILL":"sawmill"
+    "TOWER":UnitName.TOWER,
+    "TREE":UnitName.TREE,
+    "SAWMILL":UnitName.SAWMILL
 }
 
 export { UnitFactory };

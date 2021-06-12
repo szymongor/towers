@@ -1,10 +1,15 @@
 import { GameDimensions } from  '../GameDimensions';
-import { Unit, UnitTypes } from './Unit';
-
+import { Unit } from './Unit';
+import { UnitFactory } from './UnitFactory';
 
 class MapBoard {
 
-    constructor(height, width, unitFactory) {
+    height: number;
+    width: number;
+    unitFactory: UnitFactory;
+    units: Unit[];
+
+    constructor(height: number, width: number, unitFactory: UnitFactory) {
         this.height = height;
         this.width = width;
         this.unitFactory = unitFactory;
@@ -28,20 +33,20 @@ class MapBoard {
         return units;
     }
 
-    randomTrees(n, width, heighth) {
+    randomTrees(n: number, width: number, heighth: number) {
         var treesPositions = [];
     
         for(let i = 0 ; i < n ; i ++) {
             let x = getRandomPosition(width);
             let y = getRandomPosition(heighth);
-            treesPositions.push({x: x, y: y, name: name});
+            treesPositions.push({x: x, y: y});
         }
         return treesPositions.map(p => this.unitFactory.createTree(p.x, p.y));
     }
 
 }
 
-function getRandomPosition(max) {
+function getRandomPosition(max: number) {
     return ((Math.floor(Math.random() * max/GameDimensions.grid.tileSize))*GameDimensions.grid.tileSize)+GameDimensions.grid.tileSize
 }
 

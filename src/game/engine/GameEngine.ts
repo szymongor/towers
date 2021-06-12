@@ -1,9 +1,8 @@
 import { MapBoard } from './MapBoard';
-import { Unit, UnitTypes } from './Unit';
 import { GameDimensions } from '../GameDimensions';
 import { UnitFactory } from './UnitFactory';
 import { Player } from './Player';
-import { EventRegistry } from './events/EventsRegistry';
+import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 
 interface Cost {
@@ -91,7 +90,7 @@ class GameEngine {
                 unitPrototype: unitPrototype,
                 player: this.getPlayer()
             }
-            let orderEvent = new GameEvent(EventRegistry.events.ORDER_BUILDING, data);
+            let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
             this.events.emit(orderEvent);
         }
     }
@@ -117,7 +116,7 @@ class GameEngine {
         var subscriber = {
             call: this.receiveBuildingOrder(this)
         }
-        this.events.subscribe(EventRegistry.events.ORDER_BUILDING, subscriber);
+        this.events.subscribe(EventChannels.ORDER_BUILDING, subscriber);
     }
 
     receiveBuildingOrder(gameEngine: GameEngine) {
@@ -130,7 +129,7 @@ class GameEngine {
                     player: event.data.player,
                     unitPrototype: gameEngine.placeBuilding(prototype, player)
                 };
-                let placeBuildingEvent = new GameEvent(EventRegistry.events.BUILDING_PLACED, data);
+                let placeBuildingEvent = new GameEvent(EventChannels.BUILDING_PLACED, data);
                 gameEngine.events.emit(placeBuildingEvent);
             }
         }
@@ -164,4 +163,4 @@ class GameEngine {
 
 }
 
-export { GameEngine }
+export { GameEngine, Cost }

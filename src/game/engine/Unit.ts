@@ -1,8 +1,48 @@
 import { GameDimensions } from  '../GameDimensions';
+import { Player } from './Player';
+
+enum UnitTypes {
+    BUILDING = "BUILDING",
+    TREE = "TREE"
+}
+
+interface UnitStateProgress {
+    limit: number;
+    value: number;
+}
+
+interface UnitState {
+    construction: boolean;
+    progress: UnitStateProgress;
+}
+
+interface GameUnit {
+    progressBar: ProgressBar;
+    setTexture: (texture: string) => void;
+}
+
+interface ProgressBar {
+    destroy: () => void;
+}
 
 class Unit {
+    x: number;
+    y: number;
+    name: string;
+    type: UnitTypes;
+    size: number;
+    player: Player;
+    unitName: string;
+    state: UnitState;
+    gameUnit: GameUnit;
 
-    constructor (xPos, yPos, name, type, size, player, unitName) {
+    constructor (xPos: number, 
+                    yPos: number, 
+                    name: string, 
+                    type: UnitTypes, 
+                    size: number, 
+                    player: Player, 
+                    unitName: string) {
         this.x = xPos;
         this.y = yPos;
         this.name = name;
@@ -55,11 +95,6 @@ class Unit {
             return false;
         }
     }
-} 
-
-const UnitTypes = {
-    "BUILDING" : "BUILDING",
-    "TREE": "TREE"
 }
 
 export { Unit, UnitTypes };
