@@ -6,12 +6,21 @@ import { Player } from './Player';
 import { EventRegistry } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 
+interface Cost {
+    name: string;
+    value: number;
+}
+
 class GameEngine {
+    unitFactory: UnitFactory | any;
+    mapBoard: MapBoard;
+    players: Player[];
+    events: EventRegistry;
 
     constructor() {
         this.unitFactory = new UnitFactory();
         this.mapBoard = this.createMapBoard();
-        this.players = [new Player(1), new Player(2)];
+        this.players = [new Player('1'), new Player('2')];
         this.events = new EventRegistry();
         this.registerOrderBuildingFlow();
     }
@@ -28,14 +37,14 @@ class GameEngine {
         return this.mapBoard;
     }
 
-    canBuild(unitType, player) {
+    canBuild(unitType: any, player: any) {
         let unitCosts = this.unitFactory.getConfig(unitType).cost;
         let resources = this.getPlayer().resources;
         if(player) {
             resources = player.resources;
         }
         let result = true;
-        unitCosts.forEach(cost => {
+        unitCosts.forEach((cost: Cost) => {
             if(cost.value > resources[cost.name]) {
                 console.log("Not enough "+cost.name);
                 result = false;
@@ -45,11 +54,11 @@ class GameEngine {
     }
 
     // TODO - intersect from phaser?
-    canPlaceUnit(unit) {
+    canPlaceUnit(unit: any) {
         return 0 == this.mapBoard.units.filter(u=> this.unitIntersect(u, unit.x, unit.y, unit.size)).length; 
     }
 
-    unitIntersect(unit, x, y, size) {
+    unitIntersect(unit: any, x: number, y: number, size: number) {
         var s = GameDimensions.grid.tileSize -0.01;
         if(
             (unit.x <= x && unit.x + unit.size*s > x)
@@ -76,7 +85,7 @@ class GameEngine {
         return false;
     }
 
-    orderBuilding(unitPrototype) {
+    orderBuilding(unitPrototype: any) {
         if(this.canPlaceUnit(unitPrototype)) {
             let data = {
                 unitPrototype: unitPrototype,
@@ -87,7 +96,7 @@ class GameEngine {
         }
     }
 
-    placeBuilding(unitPrototype, player) {
+    placeBuilding(unitPrototype: any, player: Player) {
         let ownerPlayer = this.getPlayer();
         if(player) {
             ownerPlayer = player;
@@ -111,8 +120,8 @@ class GameEngine {
         this.events.subscribe(EventRegistry.events.ORDER_BUILDING, subscriber);
     }
 
-    receiveBuildingOrder(gameEngine) {
-        return (event) => {
+    receiveBuildingOrder(gameEngine: GameEngine) {
+        return (event: any) => {
             let prototype = event.data.unitPrototype;
             let player = event.data.player;
             if(gameEngine.canBuild(prototype.unitName, player) 
@@ -128,7 +137,7 @@ class GameEngine {
         
     }
 
-    chargeResources(player, costs) {
+    chargeResources(player: Player, costs: Cost[]) {
         
         costs.forEach(cost  => {
             player.resources[cost.name] -= cost.value;

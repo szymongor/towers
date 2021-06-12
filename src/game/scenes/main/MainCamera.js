@@ -2,8 +2,6 @@ import { UnitTypes } from '../../engine/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
-import { UiScene } from '../ui/UiScene';
-
 import { UiSceneEvents } from '../ui/UiSceneEvents';
 import { EventRegistry } from '../../engine/events/EventsRegistry';
 
