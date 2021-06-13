@@ -31,7 +31,7 @@ class TowerGame extends Phaser.Scene {
 
     create() {
         this.gameEngine = this.registry.gameEngine;
-        var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.bacgroudColor);
+        var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.backgroundColor);
         mainBackground.setOrigin(0,0);
         this.loader.once(Phaser.Loader.Events.COMPLETE, () => {
             this.createWindow();
@@ -104,6 +104,7 @@ const createTowerGame = (gameEngine) => {
 
     const game = new Phaser.Game(config);
     game.registry.gameEngine = gameEngine;
+    game.registry.set('GameEngine', gameEngine)
     return game;
 }
 

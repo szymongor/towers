@@ -120,4 +120,4 @@ UnitFactory.Units = {
     "SAWMILL":UnitName.SAWMILL
 }
 
-export { UnitFactory };
+export { UnitFactory, UnitName };

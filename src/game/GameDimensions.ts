@@ -3,15 +3,20 @@ var GameDimensions = {
     gameHeight: 600,
     uiSceneWidth: 200,
     uiSceneHeight: 400,
+    minimapWidth: 0,
+    minimapHeight: 0,
+    mainCameraWidth: 0,
+    mainCameraHeight: 0,
     resourcesScene: {
-        height: 50
+        height: 50,
+        width: 0
     },
     grid: {
         tileSize: 50,
         grassTileSize: 100,
         imgSize: 200
     },
-    bacgroudColor: 0xaaff00
+    backgroundColor: 0x3a8210
 };
 
 GameDimensions.minimapWidth = GameDimensions.uiSceneWidth;
@@ -22,10 +27,10 @@ GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
 
 GameDimensions.resourcesScene.width = GameDimensions.mainCameraWidth;
 
-var Scenes = {
-    "UIScene":"UIScene",
-    "MainCamera":"MainCamera",
-    "ResourcesScene":"ResourcesScene"
+enum Scenes {
+    UIScene = "UIScene",
+    MainCamera = "MainCamera",
+    ResourcesScene = "ResourcesScene"
 }
 
 export { GameDimensions, Scenes };

@@ -19,6 +19,7 @@ interface UnitState {
 interface GameUnit {
     progressBar: ProgressBar;
     setTexture: (texture: string) => void;
+    unit: Unit;
 }
 
 interface ProgressBar {
@@ -97,4 +98,4 @@ class Unit {
     }
 }
 
-export { Unit, UnitTypes };
+export { Unit, UnitTypes, GameUnit };

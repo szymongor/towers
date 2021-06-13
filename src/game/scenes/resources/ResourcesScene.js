@@ -12,7 +12,7 @@ class ResourcesScene extends Phaser.Scene {
     create() {
         this.gameEngine = this.registry.gameEngine;
         let rect = this.add.rectangle(0, 0, 
-            GameDimensions.resourcesScene.width, GameDimensions.resourcesScene.height,GameDimensions.bacgroudColor);
+            GameDimensions.resourcesScene.width, GameDimensions.resourcesScene.height,GameDimensions.backgroundColor);
         rect.setOrigin(0,0);
         this.originX = 0;
         this.originY = 0;
