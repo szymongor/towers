@@ -1,16 +1,39 @@
-import { UnitTypes } from '../../engine/Unit';
+import { GameUnit, Unit, UnitTypes } from '../../engine/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
-import { UiSceneEvents } from '../ui/UiSceneEvents';
+import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
 import { EventRegistry } from '../../engine/events/EventsRegistry';
+import { GameEngine } from '../../engine/GameEngine';
+import { GameEvent } from '../../engine/events/GameEvent';
+import { MapBoard } from '../../engine/MapBoard';
+
+interface CursorFollow extends Phaser.GameObjects.Sprite {
+    unitPrototype?: Unit;
+    action?: UiMode;
+}
+
+interface CameraManager extends Phaser.Cameras.Scene2D.CameraManager {
+    main: ViewCamera
+}
+
+interface ViewCamera extends Phaser.Cameras.Scene2D.Camera {
+    viewRectangle?: Phaser.GameObjects.Shape
+}
 
 class MainCamera extends Phaser.Scene {
-    constructor(handle, parent) {
+    gameEngine: GameEngine;
+    gameUnits: GameUnit[];
+    active: boolean;
+    cursorFollow: CursorFollow;
+    selectedUnit?: GameUnit;
+    cameras: CameraManager;
+
+
+    constructor(handle: string, parent: Phaser.Scene) {
         super(handle);
         this.gameEngine;
         this.gameUnits = [];
-        this.cameras = {};
         this.active = false;
         this.cursorFollow;
     }
@@ -20,10 +43,10 @@ class MainCamera extends Phaser.Scene {
     }
 
     create() {
-        this.gameEngine = this.registry.gameEngine;
+        this.gameEngine = this.registry.get('GameEngine');
         
         this.cameras.main = createMainCamera(this, this.gameEngine);
-        this.cameras.minimap = createMiniMapCamera(this, this.gameEngine);
+        this.cameras.addExisting(createMiniMapCamera(this, this.gameEngine));
 
         this.drawMap(this.gameEngine);
         
@@ -32,20 +55,20 @@ class MainCamera extends Phaser.Scene {
     }
 
     selectSprite() {
-        this.input.on('gameobjectover', (pointer, gameObject) => {
+        this.input.on('gameobjectover', (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
             if(gameObject.gameObjectOver) {
                 gameObject.gameObjectOver(pointer, gameObject);
             }
         });
 
-        this.input.on('gameobjectout', (pointer, gameObject) => {
+        this.input.on('gameobjectout', (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
             if(gameObject.gameObjectOut) {
                 gameObject.gameObjectOut(pointer, gameObject);
             }
         });
 
         //highlight selected unit
-        this.events.on('unitselected',(gameUnit) => {
+        this.events.on('unitselected',(gameUnit: GameUnit) => {
             if(this.selectedUnit != null) {
                 this.selectedUnit.deselectUnit();
             }
@@ -68,7 +91,7 @@ class MainCamera extends Phaser.Scene {
 
     registerOuterEvents() {
         //TODO - export to UiControls
-        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.BUILDBUILDING, (e) => {
+        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.BUILDBUILDING, (e: UiSetBuildingModeEvent) => {
             if(this.cursorFollow) {
                 this.cursorFollow.destroy();
             }
@@ -78,10 +101,10 @@ class MainCamera extends Phaser.Scene {
             this.cursorFollow.setTintFill(0x00ff00);
             this.cursorFollow.setScale(unitPrototype.getScale());
             this.cursorFollow.setOrigin(0);
-            this.cursorFollow.action = MainCamera.UiMode.BUILD_BUILDING;
+            this.cursorFollow.action = UiMode.BUILD_BUILDING;
         })
 
-        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.DESELECT_BUILDING, (e) => {
+        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.DESELECT_BUILDING, (e: UiSetBuildingModeEvent) => {
             if(this.cursorFollow) {
                 this.cursorFollow.destroy();
             }
@@ -90,15 +113,15 @@ class MainCamera extends Phaser.Scene {
 
     }
 
-    registerUnitPlaced() {
+    registerUnitPlaced(scene: MainCamera) {
         let subscriber = {
-            call: this.unitPlaced(this)
+            call: scene.unitPlaced(scene)
         }
-        this.gameEngine.events.subscribe(EventRegistry.events.BUILDING_PLACED, subscriber);
+        scene.gameEngine.events.subscribe(EventRegistry.events.BUILDING_PLACED, subscriber);
     }
 
-    unitPlaced(scene) {
-        return (event) => {
+    unitPlaced(scene: MainCamera) {
+        return (event: GameEvent) => {
             let unit = event.data.unitPrototype;
             if(unit) {
                 scene.gameUnits.push(scene.createGameUnit(scene, unit));
@@ -107,9 +130,9 @@ class MainCamera extends Phaser.Scene {
         
     }
 
-    placeUnit(scene) {
+    placeUnit(scene: MainCamera) {
         return () => {
-            if(scene.cursorFollow && scene.cursorFollow.action == MainCamera.UiMode.BUILD_BUILDING) {
+            if(scene.cursorFollow && scene.cursorFollow.action == UiMode.BUILD_BUILDING) {
                 let unit = scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
                 // if(unit) {
                 //     scene.createGameUnit(scene, unit);
@@ -141,7 +164,7 @@ class MainCamera extends Phaser.Scene {
         }
     }
 
-    updateProgress(scene) {
+    updateProgress(scene: MainCamera) {
         
         scene.gameUnits.forEach(gameUnit => {
             if(gameUnit.unit.state.construction) {
@@ -166,7 +189,7 @@ class MainCamera extends Phaser.Scene {
 
     }
 
-    drawMap(gameEngine) {
+    drawMap(gameEngine: GameEngine) {
         var map = this.gameEngine.getMap();
         map.units.forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
@@ -175,7 +198,7 @@ class MainCamera extends Phaser.Scene {
         this.drawBackground(map);
     }
 
-    drawBackground(map) {
+    drawBackground(map: MapBoard) {
         for(let i = 0; i < map.width/GameDimensions.grid.tileSize; i++ ) {
             for(let j = 0; j < map.height/GameDimensions.grid.tileSize ; j++) {
                 this.add.sprite(i*GameDimensions.grid.tileSize, j*GameDimensions.grid.tileSize, 'grass')
@@ -186,8 +209,8 @@ class MainCamera extends Phaser.Scene {
         }
     }
 
-    createGameUnit(game, unit) {
-        var gameUnit = game.add.sprite(unit.x, unit.y, unit.getTexture());
+    createGameUnit(game: MainCamera, unit: Unit): GameUnit {
+        var gameUnit:GameUnit = game.add.sprite(unit.x, unit.y, unit.getTexture());
         gameUnit.unit = unit;
         unit.gameUnit = gameUnit;
         gameUnit.setScale(unit.getScale());
@@ -217,8 +240,8 @@ class MainCamera extends Phaser.Scene {
     }
 }
 
-MainCamera.UiMode = {
-    "BUILD_BUILDING": "BUILD_BUILDING"
+enum UiMode {
+    BUILD_BUILDING = "BUILD_BUILDING"
 }
 
-export { MainCamera };
+export { MainCamera, UiMode };

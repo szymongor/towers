@@ -16,13 +16,16 @@ interface UnitState {
     progress: UnitStateProgress;
 }
 
-interface GameUnit {
-    progressBar: ProgressBar;
-    setTexture: (texture: string) => void;
-    unit: Unit;
+interface GameUnit extends Phaser.GameObjects.Sprite {
+    progressBar?: ProgressBar | undefined;
+    unit?: Unit;
+    gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
+    gameObjectOut?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
+    selectUnit?: () => void;
+    deselectUnit?: () => void;
 }
 
-interface ProgressBar {
+interface ProgressBar extends Phaser.GameObjects.Rectangle {
     destroy: () => void;
 }
 
