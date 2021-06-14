@@ -1,4 +1,5 @@
 import { GameDimensions } from  '../GameDimensions';
+import { Selectable } from '../scenes/main/MainCamera';
 import { Player } from './Player';
 
 enum UnitTypes {
@@ -16,13 +17,11 @@ interface UnitState {
     progress: UnitStateProgress;
 }
 
-interface GameUnit extends Phaser.GameObjects.Sprite {
+interface GameUnit extends Phaser.GameObjects.Sprite, Selectable {
     progressBar?: ProgressBar | undefined;
     unit?: Unit;
-    gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
-    gameObjectOut?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
-    selectUnit?: () => void;
-    deselectUnit?: () => void;
+    highlight?: Phaser.GameObjects.Sprite;
+
 }
 
 interface ProgressBar extends Phaser.GameObjects.Rectangle {

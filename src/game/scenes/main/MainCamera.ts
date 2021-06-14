@@ -17,8 +17,24 @@ interface CameraManager extends Phaser.Cameras.Scene2D.CameraManager {
     main: ViewCamera
 }
 
+interface ViewRectangle extends Phaser.GameObjects.Shape {
+    moveTo?: (x: number,y: number) => void;
+}
+
 interface ViewCamera extends Phaser.Cameras.Scene2D.Camera {
-    viewRectangle?: Phaser.GameObjects.Shape
+    viewRectangle?: ViewRectangle
+}
+
+interface Selectable {
+    gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
+    gameObjectOut?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
+    selectUnit?: (gameUnit: GameUnit) => void;
+    deselectUnit?: (gameUnit: GameUnit) => void;
+}
+
+interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
+    camera?: ViewCamera;
+
 }
 
 class MainCamera extends Phaser.Scene {
@@ -70,11 +86,11 @@ class MainCamera extends Phaser.Scene {
         //highlight selected unit
         this.events.on('unitselected',(gameUnit: GameUnit) => {
             if(this.selectedUnit != null) {
-                this.selectedUnit.deselectUnit();
+                this.selectedUnit.deselectUnit(this.selectedUnit);
             }
             if(gameUnit) {
                 this.selectedUnit = gameUnit;
-                gameUnit.selectUnit();
+                gameUnit.selectUnit(gameUnit);
             } else {
                 if(this.cursorFollow) {
                     this.cursorFollow.destroy();
@@ -227,7 +243,7 @@ class MainCamera extends Phaser.Scene {
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.TREE:
-                gameUnit.selectUnit = selectUnit(this);
+                gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit();
                 
 
@@ -244,4 +260,4 @@ enum UiMode {
     BUILD_BUILDING = "BUILD_BUILDING"
 }
 
-export { MainCamera, UiMode };
+export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable };

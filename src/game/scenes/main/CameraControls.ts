@@ -1,7 +1,9 @@
+import { GameEngine } from '../../engine/GameEngine';
 import { GameDimensions } from  '../../GameDimensions';
+import { CameraZone, MainCamera, ViewCamera } from './MainCamera';
 import { deselectUnitEmitEvent } from './UnitsControls';
 
-const createMainCamera = function(game, gameEngine) {
+const createMainCamera = function(game: MainCamera, gameEngine: GameEngine) {
 
     var mainCameraWidth = GameDimensions.gameWidth - GameDimensions.uiSceneWidth;
     var mainCameraHeight = GameDimensions.gameHeight;
@@ -26,8 +28,8 @@ const createMainCamera = function(game, gameEngine) {
     return main;
 };
 
-const createMainCameraZone = function(gameScene, camera) {
-    var cameraZone = gameScene.add.zone(0, 0, GameDimensions.mainCameraWidth, GameDimensions.mainCameraHeight)
+const createMainCameraZone = function(gameScene: MainCamera, camera: ViewCamera) {
+    var cameraZone: CameraZone = gameScene.add.zone(0, 0, GameDimensions.mainCameraWidth, GameDimensions.mainCameraHeight)
         .setOrigin(0).setName('mainCameraZone').setInteractive().setDepth(-2);
     cameraZone.setScrollFactor(0,0);
     cameraZone.camera = camera;
@@ -41,8 +43,8 @@ const createMainCameraZone = function(gameScene, camera) {
 
 }
 
-const mapScroll = function(camera) {
-    return (p) => {
+const mapScroll = function(camera: ViewCamera) {
+    return (p: Phaser.Input.Pointer) => {
     if (!p.isDown) return;
         camera.scrollX -= (p.x - p.prevPosition.x) / camera.zoom;
         camera.scrollY -= (p.y - p.prevPosition.y) / camera.zoom;
@@ -52,7 +54,7 @@ const mapScroll = function(camera) {
 }
 
 
-const createMiniMapCamera = function(gameScene, gameEngine) {
+const createMiniMapCamera = function(gameScene: MainCamera, gameEngine: GameEngine) {
 
     var width = GameDimensions.minimapWidth;
     var height = GameDimensions.minimapHeight;
@@ -77,8 +79,8 @@ const createMiniMapCamera = function(gameScene, gameEngine) {
     return minimap;
 }
 
-const miniMapScroll = function(camera) {
-    return (p) => {
+const miniMapScroll = function(camera: ViewCamera) {
+    return (p: Phaser.Input.Pointer) => {
         //todo
         return;
     };
