@@ -1,8 +1,9 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { MainCamera } from './main/MainCamera';
 import { UiScene } from './ui/UiScene';
 import { ResourcesScene } from './resources/ResourcesScene';
 import { GameDimensions, Scenes } from  '../GameDimensions';
+
 import grass1Png from '../../images/grass1.png';
 import tree1Png from '../../images/tree1.png';
 import tree2Png from '../../images/tree2.png';
@@ -10,11 +11,17 @@ import tree3Png from '../../images/tree3.png';
 import towerPng from '../../images/tower.png';
 import sawmillPng from '../../images/sawmill.png';
 import constructionPng from '../../images/construction.png';
+import { GameEngine } from '../engine/GameEngine';
+
 
 class TowerGame extends Phaser.Scene {
 
+    loader: Phaser.Loader.LoaderPlugin;
+    gameEngine: GameEngine;
+    timedEvent: Phaser.Time.TimerEvent;
+
     constructor() {
-        super();
+        super('');
     }
 
     preload() {
@@ -30,7 +37,7 @@ class TowerGame extends Phaser.Scene {
     }
 
     create() {
-        this.gameEngine = this.registry.gameEngine;
+        this.gameEngine = this.registry.get('GameEngine');
         var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.backgroundColor);
         mainBackground.setOrigin(0,0);
         this.loader.once(Phaser.Loader.Events.COMPLETE, () => {
@@ -58,17 +65,17 @@ class TowerGame extends Phaser.Scene {
 
     addUiScene() {
         var uiScene = new UiScene(Scenes.UIScene, this);
-        this.scene.add(Scenes.UIScene, uiScene, this);
+        this.scene.add(Scenes.UIScene, uiScene, true);
         return uiScene;
     }
 
     addResourcesScene() {
-        var resourcesScene = new ResourcesScene();
-        this.scene.add(Scenes.ResourcesScene, resourcesScene, this);
+        var resourcesScene = new ResourcesScene(Scenes.ResourcesScene, this);
+        this.scene.add(Scenes.ResourcesScene, resourcesScene, true);
         return resourcesScene;
     }
 
-    createTimer(scene) {
+    createTimer(scene: TowerGame) {
         scene.timedEvent = scene.time.addEvent({ 
             delay: 500, 
             callback: this.updateEvent, 
@@ -88,7 +95,7 @@ class TowerGame extends Phaser.Scene {
 
 
 
-const createTowerGame = (gameEngine) => {
+const createTowerGame = (gameEngine: GameEngine) => {
 
     const config = {
         type: Phaser.AUTO,
@@ -103,7 +110,6 @@ const createTowerGame = (gameEngine) => {
     };
 
     const game = new Phaser.Game(config);
-    game.registry.gameEngine = gameEngine;
     game.registry.set('GameEngine', gameEngine)
     return game;
 }

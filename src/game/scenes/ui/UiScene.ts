@@ -33,7 +33,6 @@ class UiScene extends Phaser.Scene {
     }
 
     create() {
-        // this.gameEngine = this.registry.gameEngine;
         this.gameEngine = this.registry.get('GameEngine');
         this.originX = GameDimensions.gameWidth-GameDimensions.uiSceneWidth;
         this.originY = GameDimensions.gameHeight-GameDimensions.uiSceneHeight;
