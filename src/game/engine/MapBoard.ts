@@ -1,35 +1,25 @@
 import { GameDimensions } from  '../GameDimensions';
-import { Unit } from './Unit';
-import { UnitFactory } from './UnitFactory';
+import { Unit } from './units/Unit';
+import { UnitFactory } from './units/UnitFactory';
+import { UnitStorage } from './units/UnitsStorage';
 
 class MapBoard {
 
     height: number;
     width: number;
     unitFactory: UnitFactory;
-    units: Unit[];
+    unitStorage: UnitStorage;
 
-    constructor(height: number, width: number, unitFactory: UnitFactory) {
+    constructor(height: number, width: number, unitStorage: UnitStorage, unitFactory: UnitFactory) {
         this.height = height;
         this.width = width;
         this.unitFactory = unitFactory;
-        this.units = this.createUnits();
+        this.unitStorage = unitStorage;
+        this.unitStorage.addUnits(this.createUnits());
     }
 
     createUnits() {
-        var buildingsPositions = [
-            {x: 50, y: 50},
-            {x: 300, y: 350},
-            {x: 500, y: 350},
-            {x: 600, y: 250},
-            {x: 900, y: 900},
-            {x: 500, y: 600},
-            {x: 800, y: 800},
-            {x: 200, y: 150}
-          ];
-          
-        var units = buildingsPositions.map(p => this.unitFactory.createTower(p.x, p.y, null));
-        var units = units.concat( this.randomTrees(200, 2000, 2000));
+        var units = this.randomTrees(200, 2000, 2000)
         return units;
     }
 

@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
-import { GameUnit } from '../../engine/Unit';
+import { GameUnit } from '../../engine/units/Unit';
 
 interface UIButton {
     clearTint: () => void;

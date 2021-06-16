@@ -1,27 +1,46 @@
 import { MapBoard } from './MapBoard';
 import { GameDimensions } from '../GameDimensions';
-import { UnitFactory } from './UnitFactory';
+import { UnitFactory, UnitName } from './units/UnitFactory';
 import { Player } from './Player';
 import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
-
-interface Cost {
-    name: string;
-    value: number;
-}
+import { ResourceName } from "./Resources";
+import { Unit } from './units/Unit';
+import { UnitStorage } from './units/UnitsStorage';
 
 class GameEngine {
     unitFactory: UnitFactory | any;
+    unitStorage: UnitStorage;
     mapBoard: MapBoard;
     players: Player[];
     events: EventRegistry;
 
     constructor() {
         this.unitFactory = new UnitFactory();
+        this.unitStorage = new UnitStorage();
         this.mapBoard = this.createMapBoard();
         this.players = [new Player('1'), new Player('2')];
         this.events = new EventRegistry();
         this.registerOrderBuildingFlow();
+
+        this.addTowers();
+    }
+
+    //DEV method
+    addTowers() {
+        var buildingsPositions = [
+            {x: 50, y: 50},
+            {x: 300, y: 350},
+            {x: 500, y: 350},
+            {x: 600, y: 250},
+            {x: 900, y: 900},
+            {x: 500, y: 600},
+            {x: 800, y: 800},
+            {x: 200, y: 150}
+          ];
+          
+        var units = buildingsPositions.map(p => this.unitFactory.createTower(p.x, p.y, this.players[1]));
+        this.unitStorage.addUnits(units);
     }
 
     getPlayer() {
@@ -29,35 +48,31 @@ class GameEngine {
     }
 
     createMapBoard() {
-        return new MapBoard(2000, 2000, this.unitFactory);
+        return new MapBoard(2000, 2000, this.unitStorage, this.unitFactory);
     }
 
     getMap() {
         return this.mapBoard;
     }
 
-    canBuild(unitType: any, player: any) {
+    canBuild(unitType: UnitName, player: Player) {
         let unitCosts = this.unitFactory.getConfig(unitType).cost;
-        let resources = this.getPlayer().resources;
+        let owner;
         if(player) {
-            resources = player.resources;
+            owner = player;
+        } else {
+            owner = this.getPlayer();
         }
-        let result = true;
-        unitCosts.forEach((cost: Cost) => {
-            if(cost.value > resources[cost.name]) {
-                console.log("Not enough "+cost.name);
-                result = false;
-            }
-        });
-        return result;
+        return owner.checkEnoughResources(unitCosts);
     }
 
     // TODO - intersect from phaser?
-    canPlaceUnit(unit: any) {
-        return 0 == this.mapBoard.units.filter(u=> this.unitIntersect(u, unit.x, unit.y, unit.size)).length; 
+    canPlaceUnit(unit: Unit) {
+        let units = this.unitStorage.getUnits();
+        return 0 == units.filter(u=> this.unitIntersect(u, unit.x, unit.y, unit.size)).length; 
     }
 
-    unitIntersect(unit: any, x: number, y: number, size: number) {
+    unitIntersect(unit: Unit, x: number, y: number, size: number) {
         var s = GameDimensions.grid.tileSize -0.01;
         if(
             (unit.x <= x && unit.x + unit.size*s > x)
@@ -106,8 +121,8 @@ class GameEngine {
                 unitPrototype.y, 
                 ownerPlayer);
             let unitCosts = this.unitFactory.getConfig(unitPrototype.unitName).cost;
-            this.chargeResources(ownerPlayer, unitCosts)
-            this.mapBoard.units.push(unit);
+            ownerPlayer.chargeResources(unitCosts);
+            this.unitStorage.addUnit(unit);
             return unit;
         }
     }
@@ -136,22 +151,17 @@ class GameEngine {
         
     }
 
-    chargeResources(player: Player, costs: Cost[]) {
-        
-        costs.forEach(cost  => {
-            player.resources[cost.name] -= cost.value;
-        })
-    }
-
     update() {
         //TODO receiving resources from owned units;
-        this.getPlayer().resources['wood'] += 2;
+        let resourcesAdd: [ResourceName, number][] = [[ResourceName.WOOD, 2]];
+        
+        this.getPlayer().addResources(resourcesAdd);
 
         this.updateConstruction();
     }
 
     updateConstruction() {
-        this.mapBoard.units.forEach(unit => {
+        this.unitStorage.getUnits().forEach(unit => {
             if(unit.state.construction) {
                 let finished = unit.processTasks();
                 if(finished) {
@@ -163,4 +173,4 @@ class GameEngine {
 
 }
 
-export { GameEngine, Cost }
+export { GameEngine }

@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { GameUnit, Unit } from "../../engine/Unit";
+import { GameUnit, Unit } from "../../engine/units/Unit";
 import { MainCamera } from "./MainCamera";
 
 const buildingObjectOver = function(gameScene: MainCamera) {

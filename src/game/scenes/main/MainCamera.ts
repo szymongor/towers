@@ -1,4 +1,4 @@
-import { GameUnit, Unit, UnitTypes } from '../../engine/Unit';
+import { GameUnit, Unit, UnitTypes } from '../../engine/units/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
@@ -207,7 +207,8 @@ class MainCamera extends Phaser.Scene {
 
     drawMap(gameEngine: GameEngine) {
         var map = this.gameEngine.getMap();
-        map.units.forEach(unit => {
+        let unitStorage = this.gameEngine.unitStorage;
+        unitStorage.getUnits().forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
             this.gameUnits.push(gameUnit);
         });

@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { UnitName } from '../../engine/UnitFactory';
+import { UnitName } from '../../engine/units/UnitFactory';
 import { UiSceneEvents } from './UiSceneEvents';
 import { UiScene, UIButton } from './UiScene';
 

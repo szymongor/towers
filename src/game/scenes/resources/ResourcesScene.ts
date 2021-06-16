@@ -32,11 +32,7 @@ class ResourcesScene extends Phaser.Scene {
 
     updateResources() {
         let player = this.gameEngine.getPlayer();
-        let resources = '';
-        for (const [key, value] of Object.entries(player.resources)) {
-            resources += key + ':' + value + ' ';
-        }
-        this.resources.text = resources;
+        this.resources.text = player.getResourcesString();
     }
 
 

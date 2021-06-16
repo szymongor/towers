@@ -1,4 +1,4 @@
-import { UnitName } from "../../engine/UnitFactory";
+import { UnitName } from "../../engine/units/UnitFactory";
 
 enum UiSceneEvents {
     BUILDBUILDING = "BUILDBUILDING",

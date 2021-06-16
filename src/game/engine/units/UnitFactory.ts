@@ -1,6 +1,6 @@
 import { Unit, UnitTypes } from "./Unit";
-import { Cost } from './GameEngine';
-import { Player } from "./Player";
+import { Player } from "../Player";
+import { ResourceName } from '../Resources';
 
 enum UnitName {
     TOWER = "tower",
@@ -16,7 +16,7 @@ interface UnitConfig {
     name: string;
     size: number;
     type: UnitTypes;
-    cost: Cost[];
+    cost: [ResourceName, number][];
     constructionTime: number;
 }
 
@@ -32,14 +32,14 @@ class UnitFactory {
                 size: 2,
                 type: UnitTypes.BUILDING,
                 cost: [
-                    {
-                        name: "wood",
-                        value: 200
-                    },
-                    {
-                        name: "stone",
-                        value: 20
-                    }
+                    [
+                        ResourceName.WOOD,
+                        50
+                    ],
+                    [
+                        ResourceName.STONE,
+                        50
+                    ]
                 ],
                 constructionTime: 20
             },
@@ -48,14 +48,14 @@ class UnitFactory {
                 size: 1,
                 type: UnitTypes.BUILDING,
                 cost: [
-                    {
-                        name: "wood",
-                        value: 50
-                    },
-                    {
-                        name: "stone",
-                        value: 25
-                    }
+                    [
+                        ResourceName.WOOD,
+                        50
+                    ],
+                    [
+                        ResourceName.STONE,
+                        25
+                    ]
                 ],
                 constructionTime: 15
             },

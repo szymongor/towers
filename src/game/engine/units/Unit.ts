@@ -1,6 +1,6 @@
-import { GameDimensions } from  '../GameDimensions';
-import { Selectable } from '../scenes/main/MainCamera';
-import { Player } from './Player';
+import { GameDimensions } from  '../../GameDimensions';
+import { Selectable } from '../../scenes/main/MainCamera';
+import { Player } from '../Player';
 
 enum UnitTypes {
     BUILDING = "BUILDING",
