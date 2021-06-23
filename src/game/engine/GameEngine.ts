@@ -5,7 +5,7 @@ import { Player } from './Player';
 import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 import { ResourceName } from "./Resources";
-import { Unit } from './units/Unit';
+import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 
 class GameEngine {
@@ -22,6 +22,7 @@ class GameEngine {
         this.players = [new Player('1'), new Player('2')];
         this.events = new EventRegistry();
         this.registerOrderBuildingFlow();
+        this.registerUnitDestroyed();
 
         this.addTowers();
     }
@@ -68,7 +69,7 @@ class GameEngine {
 
     // TODO - intersect from phaser?
     canPlaceUnit(unit: Unit) {
-        let units = this.unitStorage.getUnits();
+        let units = this.unitStorage.getUnits({});
         return 0 == units.filter(u=> this.unitIntersect(u, unit.x, unit.y, unit.size)).length; 
     }
 
@@ -148,20 +149,45 @@ class GameEngine {
                 gameEngine.events.emit(placeBuildingEvent);
             }
         }
-        
+    }
+
+    registerUnitDestroyed() {
+        var subscriber = {
+            call: this.receiveUnitDestroyed(this)
+        }
+        this.events.subscribe(EventChannels.UNIT_DESTROYED, subscriber);
+    }
+
+    receiveUnitDestroyed(gameEngine: GameEngine) {
+        return (event: GameEvent) => {
+            let unitDestroyed = event.data.unit;
+            gameEngine.unitStorage.destroyUnit(unitDestroyed);
+        }
     }
 
     update() {
         //TODO receiving resources from owned units;
-        let resourcesAdd: [ResourceName, number][] = [[ResourceName.WOOD, 2]];
+        // let resourcesAdd: [ResourceName, number][] = [[ResourceName.WOOD, 2]];
         
-        this.getPlayer().addResources(resourcesAdd);
+        // this.getPlayer().addResources(resourcesAdd);
+
+        this.runUnitActions();
 
         this.updateConstruction();
     }
 
+    runUnitActions() {
+        let ge = this;
+        let events = this.events;
+        this.unitStorage.units.forEach(u => {
+            u.actions.forEach( action => {
+                action(events, ge, u);
+            })
+        })
+    }
+
     updateConstruction() {
-        this.unitStorage.getUnits().forEach(unit => {
+        this.unitStorage.getUnits({type: UnitTypes.BUILDING}).forEach(unit => {
             if(unit.state.construction) {
                 let finished = unit.processTasks();
                 if(finished) {

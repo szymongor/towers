@@ -3,7 +3,7 @@ import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit,
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
-import { EventRegistry } from '../../engine/events/EventsRegistry';
+import { EventChannels, EventRegistry } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameEvent } from '../../engine/events/GameEvent';
 import { MapBoard } from '../../engine/MapBoard';
@@ -133,7 +133,7 @@ class MainCamera extends Phaser.Scene {
         let subscriber = {
             call: scene.unitPlaced(scene)
         }
-        scene.gameEngine.events.subscribe(EventRegistry.events.BUILDING_PLACED, subscriber);
+        scene.gameEngine.events.subscribe(EventChannels.BUILDING_PLACED, subscriber);
     }
 
     unitPlaced(scene: MainCamera) {
@@ -208,7 +208,7 @@ class MainCamera extends Phaser.Scene {
     drawMap(gameEngine: GameEngine) {
         var map = this.gameEngine.getMap();
         let unitStorage = this.gameEngine.unitStorage;
-        unitStorage.getUnits().forEach(unit => {
+        unitStorage.getUnits({}).forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
             this.gameUnits.push(gameUnit);
         });

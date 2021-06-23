@@ -1,6 +1,8 @@
 import { GameDimensions } from  '../../GameDimensions';
 import { Selectable } from '../../scenes/main/MainCamera';
 import { Player } from '../Player';
+import { ResourcesStorage } from '../Resources';
+import { UnitAction } from './actions/UnitActions';
 
 enum UnitTypes {
     BUILDING = "BUILDING",
@@ -38,6 +40,9 @@ class Unit {
     unitName: string;
     state: UnitState;
     gameUnit: GameUnit;
+    resources?: ResourcesStorage;
+    actions: UnitAction[];
+    actionRange: number;
 
     constructor (xPos: number, 
                     yPos: number, 
@@ -45,7 +50,11 @@ class Unit {
                     type: UnitTypes, 
                     size: number, 
                     player: Player, 
-                    unitName: string) {
+                    unitName: string,
+                    actions: UnitAction[],
+                    actionRange: number,
+                    resources?: ResourcesStorage, 
+                    ) {
         this.x = xPos;
         this.y = yPos;
         this.name = name;
@@ -60,6 +69,9 @@ class Unit {
                 value: 0
             }
         };
+        this.resources = resources;
+        this.actions = actions;
+        this.actionRange = actionRange;
     }
 
     getProgress() {
@@ -97,6 +109,18 @@ class Unit {
             this.state.progress.value++;
             return false;
         }
+    }
+
+    destroy() {
+        this.gameUnit.destroy();
+    }
+
+    distanceToUnit(unit: Unit): number {
+        let dX = unit.x-this.x;
+        let dY = unit.y-this.y;
+        
+        
+        return Math.sqrt( dX*dX + dY*dY);
     }
 }
 

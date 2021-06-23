@@ -2,7 +2,10 @@ import { GameEvent } from "./GameEvent";
 
 enum EventChannels {
     ORDER_BUILDING = "ORDER_BUILDING",
-    BUILDING_PLACED = "BUILDING_PLACED"
+    BUILDING_PLACED = "BUILDING_PLACED",
+    RESOURCE_COLLECTED = "RESOURCE_COLLECTED", //when building collects resource from nearest unit
+    UNIT_DESTROYED = "UNIT_DESTROYED"
+
 }
 
 interface Subscriber {
@@ -37,11 +40,6 @@ class EventRegistry {
         }
     }
 
-}
-
-EventRegistry.events = {
-    "ORDER_BUILDING": EventChannels.ORDER_BUILDING,
-    "BUILDING_PLACED": EventChannels.BUILDING_PLACED
 }
 
 export { EventRegistry, EventChannels }
