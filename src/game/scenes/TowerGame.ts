@@ -11,6 +11,7 @@ import tree3Png from '../../images/tree3.png';
 import towerPng from '../../images/tower.png';
 import sawmillPng from '../../images/sawmill.png';
 import constructionPng from '../../images/construction.png';
+import logPng from '../../images/log.png';
 import { GameEngine } from '../engine/GameEngine';
 
 
@@ -33,6 +34,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('sawmill', sawmillPng);
         this.loader.image('tower', towerPng);
         this.loader.image('construction', constructionPng);
+        this.loader.image('log', logPng);
         this.loader.start();
     }
 

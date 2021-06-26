@@ -42,4 +42,4 @@ class EventRegistry {
 
 }
 
-export { EventRegistry, EventChannels }
+export { EventRegistry, EventChannels, Subscriber }

@@ -66,7 +66,7 @@ class UnitFactory {
                 actions: [
                     SawmillWoodCollect
                 ],
-                actionRange: 100
+                actionRange: 200
             },
             tree: {
                 name: 'tree',

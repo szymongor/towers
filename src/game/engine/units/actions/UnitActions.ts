@@ -28,7 +28,7 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
     };
     let nearestTree = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
     let resourceCollect: [ResourceName, number][] = [[ResourceName.WOOD, 1]];
-    if(nearestTree) {
+    if(nearestTree && unit.isUnitInRange(nearestTree)) {
         
         if(nearestTree.resources.checkEnoughResources(resourceCollect)) {
             nearestTree.resources.chargeResources(resourceCollect);
@@ -52,4 +52,4 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
     }
 }
 
-export { UnitAction, SawmillWoodCollect }
+export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData}

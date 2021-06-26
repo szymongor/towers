@@ -7,6 +7,17 @@ import { EventChannels, EventRegistry } from '../../engine/events/EventsRegistry
 import { GameEngine } from '../../engine/GameEngine';
 import { GameEvent } from '../../engine/events/GameEvent';
 import { MapBoard } from '../../engine/MapBoard';
+import { registerOnResourceCollect } from './Actions';
+
+interface TransitionAnimation {
+    sprite: Phaser.GameObjects.Sprite;
+    sourceX: number;
+    sourceY: number;
+    dX: number;
+    dY: number;
+    steps: number;
+    progress: number;
+}
 
 interface CursorFollow extends Phaser.GameObjects.Sprite {
     unitPrototype?: Unit;
@@ -44,6 +55,7 @@ class MainCamera extends Phaser.Scene {
     cursorFollow: CursorFollow;
     selectedUnit?: GameUnit;
     cameras: CameraManager;
+    transitionAnimations: Set<TransitionAnimation>;
 
 
     constructor(handle: string, parent: Phaser.Scene) {
@@ -52,6 +64,7 @@ class MainCamera extends Phaser.Scene {
         this.gameUnits = [];
         this.active = false;
         this.cursorFollow;
+        this.transitionAnimations = new Set();
     }
 
     //load assets
@@ -67,6 +80,7 @@ class MainCamera extends Phaser.Scene {
         this.drawMap(this.gameEngine);
         
         this.registerUnitPlaced(this);
+        registerOnResourceCollect(this, this.gameEngine);
         this.selectSprite();
     }
 
@@ -178,6 +192,8 @@ class MainCamera extends Phaser.Scene {
                 }
             }
         }
+
+        this.updateTransitionAnimation();
     }
 
     updateProgress(scene: MainCamera) {
@@ -255,10 +271,33 @@ class MainCamera extends Phaser.Scene {
         }
         return gameUnit;
     }
+
+    addTransitionAnimation(ta: TransitionAnimation) {
+        this.transitionAnimations.add(ta);
+    }
+
+    updateTransitionAnimation() {
+        let finished = new Set();
+        let animations = this.transitionAnimations;
+        animations.forEach((ta) => {
+            ta.sprite.x += ta.dX;
+            ta.sprite.y += ta.dY;
+            ta.sprite.angle += 0.5;
+            ta.progress += 1;
+            if(ta.progress == ta.steps) {
+                finished.add(ta);
+            }
+        });
+
+        finished.forEach( (ta: TransitionAnimation) => {
+            animations.delete(ta);
+            ta.sprite.destroy();
+        });
+    }
 }
 
 enum UiMode {
     BUILD_BUILDING = "BUILD_BUILDING"
 }
 
-export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable };
+export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation };

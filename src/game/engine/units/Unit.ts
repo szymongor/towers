@@ -116,11 +116,27 @@ class Unit {
     }
 
     distanceToUnit(unit: Unit): number {
-        let dX = unit.x-this.x;
-        let dY = unit.y-this.y;
+        let centre = {
+            x: this.x + this.size * GameDimensions.grid.tileSize/2,
+            y: this.y + this.size * GameDimensions.grid.tileSize/2,
+        };
+
+        let unitCentre = {
+            x: unit.x + unit.size * GameDimensions.grid.tileSize/2,
+            y: unit.y + unit.size * GameDimensions.grid.tileSize/2,
+        }
+        let dX = unitCentre.x-centre.x;
+        let dY = unitCentre.y-centre.y;
         
         
         return Math.sqrt( dX*dX + dY*dY);
+    }
+
+    isUnitInRange(unit: Unit): boolean {
+        let distnace = this.distanceToUnit(unit);
+
+        return distnace < this.actionRange + unit.size * GameDimensions.grid.tileSize/2;
+
     }
 }
 
