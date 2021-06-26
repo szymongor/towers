@@ -28,13 +28,24 @@ const selectUnit = function(gameScene: MainCamera, unit: Unit) {
             highlightSprite.setOrigin(0);
             highlightSprite.setScale(unit.getScale())
             this.highlightSelected = highlightSprite;
+            this.rangeHighlight = createRangeHighlight(gameScene, unit);
     }
+}
+
+const createRangeHighlight = function(gameScene: MainCamera, unit: Unit) {
+    let centre = unit.getCentre();
+    let highlight = gameScene.add.circle(centre.x, centre.y, unit.getActionRange());
+    highlight.setStrokeStyle(4, 0x90e079);
+    highlight.setDepth(-2);
+
+    return highlight;
 }
 
 const deselectUnit = function() {
     return function(gameUnit: GameUnit) {
         this.clearTint();
         this.highlightSelected.destroy();
+        this.rangeHighlight.visible = false;
     }
 }
 

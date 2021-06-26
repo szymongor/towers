@@ -111,12 +111,16 @@ class MainCamera extends Phaser.Scene {
                     this.cursorFollow = null;
                 }
             }
-        })
+        });
+
+        this.events.on('deselect', () => {
+            if(this.selectedUnit) {
+                this.selectedUnit.deselectUnit(this.selectedUnit);
+            }
+        });
+
 
         this.input.on(Phaser.Input.Events.POINTER_DOWN, this.placeUnit(this));
-
-
-        
     }
 
     registerOuterEvents() {

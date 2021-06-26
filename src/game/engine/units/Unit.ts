@@ -100,6 +100,18 @@ class Unit {
         return (GameDimensions.grid.tileSize/GameDimensions.grid.imgSize)*this.size
     }
 
+    getCentre(): {x: number, y: number} {
+        let centre = {
+            x: this.x + this.size * GameDimensions.grid.tileSize/2,
+            y: this.y + this.size * GameDimensions.grid.tileSize/2,
+        };
+        return centre;
+    }
+
+    getActionRange() {
+        return this.actionRange;
+    }
+
     processTasks() { 
         let progres = this.state.progress;
         if(progres.limit == progres.value) {
@@ -116,19 +128,10 @@ class Unit {
     }
 
     distanceToUnit(unit: Unit): number {
-        let centre = {
-            x: this.x + this.size * GameDimensions.grid.tileSize/2,
-            y: this.y + this.size * GameDimensions.grid.tileSize/2,
-        };
-
-        let unitCentre = {
-            x: unit.x + unit.size * GameDimensions.grid.tileSize/2,
-            y: unit.y + unit.size * GameDimensions.grid.tileSize/2,
-        }
+        let centre = this.getCentre();
+        let unitCentre = unit.getCentre();
         let dX = unitCentre.x-centre.x;
         let dY = unitCentre.y-centre.y;
-        
-        
         return Math.sqrt( dX*dX + dY*dY);
     }
 
