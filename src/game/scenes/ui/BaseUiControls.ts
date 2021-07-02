@@ -4,17 +4,17 @@ import { UiSceneEvents } from './UiSceneEvents';
 import { UiScene, UIButton } from './UiScene';
 
 const createBaseUIButtons = function(scene: UiScene) {
-    var buttonTower = scene.add.image(scene.originX, scene.originY+50, 'tower')
+    var buttonTower = scene.add.image(scene.originX, scene.originY+50, UnitName.TOWER)
         .setOrigin(0)
         .setScale(0.25) //TODO - set from dims
         .setInteractive();
 
-    var buttonSawmill = scene.add.image(scene.originX+50, scene.originY+50, 'sawmill')
+    var buttonSawmill = scene.add.image(scene.originX+50, scene.originY+50, UnitName.SAWMILL)
         .setOrigin(0)
         .setScale(0.25) //TODO - set from dims
         .setInteractive();
 
-    var buttonMine = scene.add.image(scene.originX+100, scene.originY+50, 'mine')
+    var buttonMine = scene.add.image(scene.originX+100, scene.originY+50, UnitName.MINE)
         .setOrigin(0)
         .setScale(0.25) //TODO - set from dims
         .setInteractive();

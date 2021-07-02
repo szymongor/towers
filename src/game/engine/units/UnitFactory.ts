@@ -1,7 +1,8 @@
 import { Unit, UnitTypes } from "./Unit";
 import { Player } from "../Player";
 import { ResourceName, Resources, ResourcesStorage } from '../Resources';
-import { UnitAction, SawmillWoodCollect, MineStoneCollect } from './actions/UnitActions';
+import { UnitAction, SawmillWoodCollect, MineStoneCollect, TowerAttack } from './actions/UnitActions';
+import { EventRegistry } from "../events/EventsRegistry";
 
 enum UnitName {
     TOWER = "tower",
@@ -17,6 +18,8 @@ interface UnitsConfig {
 
 interface UnitConfig {
     name: string;
+    unitName: UnitName;
+    spriteName: string;
     size: number;
     type: UnitTypes;
     cost: [ResourceName, number][];
@@ -24,6 +27,7 @@ interface UnitConfig {
     constructionTime: number;
     actions: UnitAction[];
     actionRange: number;
+    actionInterval?: number;
     maxHP?: number;
 }
 
@@ -35,7 +39,9 @@ class UnitFactory {
     constructor () {
         this.unitConfig = {
             tower: {
-                name: 'tower',
+                name: "Tower",
+                unitName: UnitName.TOWER,
+                spriteName: 'tower',
                 size: 2,
                 type: UnitTypes.BUILDING,
                 cost: [
@@ -48,13 +54,16 @@ class UnitFactory {
                         50
                     ]
                 ],
-                actions: [],
-                actionRange: 50,
+                actions: [TowerAttack],
+                actionInterval: 5,
+                actionRange: 300,
                 constructionTime: 20,
                 maxHP: 400
             },
             sawmill: {
-                name: 'sawmill',
+                name: 'Sawmill',
+                unitName: UnitName.SAWMILL,
+                spriteName: 'sawmill',
                 size: 1,
                 type: UnitTypes.BUILDING,
                 cost: [
@@ -75,7 +84,9 @@ class UnitFactory {
                 maxHP: 200
             },
             mine: {
-                name: 'mine',
+                name: 'Mine',
+                unitName: UnitName.MINE,
+                spriteName: 'mine',
                 size: 1,
                 type: UnitTypes.BUILDING,
                 cost: [
@@ -96,7 +107,9 @@ class UnitFactory {
                 maxHP: 200
             },
             tree: {
-                name: 'tree',
+                name: "Tree",
+                unitName: UnitName.TREE,
+                spriteName: 'tree',
                 size: 1,
                 type: UnitTypes.RESOURCE,
                 cost: [],
@@ -106,7 +119,9 @@ class UnitFactory {
                 constructionTime: 0
             },
             stones: {
-                name: 'stones',
+                name: 'Stones',
+                unitName: UnitName.STONES,
+                spriteName: 'stones',
                 size: 2,
                 type: UnitTypes.RESOURCE,
                 cost: [],
@@ -119,10 +134,12 @@ class UnitFactory {
         }
     }
 
-    createTower(x: number, y: number, player: Player) {
-        let unitName = '';
-        return new Unit(x, y,
-            this.unitConfig.tower);
+    createTower(x: number, y: number, eventRegistry: EventRegistry, player: Player): Unit {
+        let tower = new Unit(x, y,
+            this.unitConfig.tower, eventRegistry, player);
+        
+        tower.hp.value = tower.hp.max;
+        return tower;
     }
 
     addResource(unit: Unit, type: UnitName): Unit {
@@ -132,8 +149,8 @@ class UnitFactory {
         return unit;
     }
 
-    of(type: UnitName, x: number, y: number, player?: Player): Unit {
-        let unit = new Unit(x, y, this.unitConfig[type], player);
+    of(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player?: Player): Unit {
+        let unit = new Unit(x, y, this.unitConfig[type], eventRegistry, player);
 
         if(this.unitConfig[type].type == UnitTypes.RESOURCE) {
             this.addResource(unit, type);
@@ -141,8 +158,8 @@ class UnitFactory {
         return unit;
     }
 
-    constructionOf(type: UnitName, x: number, y: number, player: Player) {
-        let constructedUnit = this.of(type, x, y, player);
+    constructionOf(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player: Player) {
+        let constructedUnit = this.of(type, x, y, eventRegistry, player);
         constructedUnit.state.construction = true;
         constructedUnit.state.progress = {
             limit: this.unitConfig[type].constructionTime,

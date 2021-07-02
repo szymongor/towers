@@ -10,12 +10,20 @@ class SelectedUnitUI {
     hpBar?: Bar;
 
     constructor(unit: Unit) {
-        
+        this.unit = unit;
     }
 
     hide() {
         this.selectedUnitInfo.visible = false;
         this.hpBar.destroy();
+    }
+
+    update() {
+        if(this.unit) {
+            this.selectedUnitInfo.text = getUnitInfoText(this.unit);
+            let progress = this.unit.hp.value/ this.unit.hp.max;
+            this.hpBar.updateProgress(progress);
+        }
     }
 
 }
@@ -27,8 +35,9 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnit: Unit) => {
     let selectedUnitUI = new SelectedUnitUI(selectedUnit);
     scene.selectedUnitUI = selectedUnitUI;
 
-    let infoTxt = scene.add.text(scene.originX, scene.originY+80, 
-        '', { font: '48px Arial', color: '#FFFFFF' });
+
+    let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
+        '', { font: '30px Arial', color: '#FFFFFF' });
 
     selectedUnitUI.selectedUnitInfo = infoTxt;
 
@@ -42,6 +51,7 @@ const getUnitInfoText = (unit: Unit): string => {
     let unitInfo = unit.getUnitInfo();
     let info = unitInfo.name + '\n';
     info += "HP: "+ unitInfo.hp.value +"/"+unitInfo.hp.max + '\n';
+    info += "Player: "+unitInfo.player.id;
     return info;
 }
 

@@ -1,14 +1,21 @@
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine"
+import { Player } from "../../Player";
 import { ResourceName } from "../../Resources";
-import { Unit, UnitTypes } from "../Unit";
+import { Unit, UnitTypes, Damage } from "../Unit";
 import { UnitName } from "../UnitFactory";
+import { UnitFilter } from "../UnitsStorage";
 
 interface ResourceCollectedEventData {
     collector: Unit;
     source: Unit;
     resource: ResourceName;
+}
+
+interface DamageDealtEventData {
+    target: Unit;
+    source: Unit;
 }
 
 interface UnitDestroyedEventData {
@@ -89,4 +96,51 @@ const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: 
     }
 }
 
-export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect}
+const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
+
+    let actionName = "TOWER_ATTACK";
+    if(unit.currentActions.has(actionName)) {
+        let action = unit.currentActions.get(actionName);
+        action.value+=1;
+        if(action.value == action.limit) {
+            let dmg: Damage = {
+                value: 50,
+                source: unit
+            }
+            action.target.dealDamage(dmg);
+            unit.currentActions.delete(actionName);
+            let damageDealtEventData : DamageDealtEventData = {
+                target: action.target,
+                source: unit
+            }
+            let damageDealtEvent = new GameEvent(EventChannels.DAMAGE_DEALT, damageDealtEventData);
+            eventRegistry.emit(damageDealtEvent);
+        }
+    } else {
+        let unitFilter: UnitFilter = {
+            type: UnitTypes.BUILDING,
+            range: {
+                unit: unit,
+                range: unit.actionRange,
+                
+            },
+            player_ne: unit.player
+        }
+        let nearestEnemy = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
+        if(nearestEnemy) {
+            let action = {
+                limit: unit.actionInterval,
+                value: 1,
+                target: nearestEnemy
+            }
+            unit.currentActions.set(actionName, action);
+        }
+
+    }
+
+
+    
+
+}
+
+export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect, TowerAttack, DamageDealtEventData}

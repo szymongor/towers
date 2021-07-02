@@ -83,6 +83,9 @@ class UiScene extends Phaser.Scene {
     }
 
     update() {
+        if(this.selectedUnitUI) {
+            this.selectedUnitUI.update();
+        }
     }
 }
 

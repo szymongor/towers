@@ -59,14 +59,14 @@ class MapBoard {
                     }
                     else if(grid[i][j] < 0.99) {
                         gridWithUnits[i][j] = 1;
-                        units.push(this.unitFactory.of(UnitName.TREE,i, j))
+                        units.push(this.unitFactory.of(UnitName.TREE, i, j, null))
                     }
                     else if(grid[i][j] < 1) {
                         gridWithUnits[i][j] = 2;
                         gridWithUnits[i+GameDimensions.grid.tileSize][j] = 2;
                         gridWithUnits[i+GameDimensions.grid.tileSize][j+GameDimensions.grid.tileSize] = 2;
                         gridWithUnits[i][j+GameDimensions.grid.tileSize] = 2;
-                        units.push(this.unitFactory.of(UnitName.STONES,i, j))
+                        units.push(this.unitFactory.of(UnitName.STONES,i, j, null))
                     }
                 }
             }
@@ -83,7 +83,7 @@ class MapBoard {
             let y = getRandomPosition(heighth);
             treesPositions.push({x: x, y: y});
         }
-        return treesPositions.map(p => this.unitFactory.of(UnitName.TREE,p.x, p.y));
+        return treesPositions.map(p => this.unitFactory.of(UnitName.TREE,p.x, p.y, null));
     }
 
     randomStones(n: number, width: number, heighth: number) {
@@ -95,7 +95,7 @@ class MapBoard {
             stonesPositions.push({x: x, y: y});
         }
         
-        return stonesPositions.map(p => this.unitFactory.of(UnitName.STONES,p.x, p.y));
+        return stonesPositions.map(p => this.unitFactory.of(UnitName.STONES,p.x, p.y, null));
     }
 
 }

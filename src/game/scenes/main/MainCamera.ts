@@ -3,11 +3,11 @@ import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit,
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
-import { EventChannels, EventRegistry } from '../../engine/events/EventsRegistry';
+import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameEvent } from '../../engine/events/GameEvent';
 import { MapBoard } from '../../engine/MapBoard';
-import { registerOnResourceCollect } from './Actions';
+import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
 
 interface TransitionAnimation {
@@ -82,6 +82,7 @@ class MainCamera extends Phaser.Scene {
         
         this.registerUnitPlaced(this);
         registerOnResourceCollect(this, this.gameEngine);
+        registerOnDamageDealt(this, this.gameEngine);
         this.selectSprite();
     }
 
@@ -130,8 +131,12 @@ class MainCamera extends Phaser.Scene {
             if(this.cursorFollow) {
                 this.cursorFollow.destroy();
             }
-            let unitPrototype = this.gameEngine.unitFactory.of(e.building);
-            this.cursorFollow = this.add.sprite(-100, -100, unitPrototype.name);
+            let tempCoords = {
+                x: -100,
+                y: -100
+            }
+            let unitPrototype = this.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y, null);
+            this.cursorFollow = this.add.sprite(tempCoords.x, tempCoords.y, unitPrototype.getTexture());
             this.cursorFollow.unitPrototype = unitPrototype;
             this.cursorFollow.setTintFill(0x00ff00);
             this.cursorFollow.setScale(unitPrototype.getScale());

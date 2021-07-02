@@ -3,6 +3,7 @@ import { Unit, UnitTypes } from "./Unit";
 
 interface UnitFilter {
     owner?: Player;
+    player_ne?: Player;
     type?: UnitTypes;
     name?: String;
     range?: RangeFilter;
@@ -31,10 +32,11 @@ class UnitStorage {
     }
 
     destroyUnit(unit: Unit) {
-        let indexOf = this.units.indexOf(unit);
-        if(indexOf != -1) {
-            this.units.splice(indexOf, 1);
-        }
+        // let indexOf = this.units.indexOf(unit);
+        // if(indexOf != -1) {
+        //     this.units.splice(indexOf, 1);
+        // }
+        this.units = this.units.filter(u => u != unit);
         unit.destroy();
     }
 
@@ -45,12 +47,16 @@ class UnitStorage {
             units = units.filter((unit) => unit.player == unitFilter.owner);
         }
 
+        if(unitFilter.player_ne) {
+            units = units.filter((unit) => (unit.player != unitFilter.player_ne));
+        }
+
         if(unitFilter.type) {
             units = units.filter((unit) => unit.type == unitFilter.type);
         }
 
         if(unitFilter.name) {
-            units = units.filter((unit) => unit.name == unitFilter.name);
+            units = units.filter((unit) => unit.unitName == unitFilter.name);
         }
 
         if(unitFilter.range) {
@@ -88,4 +94,4 @@ class UnitStorage {
 
 }
 
-export { UnitStorage }
+export { UnitStorage, UnitFilter }

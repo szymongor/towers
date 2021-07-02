@@ -4,7 +4,8 @@ enum EventChannels {
     ORDER_BUILDING = "ORDER_BUILDING",
     BUILDING_PLACED = "BUILDING_PLACED",
     RESOURCE_COLLECTED = "RESOURCE_COLLECTED", //when building collects resource from nearest unit
-    UNIT_DESTROYED = "UNIT_DESTROYED"
+    UNIT_DESTROYED = "UNIT_DESTROYED",
+    DAMAGE_DEALT = "DAMAGE_DEALT"
 
 }
 

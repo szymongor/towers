@@ -2,10 +2,12 @@ import { Resources, ResourcesStorage, ResourceName } from "./Resources";
 
 class Player {
     id: string;
+    name: string;
     resourcesSorage: ResourcesStorage;
     
-    constructor (id: string) {
+    constructor (id: string, name: string) {
         this.id = id;
+        this.name = name;
         let initResources = new Resources([[ResourceName.WOOD, 200], [ResourceName.STONE, 100]]);
         this.resourcesSorage = new ResourcesStorage(initResources);
     }

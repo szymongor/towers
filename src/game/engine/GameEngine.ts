@@ -9,7 +9,7 @@ import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 
 class GameEngine {
-    unitFactory: UnitFactory | any;
+    unitFactory: UnitFactory;
     unitStorage: UnitStorage;
     mapBoard: MapBoard;
     players: Player[];
@@ -19,7 +19,7 @@ class GameEngine {
         this.unitFactory = new UnitFactory();
         this.unitStorage = new UnitStorage();
         this.mapBoard = this.createMapBoard();
-        this.players = [new Player('1'), new Player('2')];
+        this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();
@@ -33,7 +33,7 @@ class GameEngine {
             {x: 200, y: 200}
           ];
           
-        var units = buildingsPositions.map(p => this.unitFactory.createTower(p.x, p.y, this.players[1]));
+        var units = buildingsPositions.map(p => this.unitFactory.createTower(p.x, p.y, this.events, this.players[1]));
         this.unitStorage.addUnits(units);
     }
 
@@ -113,6 +113,7 @@ class GameEngine {
             let unit = this.unitFactory.constructionOf(unitPrototype.unitName, 
                 unitPrototype.x, 
                 unitPrototype.y, 
+                this.events,
                 ownerPlayer);
             let unitCosts = this.unitFactory.getConfig(unitPrototype.unitName).cost;
             ownerPlayer.chargeResources(unitCosts);

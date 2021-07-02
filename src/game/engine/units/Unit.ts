@@ -3,8 +3,10 @@ import { Selectable } from '../../scenes/main/MainCamera';
 import { Player } from '../Player';
 import { ResourcesStorage } from '../Resources';
 import { UnitAction } from './actions/UnitActions';
-import { UnitConfig } from './UnitFactory';
+import { UnitConfig, UnitName } from './UnitFactory';
 import { Bar } from '../../scenes/utils/bars';
+import { EventChannels, EventRegistry } from '../events/EventsRegistry';
+import { GameEvent } from '../events/GameEvent';
 
 enum UnitTypes {
     BUILDING = "BUILDING",
@@ -33,6 +35,11 @@ interface UnitInfo {
     y: number;
     hp: HP;
     player: Player;
+}
+
+interface DealtDamage {
+    value: number;
+    source: Unit;
 }
 
 class HP {
@@ -68,29 +75,40 @@ class HP {
     }
 }
 
+interface ActionProgress extends UnitStateProgress {
+    target?: Unit;
+}
+
 class Unit {
     x: number;
     y: number;
     name: string;
+    unitName: UnitName;
+    spriteName: string;
     type: UnitTypes;
     size: number;
     player: Player;
-    unitName: string;
     state: UnitState;
     gameUnit: GameUnit;
     resources?: ResourcesStorage;
     actions: UnitAction[];
     actionRange: number;
+    actionInterval: number;
+    currentActions: Map<string, ActionProgress>;
     hp: HP;
+    eventRegistry: EventRegistry;
 
-    constructor(xPos: number, yPos: number, config: UnitConfig, player?: Player) {
+
+    constructor(xPos: number, yPos: number, config: UnitConfig, eventRegistry: EventRegistry, player?: Player) {
         this.x = xPos;
         this.y = yPos;
         this.name = config.name;
+        this.unitName = config.unitName;
+        this.spriteName = config.spriteName;
         this.type = config.type;
         this.size = config.size;
         this.player = player;
-        this.unitName = config.name;
+        
         this.state = {
             construction: false,
             progress: {
@@ -100,40 +118,12 @@ class Unit {
         };
         this.actions = config.actions;
         this.actionRange = config.actionRange;
+        this.actionInterval = config.actionInterval ? config.actionInterval : 1;
+        this.currentActions = new Map();
         this.hp = new HP(0, config.maxHP);
+        this.eventRegistry = eventRegistry;
 
     }
-
-    // constructor (xPos: number, 
-    //                 yPos: number, 
-    //                 name: string, 
-    //                 type: UnitTypes, 
-    //                 size: number, 
-    //                 player: Player, 
-    //                 unitName: string,
-    //                 actions: UnitAction[],
-    //                 actionRange: number,
-    //                 resources?: ResourcesStorage, 
-    //                 ) {
-    //     this.x = xPos;
-    //     this.y = yPos;
-    //     this.name = name;
-    //     this.type = type;
-    //     this.size = size;
-    //     this.player = player;
-    //     this.unitName = unitName;
-    //     this.state = {
-    //         construction: false,
-    //         progress: {
-    //             limit:0,
-    //             value: 0
-    //         }
-    //     };
-    //     this.resources = resources;
-    //     this.actions = actions;
-    //     this.actionRange = actionRange;
-    //     this.hp = new HP(0, 400);
-    // }
 
     getProgress() {
         return this.state.progress.value / this.state.progress.limit;
@@ -143,7 +133,7 @@ class Unit {
         if(this.state.construction) {
             return 'construction';
         } else {
-            return this.name;
+            return this.spriteName;
         }
     }
 
@@ -179,6 +169,7 @@ class Unit {
             this.state.construction = false;
             return true;
         } else {
+            this.hp.value += this.hp.max * 1/progres.limit
             this.state.progress.value++;
             return false;
         }
@@ -205,7 +196,7 @@ class Unit {
 
     getUnitInfo(): UnitInfo {
         let unitInfo = {
-            name: this.name,
+            name: this.unitName,
             hp: this.hp,
             player: this.player,
             x: this.x,
@@ -213,6 +204,23 @@ class Unit {
         }
         return unitInfo;
     }
+
+    kill() {
+        if(this.eventRegistry) {
+            let data = {
+                unit: this
+            };
+            let event: GameEvent = new GameEvent(EventChannels.UNIT_DESTROYED, data)
+            this.eventRegistry.emit(event);
+        }
+    }
+
+    dealDamage(damage: DealtDamage) {
+        this.hp.value -= damage.value;
+        if(this.hp.value <= 0) {
+            this.kill();
+        }
+    }
 }
 
-export { Unit, UnitTypes, GameUnit };
+export { Unit, UnitTypes, GameUnit, DealtDamage as Damage };
