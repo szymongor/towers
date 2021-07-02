@@ -1,12 +1,14 @@
 import { Unit, UnitTypes } from "./Unit";
 import { Player } from "../Player";
 import { ResourceName, Resources, ResourcesStorage } from '../Resources';
-import { UnitAction, SawmillWoodCollect } from './actions/UnitActions';
+import { UnitAction, SawmillWoodCollect, MineStoneCollect } from './actions/UnitActions';
 
 enum UnitName {
     TOWER = "tower",
+    SAWMILL = "sawmill",
+    MINE = "mine",
     TREE = "tree",
-    SAWMILL = "sawmill"
+    STONES = "stones"
 }
 
 interface UnitsConfig {
@@ -18,9 +20,11 @@ interface UnitConfig {
     size: number;
     type: UnitTypes;
     cost: [ResourceName, number][];
+    resources?: [ResourceName, number][];
     constructionTime: number;
     actions: UnitAction[];
     actionRange: number;
+    maxHP?: number;
 }
 
 class UnitFactory {
@@ -46,7 +50,8 @@ class UnitFactory {
                 ],
                 actions: [],
                 actionRange: 50,
-                constructionTime: 20
+                constructionTime: 20,
+                maxHP: 400
             },
             sawmill: {
                 name: 'sawmill',
@@ -66,56 +71,74 @@ class UnitFactory {
                 actions: [
                     SawmillWoodCollect
                 ],
-                actionRange: 200
+                actionRange: 200,
+                maxHP: 200
+            },
+            mine: {
+                name: 'mine',
+                size: 1,
+                type: UnitTypes.BUILDING,
+                cost: [
+                    [
+                        ResourceName.WOOD,
+                        50
+                    ],
+                    [
+                        ResourceName.STONE,
+                        25
+                    ]
+                ],
+                constructionTime: 15,
+                actions: [
+                    MineStoneCollect
+                ],
+                actionRange: 200,
+                maxHP: 200
             },
             tree: {
                 name: 'tree',
                 size: 1,
-                type: UnitTypes.TREE,
+                type: UnitTypes.RESOURCE,
                 cost: [],
+                resources: [[ResourceName.WOOD, 5]],
+                actions: [],
+                actionRange: 0,
+                constructionTime: 0
+            },
+            stones: {
+                name: 'stones',
+                size: 2,
+                type: UnitTypes.RESOURCE,
+                cost: [],
+                resources: [[ResourceName.STONE, 5]],
                 actions: [],
                 actionRange: 0,
                 constructionTime: 0
             }
+
         }
     }
 
     createTower(x: number, y: number, player: Player) {
         let unitName = '';
-        return new Unit(x, y, 
-            this.unitConfig.tower.name, 
-            this.unitConfig.tower.type, 
-            this.unitConfig.tower.size, 
-            player, unitName, 
-            this.unitConfig.tower.actions,
-            this.unitConfig.tower.actionRange);
+        return new Unit(x, y,
+            this.unitConfig.tower);
     }
 
-    createTree(x: number, y: number) {
-        let name = Math.floor(Math.random() *3) +1;
-        let unitName = '';
-        let initResources = new Resources([[ResourceName.WOOD, 5]]);
+    addResource(unit: Unit, type: UnitName): Unit {
+        let initResources = new Resources(this.unitConfig[type].resources);
         let resources = new ResourcesStorage(initResources);
-        return new Unit(x, y, 
-            this.unitConfig.tree.name+name, 
-            this.unitConfig.tree.type, 
-            this.unitConfig.tree.size, 
-            null, unitName,
-            this.unitConfig.tree.actions,
-            this.unitConfig.tree.actionRange,
-            resources);
+        unit.resources = resources;
+        return unit;
     }
 
-    of(type: UnitName, x: number, y: number, player: Player) {
-        return new Unit(x, y, 
-            this.unitConfig[type].name, 
-            this.unitConfig[type].type, 
-            this.unitConfig[type].size,
-            player,
-            type,
-            this.unitConfig[type].actions,
-            this.unitConfig[type].actionRange
-            );
+    of(type: UnitName, x: number, y: number, player?: Player): Unit {
+        let unit = new Unit(x, y, this.unitConfig[type], player);
+
+        if(this.unitConfig[type].type == UnitTypes.RESOURCE) {
+            this.addResource(unit, type);
+        }
+        return unit;
     }
 
     constructionOf(type: UnitName, x: number, y: number, player: Player) {
@@ -140,4 +163,4 @@ UnitFactory.Units = {
     "SAWMILL":UnitName.SAWMILL
 }
 
-export { UnitFactory, UnitName };
+export { UnitFactory, UnitName, UnitConfig };

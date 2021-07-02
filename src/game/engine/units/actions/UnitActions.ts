@@ -3,6 +3,7 @@ import { GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine"
 import { ResourceName } from "../../Resources";
 import { Unit, UnitTypes } from "../Unit";
+import { UnitName } from "../UnitFactory";
 
 interface ResourceCollectedEventData {
     collector: Unit;
@@ -20,7 +21,8 @@ interface UnitAction {
 
 const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
     let unitFilter = {
-        type: UnitTypes.TREE,
+        type: UnitTypes.RESOURCE,
+        name: UnitName.TREE,
         range: {
             unit: unit,
             range: unit.actionRange
@@ -52,4 +54,39 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
     }
 }
 
-export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData}
+const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
+    let unitFilter = {
+        type: UnitTypes.RESOURCE,
+        name: UnitName.STONES,
+        range: {
+            unit: unit,
+            range: unit.actionRange
+        }
+    };
+    let nearestStones = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
+    let resourceCollect: [ResourceName, number][] = [[ResourceName.STONE, 1]];
+    if(nearestStones && unit.isUnitInRange(nearestStones)) {
+        
+        if(nearestStones.resources.checkEnoughResources(resourceCollect)) {
+            nearestStones.resources.chargeResources(resourceCollect);
+            unit.player.addResources(resourceCollect);
+            let resourceCollectedEventData : ResourceCollectedEventData = {
+                collector: unit,
+                source: nearestStones,
+                resource: ResourceName.STONE
+            }
+            let resourceCollectedEvent = new GameEvent(EventChannels.RESOURCE_COLLECTED, resourceCollectedEventData);
+            eventRegistry.emit(resourceCollectedEvent);
+        }
+
+        if(!nearestStones.resources.checkEnoughResources(resourceCollect)) {
+            let unitDestroyedEventData: UnitDestroyedEventData = {
+                unit: nearestStones
+            }
+            let unitDestroyedEvent = new GameEvent(EventChannels.UNIT_DESTROYED, unitDestroyedEventData);
+            eventRegistry.emit(unitDestroyedEvent);
+        }
+    }
+}
+
+export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect}

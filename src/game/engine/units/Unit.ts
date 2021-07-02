@@ -3,10 +3,12 @@ import { Selectable } from '../../scenes/main/MainCamera';
 import { Player } from '../Player';
 import { ResourcesStorage } from '../Resources';
 import { UnitAction } from './actions/UnitActions';
+import { UnitConfig } from './UnitFactory';
+import { Bar } from '../../scenes/utils/bars';
 
 enum UnitTypes {
     BUILDING = "BUILDING",
-    TREE = "TREE"
+    RESOURCE = "RESOURCE"
 }
 
 interface UnitStateProgress {
@@ -20,14 +22,50 @@ interface UnitState {
 }
 
 interface GameUnit extends Phaser.GameObjects.Sprite, Selectable {
-    progressBar?: ProgressBar | undefined;
+    progressBar?: Bar;
     unit?: Unit;
     highlight?: Phaser.GameObjects.Sprite;
-
 }
 
-interface ProgressBar extends Phaser.GameObjects.Rectangle {
-    destroy: () => void;
+interface UnitInfo {
+    name: string;
+    x: number;
+    y: number;
+    hp: HP;
+    player: Player;
+}
+
+class HP {
+    value: number;
+    max: number;
+    constructor(value: number, max?: number) {
+        if(value) {
+            this.value = value;
+        } else {
+            this.value = 0;
+        }
+        if(max) {
+            this.max = max;
+        } else {
+            this.max = 0;
+        }
+        
+    }
+
+    addHealthValue(value: number) {
+        let sum = this.value + value;
+        if(sum > this.max) {
+            this.value = this.max;
+        } else if(sum < 0) {
+            this.value = 0;
+        }else {
+            this.value = sum;
+        }
+    }
+
+    addMax(max: number) {
+        this.max += max;
+    }
 }
 
 class Unit {
@@ -43,25 +81,16 @@ class Unit {
     resources?: ResourcesStorage;
     actions: UnitAction[];
     actionRange: number;
+    hp: HP;
 
-    constructor (xPos: number, 
-                    yPos: number, 
-                    name: string, 
-                    type: UnitTypes, 
-                    size: number, 
-                    player: Player, 
-                    unitName: string,
-                    actions: UnitAction[],
-                    actionRange: number,
-                    resources?: ResourcesStorage, 
-                    ) {
+    constructor(xPos: number, yPos: number, config: UnitConfig, player?: Player) {
         this.x = xPos;
         this.y = yPos;
-        this.name = name;
-        this.type = type;
-        this.size = size;
+        this.name = config.name;
+        this.type = config.type;
+        this.size = config.size;
         this.player = player;
-        this.unitName = unitName;
+        this.unitName = config.name;
         this.state = {
             construction: false,
             progress: {
@@ -69,10 +98,42 @@ class Unit {
                 value: 0
             }
         };
-        this.resources = resources;
-        this.actions = actions;
-        this.actionRange = actionRange;
+        this.actions = config.actions;
+        this.actionRange = config.actionRange;
+        this.hp = new HP(0, config.maxHP);
+
     }
+
+    // constructor (xPos: number, 
+    //                 yPos: number, 
+    //                 name: string, 
+    //                 type: UnitTypes, 
+    //                 size: number, 
+    //                 player: Player, 
+    //                 unitName: string,
+    //                 actions: UnitAction[],
+    //                 actionRange: number,
+    //                 resources?: ResourcesStorage, 
+    //                 ) {
+    //     this.x = xPos;
+    //     this.y = yPos;
+    //     this.name = name;
+    //     this.type = type;
+    //     this.size = size;
+    //     this.player = player;
+    //     this.unitName = unitName;
+    //     this.state = {
+    //         construction: false,
+    //         progress: {
+    //             limit:0,
+    //             value: 0
+    //         }
+    //     };
+    //     this.resources = resources;
+    //     this.actions = actions;
+    //     this.actionRange = actionRange;
+    //     this.hp = new HP(0, 400);
+    // }
 
     getProgress() {
         return this.state.progress.value / this.state.progress.limit;
@@ -138,8 +199,19 @@ class Unit {
     isUnitInRange(unit: Unit): boolean {
         let distnace = this.distanceToUnit(unit);
 
-        return distnace < this.actionRange + unit.size * GameDimensions.grid.tileSize/2;
+        return distnace < this.actionRange + (unit.size * GameDimensions.grid.tileSize);
 
+    }
+
+    getUnitInfo(): UnitInfo {
+        let unitInfo = {
+            name: this.name,
+            hp: this.hp,
+            player: this.player,
+            x: this.x,
+            y: this.y
+        }
+        return unitInfo;
     }
 }
 

@@ -4,6 +4,7 @@ import { Unit, UnitTypes } from "./Unit";
 interface UnitFilter {
     owner?: Player;
     type?: UnitTypes;
+    name?: String;
     range?: RangeFilter;
 }
 
@@ -46,6 +47,10 @@ class UnitStorage {
 
         if(unitFilter.type) {
             units = units.filter((unit) => unit.type == unitFilter.type);
+        }
+
+        if(unitFilter.name) {
+            units = units.filter((unit) => unit.name == unitFilter.name);
         }
 
         if(unitFilter.range) {

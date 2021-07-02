@@ -3,6 +3,7 @@ import { GameEngine } from '../../engine/GameEngine';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
 import { GameUnit } from '../../engine/units/Unit';
+import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
 
 interface UIButton {
     clearTint: () => void;
@@ -19,7 +20,7 @@ class UiScene extends Phaser.Scene {
     gameEngine: GameEngine;
     originX: number;
     originY: number;
-    selectedUnitInfo: Phaser.GameObjects.Text;
+    selectedUnitUI?: SelectedUnitUI;
 
     baseUIButtons: UIButton[];
 
@@ -42,8 +43,6 @@ class UiScene extends Phaser.Scene {
         viewRectangle.setStrokeStyle(5, 0xFFFFFF);
 
         var info = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', color: '#FFFFFF' });
-        this.selectedUnitInfo = this.add.text(this.originX, this.originY+48, 
-            '', { font: '48px Arial', color: '#FFFFFF' });
 
         createBaseUIButtons(this);
     }
@@ -60,13 +59,16 @@ class UiScene extends Phaser.Scene {
         return (gameUnit: GameUnit) => {
             uiScene.clearButtonsTint(uiScene);
             if(gameUnit) {
-                uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y
+                // uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y
+                showSelectedUnitUI(this, gameUnit.unit);
                 uiScene.baseUIButtons.forEach(btn => {
                     btn.setVisible(false);
                 });
     
             } else {
-                uiScene.selectedUnitInfo.text ='';
+                if(this.selectedUnitUI){
+                    this.selectedUnitUI.hide();
+                }
                 uiScene.baseUIButtons.forEach(btn => {
                     btn.setVisible(true);
                 });

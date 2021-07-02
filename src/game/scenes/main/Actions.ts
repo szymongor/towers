@@ -4,6 +4,7 @@ import { MainCamera } from "./MainCamera"
 import { Subscriber, EventChannels } from '../../engine/events/EventsRegistry'
 import { ResourceCollectedEventData } from '../../engine/units/actions/UnitActions'
 import { TransitionAnimation } from '../main/MainCamera'
+import { ResourceName } from "../../engine/Resources"
 
 const registerOnResourceCollect = (scene: MainCamera, engine: GameEngine) => {
     let subscriber: Subscriber = {
@@ -19,7 +20,15 @@ const animateResourceCollected = (scene: MainCamera) => {
     return (event: GameEvent) => {
         
         let data: ResourceCollectedEventData = event.data;
-        let logSprite = scene.add.sprite(data.source.x, data.source.y, 'log');
+        let respurceSprite;
+        switch(data.resource) {
+            case ResourceName.WOOD:
+                respurceSprite = 'log';
+                break;
+            case ResourceName.STONE:
+                respurceSprite = 'stones';
+        }
+        let logSprite = scene.add.sprite(data.source.x, data.source.y, respurceSprite);
         logSprite.setOrigin(0);
         logSprite.setScale(0.25);
 

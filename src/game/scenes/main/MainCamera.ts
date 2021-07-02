@@ -8,6 +8,7 @@ import { GameEngine } from '../../engine/GameEngine';
 import { GameEvent } from '../../engine/events/GameEvent';
 import { MapBoard } from '../../engine/MapBoard';
 import { registerOnResourceCollect } from './Actions';
+import { Bar } from '../utils/bars';
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -212,11 +213,12 @@ class MainCamera extends Phaser.Scene {
                     let x = u.x;
                     let y = u.y;
                     let w = u.size * tileSize;
-                    let bar = scene.add.rectangle(x, y, w * u.getProgress(), 8,0x42c5f5);
-                    bar.setOrigin(0);
+                    // let bar = scene.add.rectangle(x, y, w * u.getProgress(), 8,0x42c5f5);
+                    let bar = new Bar(this, x, y, u.getProgress(), w, 8, 0x42c5f5);
+                    
                     gameUnit.progressBar = bar;
                 } else {
-                    gameUnit.progressBar.setSize( w * u.getProgress(), 8);
+                    gameUnit.progressBar.updateProgress( u.getProgress());
                 }
                 
 
@@ -263,7 +265,7 @@ class MainCamera extends Phaser.Scene {
                 
                 gameUnit.setInteractive();
                 break;
-            case UnitTypes.TREE:
+            case UnitTypes.RESOURCE:
                 gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit();
                 
