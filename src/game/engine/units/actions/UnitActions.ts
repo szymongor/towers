@@ -62,9 +62,9 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
 }
 
 const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
-    let unitFilter = {
+    let unitFilter: UnitFilter = {
         type: UnitTypes.RESOURCE,
-        name: UnitName.STONES,
+        unitName: UnitName.STONES,
         range: {
             unit: unit,
             range: unit.actionRange

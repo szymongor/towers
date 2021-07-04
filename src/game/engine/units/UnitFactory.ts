@@ -3,6 +3,7 @@ import { Player } from "../Player";
 import { ResourceName, Resources, ResourcesStorage } from '../Resources';
 import { UnitAction, SawmillWoodCollect, MineStoneCollect, TowerAttack } from './actions/UnitActions';
 import { EventRegistry } from "../events/EventsRegistry";
+import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
 
 enum UnitName {
     TOWER = "tower",
@@ -23,12 +24,14 @@ interface UnitConfig {
     size: number;
     type: UnitTypes;
     cost: [ResourceName, number][];
+    canPlace?: CanPlaceRule;
     resources?: [ResourceName, number][];
     constructionTime: number;
     actions: UnitAction[];
     actionRange: number;
     actionInterval?: number;
     maxHP?: number;
+    
 }
 
 class UnitFactory {
@@ -54,6 +57,7 @@ class UnitFactory {
                         50
                     ]
                 ],
+                canPlace: canPlaceStandard,
                 actions: [TowerAttack],
                 actionInterval: 5,
                 actionRange: 300,
@@ -76,6 +80,7 @@ class UnitFactory {
                         25
                     ]
                 ],
+                canPlace: canPlaceStandard,
                 constructionTime: 15,
                 actions: [
                     SawmillWoodCollect
@@ -87,7 +92,7 @@ class UnitFactory {
                 name: 'Mine',
                 unitName: UnitName.MINE,
                 spriteName: 'mine',
-                size: 1,
+                size: 2,
                 type: UnitTypes.BUILDING,
                 cost: [
                     [
@@ -96,14 +101,15 @@ class UnitFactory {
                     ],
                     [
                         ResourceName.STONE,
-                        25
+                        50
                     ]
                 ],
+                canPlace: canPlaceMine,
                 constructionTime: 15,
                 actions: [
                     MineStoneCollect
                 ],
-                actionRange: 200,
+                actionRange: 0,
                 maxHP: 200
             },
             tree: {
@@ -125,7 +131,7 @@ class UnitFactory {
                 size: 2,
                 type: UnitTypes.RESOURCE,
                 cost: [],
-                resources: [[ResourceName.STONE, 5]],
+                resources: [[ResourceName.STONE, 250]],
                 actions: [],
                 actionRange: 0,
                 constructionTime: 0

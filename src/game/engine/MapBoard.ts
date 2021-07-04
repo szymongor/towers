@@ -100,10 +100,6 @@ class MapBoard {
 
 }
 
-function getRandomType(typesNumber: number) {
-    return (Math.floor(Math.random() * typesNumber))
-}
-
 function getRandomPosition(max: number) {
     return ((Math.floor(Math.random() * max/GameDimensions.grid.tileSize))*GameDimensions.grid.tileSize)+GameDimensions.grid.tileSize
 }

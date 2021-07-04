@@ -38,7 +38,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('stone', stonePng);
         this.loader.image('stones', stonesPng);
         this.loader.image('arrow', stonePng);
-        this.loader.image('mine', towerPng);
+        this.loader.image('mine', sawmillPng);
         
 
         this.loader.start();

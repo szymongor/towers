@@ -1,11 +1,12 @@
 import { Player } from "../Player";
 import { Unit, UnitTypes } from "./Unit";
+import { UnitName } from "./UnitFactory";
 
 interface UnitFilter {
     owner?: Player;
     player_ne?: Player;
     type?: UnitTypes;
-    name?: String;
+    unitName?: UnitName;
     range?: RangeFilter;
 }
 
@@ -55,8 +56,8 @@ class UnitStorage {
             units = units.filter((unit) => unit.type == unitFilter.type);
         }
 
-        if(unitFilter.name) {
-            units = units.filter((unit) => unit.unitName == unitFilter.name);
+        if(unitFilter.unitName) {
+            units = units.filter((unit) => unit.unitName == unitFilter.unitName);
         }
 
         if(unitFilter.range) {

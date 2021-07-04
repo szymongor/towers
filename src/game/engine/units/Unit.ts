@@ -7,6 +7,7 @@ import { UnitConfig, UnitName } from './UnitFactory';
 import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
+import { CanPlaceRule } from './actions/UnitRules';
 
 enum UnitTypes {
     BUILDING = "BUILDING",
@@ -97,6 +98,7 @@ class Unit {
     currentActions: Map<string, ActionProgress>;
     hp: HP;
     eventRegistry: EventRegistry;
+    canPlace: CanPlaceRule;
 
 
     constructor(xPos: number, yPos: number, config: UnitConfig, eventRegistry: EventRegistry, player?: Player) {
@@ -122,6 +124,7 @@ class Unit {
         this.currentActions = new Map();
         this.hp = new HP(0, config.maxHP);
         this.eventRegistry = eventRegistry;
+        this.canPlace = config.canPlace;
 
     }
 

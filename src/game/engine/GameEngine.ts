@@ -60,41 +60,14 @@ class GameEngine {
         return owner.checkEnoughResources(unitCosts);
     }
 
-    // TODO - intersect from phaser?
     canPlaceUnit(unit: Unit) {
-        let units = this.unitStorage.getUnits({});
-        return 0 == units.filter(u=> this.unitIntersect(u, unit.x, unit.y, unit.size)).length; 
+        return unit.canPlace(unit, this.unitStorage);
     }
 
-    unitIntersect(unit: Unit, x: number, y: number, size: number) {
-        var s = GameDimensions.grid.tileSize -0.01;
-        if(
-            (unit.x <= x && unit.x + unit.size*s > x)
-            ||
-            (unit.x <= x + size*s && unit.x + unit.size*s > x + size*s)
-            ||
-            (unit.x >= x  && unit.x + unit.size*s < x + size*s)
-            ||
-            (unit.x <= x  && unit.x + unit.size*s > x + size*s)
-        ) {
-            if(
-                (unit.y <= y && unit.y + unit.size*s > y)
-                ||
-                (unit.y <= y + size*s && unit.y + unit.size*s > y + size*s)
-                ||
-                (unit.y >= y  && unit.y + unit.size*s < y + size*s)
-                ||
-                (unit.y <= y  && unit.y + unit.size*s > y + size*s)
-            ) {
-                
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
-    orderBuilding(unitPrototype: any) {
-        if(this.canPlaceUnit(unitPrototype)) {
+    orderBuilding(unitPrototype: Unit) {
+        if(unitPrototype.canPlace(unitPrototype, this.unitStorage)) {
             let data = {
                 unitPrototype: unitPrototype,
                 player: this.getPlayer()
@@ -104,12 +77,12 @@ class GameEngine {
         }
     }
 
-    placeBuilding(unitPrototype: any, player: Player) {
+    placeBuilding(unitPrototype: Unit, player: Player) {
         let ownerPlayer = this.getPlayer();
         if(player) {
             ownerPlayer = player;
         }
-        if(this.canPlaceUnit(unitPrototype)) {
+        if(unitPrototype.canPlace(unitPrototype, this.unitStorage)) {
             let unit = this.unitFactory.constructionOf(unitPrototype.unitName, 
                 unitPrototype.x, 
                 unitPrototype.y, 
@@ -130,11 +103,12 @@ class GameEngine {
     }
 
     receiveBuildingOrder(gameEngine: GameEngine) {
+        let storage = this.unitStorage;
         return (event: any) => {
-            let prototype = event.data.unitPrototype;
-            let player = event.data.player;
+            let prototype: Unit = event.data.unitPrototype;
+            let player: Player = event.data.player;
             if(gameEngine.canBuild(prototype.unitName, player) 
-            && gameEngine.canPlaceUnit(prototype)) {
+            && prototype.canPlace(prototype,  storage)) {
                 let data = {
                     player: event.data.player,
                     unitPrototype: gameEngine.placeBuilding(prototype, player)
