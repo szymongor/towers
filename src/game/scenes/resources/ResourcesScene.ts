@@ -9,14 +9,14 @@ class ResourcesScene extends Phaser.Scene {
     originY: number;
     resources: Phaser.GameObjects.Text;
 
-    constructor(handle: string, parent: Phaser.Scene) {
+    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
+        this.gameEngine = gameEngine;
     }
 
     preload() {}
 
     create() {
-        this.gameEngine = this.registry.get('GameEngine');
         let rect = this.add.rectangle(0, 0, 
             GameDimensions.resourcesScene.width, GameDimensions.resourcesScene.height,GameDimensions.backgroundColor);
         rect.setOrigin(0,0);

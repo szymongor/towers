@@ -9,6 +9,7 @@ enum UnitName {
     TOWER = "tower",
     SAWMILL = "sawmill",
     MINE = "mine",
+    CASTLE = "castle",
     TREE = "tree",
     STONES = "stones"
 }
@@ -112,6 +113,28 @@ class UnitFactory {
                 actionRange: 0,
                 maxHP: 200
             },
+            castle: {
+                name: 'Castle',
+                unitName: UnitName.CASTLE,
+                spriteName: 'castle',
+                size: 3,
+                type: UnitTypes.BUILDING,
+                cost: [
+                    [
+                        ResourceName.WOOD,
+                        50
+                    ],
+                    [
+                        ResourceName.STONE,
+                        50
+                    ]
+                ],
+                canPlace: canPlaceStandard,
+                constructionTime: 30,
+                actions: [],
+                actionRange: 0,
+                maxHP: 200
+            },
             tree: {
                 name: "Tree",
                 unitName: UnitName.TREE,
@@ -171,6 +194,7 @@ class UnitFactory {
             limit: this.unitConfig[type].constructionTime,
             value: 0
         }
+        constructedUnit.hp.value = 0;
         return constructedUnit;
     }
 

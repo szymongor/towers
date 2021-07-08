@@ -3,18 +3,20 @@ import { MainCamera } from './main/MainCamera';
 import { UiScene } from './ui/UiScene';
 import { ResourcesScene } from './resources/ResourcesScene';
 import { GameDimensions, Scenes } from  '../GameDimensions';
-
 import grass1Png from '../../images/grass1.png';
 import tree1Png from '../../images/tree1.png';
-import tree2Png from '../../images/tree2.png';
-import tree3Png from '../../images/tree3.png';
 import towerPng from '../../images/tower.png';
 import sawmillPng from '../../images/sawmill.png';
+import minePng from '../../images/mine.png';
 import constructionPng from '../../images/construction.png';
 import logPng from '../../images/log.png';
 import stonePng from '../../images/stone.png';
 import stonesPng from '../../images/stones.png';
 import { GameEngine } from '../engine/GameEngine';
+import { StartScene } from './meta/StartScene';
+import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
+import { GameEvent, GameFinishedEventData } from '../engine/events/GameEvent';
+import { FinishScene, GameResult } from './meta/FinishScene';
 
 
 class TowerGame extends Phaser.Scene {
@@ -22,9 +24,11 @@ class TowerGame extends Phaser.Scene {
     loader: Phaser.Loader.LoaderPlugin;
     gameEngine: GameEngine;
     timedEvent: Phaser.Time.TimerEvent;
+    gameIsRunning: boolean;
 
     constructor() {
         super('');
+        this.gameIsRunning = false;
     }
 
     preload() {
@@ -38,47 +42,88 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('stone', stonePng);
         this.loader.image('stones', stonesPng);
         this.loader.image('arrow', stonePng);
-        this.loader.image('mine', sawmillPng);
+        this.loader.image('mine', minePng);
+        this.loader.image('castle', towerPng);
         
 
         this.loader.start();
     }
 
     create() {
-        this.gameEngine = this.registry.get('GameEngine');
+        this.setStartScene();
+    }
+
+    startNewGame() {
+        console.log("Start New Game");
+        this.scene.remove(Scenes.StartScene);
+        let gameEngine = new GameEngine();
+        this.gameEngine = gameEngine
+        this.registerOnGameFinished(gameEngine);
         var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.backgroundColor);
         mainBackground.setOrigin(0,0);
-        this.loader.once(Phaser.Loader.Events.COMPLETE, () => {
-            this.createWindow();
-            
-        });
+        this.createWindow(gameEngine);
         this.createTimer(this);
+    }
+
+    registerOnGameFinished(gameEngine: GameEngine) {
+        let towerGame = this;
+        let subscriber: Subscriber = {
+            call: (event: GameEvent) => {
+                let eventData: GameFinishedEventData = event.data;
+                towerGame.gameFinished(eventData);
+            }
+        }
+        gameEngine.events.subscribe(EventChannels.GAME_FINISHED, subscriber);
+    }
+
+    gameFinished(gameResult: GameResult) {
+        this.setFinishScene(gameResult);
+    }
+
+    setFinishScene(gameResult: GameResult) {
+        if(this.timedEvent) {
+            this.timedEvent.destroy();
+        }
+        let finishScene = new FinishScene(Scenes.FinishScene, this, gameResult);
+        this.scene.add(Scenes.FinishScene, finishScene, true);
 
     }
 
-    createWindow() {
-        let main = this.addMainCamera();
-        let ui = this.addUiScene();
-        let resources = this.addResourcesScene();
+    setStartScene() {
+
+        this.scene.remove(Scenes.FinishScene);
+        this.scene.remove(Scenes.MainCamera);
+        this.scene.remove(Scenes.UIScene);
+        this.scene.remove(Scenes.ResourcesScene);
+        
+
+        let startScene = new StartScene(Scenes.StartScene, this);
+        this.scene.add(Scenes.StartScene, startScene, true);
+    }
+
+    createWindow(gameEngine: GameEngine) {
+        let main = this.addMainCamera(gameEngine);
+        let ui = this.addUiScene(gameEngine);
+        let resources = this.addResourcesScene(gameEngine);
         main.registerOuterEvents();
         ui.registerOuterEvents();
 
     }
 
-    addMainCamera() {
-        var mainCamera = new MainCamera(Scenes.MainCamera, this);
+    addMainCamera(gameEngine: GameEngine) {
+        var mainCamera = new MainCamera(Scenes.MainCamera, this, gameEngine);
         this.scene.add(Scenes.MainCamera, mainCamera, true);
         return mainCamera;
     }
 
-    addUiScene() {
-        var uiScene = new UiScene(Scenes.UIScene, this);
+    addUiScene(gameEngine: GameEngine) {
+        var uiScene = new UiScene(Scenes.UIScene, this, gameEngine);
         this.scene.add(Scenes.UIScene, uiScene, true);
         return uiScene;
     }
 
-    addResourcesScene() {
-        var resourcesScene = new ResourcesScene(Scenes.ResourcesScene, this);
+    addResourcesScene(gameEngine: GameEngine) {
+        var resourcesScene = new ResourcesScene(Scenes.ResourcesScene, this, gameEngine);
         this.scene.add(Scenes.ResourcesScene, resourcesScene, true);
         return resourcesScene;
     }
@@ -103,7 +148,7 @@ class TowerGame extends Phaser.Scene {
 
 
 
-const createTowerGame = (gameEngine: GameEngine) => {
+const createTowerGame = () => {
 
     const config = {
         type: Phaser.AUTO,
@@ -118,8 +163,7 @@ const createTowerGame = (gameEngine: GameEngine) => {
     };
 
     const game = new Phaser.Game(config);
-    game.registry.set('GameEngine', gameEngine)
     return game;
 }
 
-export { createTowerGame };
+export { createTowerGame, TowerGame };

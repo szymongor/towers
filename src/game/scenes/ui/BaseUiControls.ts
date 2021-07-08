@@ -19,12 +19,18 @@ const createBaseUIButtons = function(scene: UiScene) {
         .setScale(0.25) //TODO - set from dims
         .setInteractive();
 
+    var buttonCastle = scene.add.image(scene.originX+150, scene.originY+50, UnitName.CASTLE)
+        .setOrigin(0)
+        .setScale(0.25) //TODO - set from dims
+        .setInteractive();
+
     buttonTower.on(Phaser.Input.Events.POINTER_DOWN, towerButtonClick(buttonTower, scene));
     buttonSawmill.on(Phaser.Input.Events.POINTER_DOWN, sawmillButtonClick(buttonSawmill, scene));
     buttonMine.on(Phaser.Input.Events.POINTER_DOWN, mineButtonClick(buttonMine, scene));
+    buttonCastle.on(Phaser.Input.Events.POINTER_DOWN, castleButtonClick(buttonCastle, scene));
 
 
-    scene.baseUIButtons.push(buttonTower, buttonSawmill, buttonMine);
+    scene.baseUIButtons.push(buttonTower, buttonSawmill, buttonMine, buttonCastle);
 }
 
 const towerButtonClick = function(button: UIButton, scene: UiScene) {
@@ -58,6 +64,18 @@ const mineButtonClick = function(button: UIButton, scene: UiScene) {
         if(scene.gameEngine.canBuild(UnitName.MINE, null)) {
             button.setTintFill(0x00ffff);
             scene.events.emit(UiSceneEvents.BUILDBUILDING,{building: UnitName.MINE});
+        } else {
+            scene.events.emit(UiSceneEvents.DESELECT_BUILDING,{});
+        }
+    }
+}
+
+const castleButtonClick = function(button: UIButton, scene: UiScene) {
+    return () => {
+        scene.clearButtonsTint(scene);
+        if(scene.gameEngine.canBuild(UnitName.CASTLE, null)) {
+            button.setTintFill(0x00ffff);
+            scene.events.emit(UiSceneEvents.BUILDBUILDING,{building: UnitName.CASTLE});
         } else {
             scene.events.emit(UiSceneEvents.DESELECT_BUILDING,{});
         }

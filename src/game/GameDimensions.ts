@@ -7,6 +7,12 @@ var GameDimensions = {
     minimapHeight: 0,
     mainCameraWidth: 0,
     mainCameraHeight: 0,
+    finishScene: {
+        x: 1000/3,
+        y: 600/3,
+        width: 1000/3,
+        height: 600/3
+    },
     resourcesScene: {
         height: 50,
         width: 0
@@ -30,7 +36,9 @@ GameDimensions.resourcesScene.width = GameDimensions.mainCameraWidth;
 enum Scenes {
     UIScene = "UIScene",
     MainCamera = "MainCamera",
-    ResourcesScene = "ResourcesScene"
+    ResourcesScene = "ResourcesScene",
+    StartScene = "StartScene",
+    FinishScene = "FinishScene"
 }
 
 export { GameDimensions, Scenes };

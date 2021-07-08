@@ -51,7 +51,8 @@ const getUnitInfoText = (unit: Unit): string => {
     let unitInfo = unit.getUnitInfo();
     let info = unitInfo.name + '\n';
     info += "HP: "+ unitInfo.hp.value +"/"+unitInfo.hp.max + '\n';
-    info += "Player: "+unitInfo.player.id;
+    info += "Player: " + unitInfo.player.id + '\n'
+    info += "Coords: " + unitInfo.x + "," + unitInfo.y;
     return info;
 }
 

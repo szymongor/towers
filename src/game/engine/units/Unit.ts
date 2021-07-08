@@ -20,6 +20,7 @@ interface UnitStateProgress {
 }
 
 interface UnitState {
+    destroyed: boolean;
     construction: boolean;
     progress: UnitStateProgress;
 }
@@ -112,6 +113,7 @@ class Unit {
         this.player = player;
         
         this.state = {
+            destroyed: false,
             construction: false,
             progress: {
                 limit:0,
@@ -122,7 +124,7 @@ class Unit {
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
         this.currentActions = new Map();
-        this.hp = new HP(0, config.maxHP);
+        this.hp = new HP(config.maxHP, config.maxHP);
         this.eventRegistry = eventRegistry;
         this.canPlace = config.canPlace;
 
@@ -209,7 +211,8 @@ class Unit {
     }
 
     kill() {
-        if(this.eventRegistry) {
+        if(this.eventRegistry && !this.state.destroyed) {
+            this.state.destroyed = true;
             let data = {
                 unit: this
             };

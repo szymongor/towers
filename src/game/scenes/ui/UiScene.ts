@@ -24,17 +24,17 @@ class UiScene extends Phaser.Scene {
 
     baseUIButtons: UIButton[];
 
-    constructor(handle: string, parent: Phaser.Scene) {
+    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
         Phaser.Scene.call(this, { key: handle, active: true });
         this.baseUIButtons = [];
+        this.gameEngine = gameEngine;
     }
 
     preload() {
     }
 
     create() {
-        this.gameEngine = this.registry.get('GameEngine');
         this.originX = GameDimensions.gameWidth-GameDimensions.uiSceneWidth;
         this.originY = GameDimensions.gameHeight-GameDimensions.uiSceneHeight;
         var viewRectangle = this.add.rectangle(this.originX, this.originY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);

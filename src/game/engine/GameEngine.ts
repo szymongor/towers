@@ -7,6 +7,7 @@ import { GameEvent } from './events/GameEvent';
 import { ResourceName } from "./Resources";
 import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
+import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -24,16 +25,26 @@ class GameEngine {
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();
 
-        this.addTowers();
+        this.addStartBuildings();
+
+        registerPlayerLostFlow(this);
+        registerGameFinishedCheckFlow(this);
+        registerGameFinishedFlow(this);
     }
 
     //DEV method
-    addTowers() {
+    addStartBuildings() {
         var buildingsPositions = [
-            {x: 200, y: 200}
+            {x: 150, y: 200}
           ];
           
-        var units = buildingsPositions.map(p => this.unitFactory.createTower(p.x, p.y, this.events, this.players[1]));
+        var units = buildingsPositions.map(p => 
+            this.unitFactory.of(UnitName.CASTLE,900, 950, this.events, this.players[1]));
+
+        units.push(this.unitFactory.of(UnitName.TOWER,800, 1000, this.events, this.players[1]));
+        units.push(this.unitFactory.of(UnitName.TOWER,950, 850, this.events, this.players[1]));
+
+        units.push(this.unitFactory.of(UnitName.CASTLE,150, 200, this.events, this.players[0]));
         this.unitStorage.addUnits(units);
     }
 

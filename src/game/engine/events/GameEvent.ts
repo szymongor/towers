@@ -1,4 +1,13 @@
+import { Player } from '../Player';
 import { EventChannels } from './EventsRegistry';
+
+interface PlayerLostEventData {
+    player: Player;
+}
+
+interface GameFinishedEventData {
+    winner: Player;
+}
 
 class GameEvent {
     timestamp: number;
@@ -12,4 +21,4 @@ class GameEvent {
     }
 }
 
-export { GameEvent };
+export { GameEvent, PlayerLostEventData, GameFinishedEventData };

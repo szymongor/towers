@@ -59,13 +59,14 @@ class MainCamera extends Phaser.Scene {
     transitionAnimations: Set<TransitionAnimation>;
 
 
-    constructor(handle: string, parent: Phaser.Scene) {
+    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
         this.gameEngine;
         this.gameUnits = [];
         this.active = false;
         this.cursorFollow;
         this.transitionAnimations = new Set();
+        this.gameEngine = gameEngine;
     }
 
     //load assets
@@ -73,8 +74,6 @@ class MainCamera extends Phaser.Scene {
     }
 
     create() {
-        this.gameEngine = this.registry.get('GameEngine');
-        
         this.cameras.main = createMainCamera(this, this.gameEngine);
         this.cameras.addExisting(createMiniMapCamera(this, this.gameEngine));
 
