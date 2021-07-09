@@ -12,6 +12,7 @@ import constructionPng from '../../images/construction.png';
 import logPng from '../../images/log.png';
 import stonePng from '../../images/stone.png';
 import stonesPng from '../../images/stones.png';
+import arrowPng from '../../images/arrow.png';
 import { GameEngine } from '../engine/GameEngine';
 import { StartScene } from './meta/StartScene';
 import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
@@ -41,7 +42,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('log', logPng);
         this.loader.image('stone', stonePng);
         this.loader.image('stones', stonesPng);
-        this.loader.image('arrow', stonePng);
+        this.loader.image('arrow', arrowPng);
         this.loader.image('mine', minePng);
         this.loader.image('castle', towerPng);
         
@@ -54,7 +55,6 @@ class TowerGame extends Phaser.Scene {
     }
 
     startNewGame() {
-        console.log("Start New Game");
         this.scene.remove(Scenes.StartScene);
         let gameEngine = new GameEngine();
         this.gameEngine = gameEngine

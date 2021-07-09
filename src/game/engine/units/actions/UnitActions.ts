@@ -27,15 +27,17 @@ interface UnitAction {
 }
 
 const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
-    let unitFilter = {
+    let unitFilter: UnitFilter = {
         type: UnitTypes.RESOURCE,
-        name: UnitName.TREE,
+        unitName: UnitName.TREE,
         range: {
             unit: unit,
             range: unit.actionRange
         }
     };
+    
     let nearestTree = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
+    
     let resourceCollect: [ResourceName, number][] = [[ResourceName.WOOD, 1]];
     if(nearestTree && unit.isUnitInRange(nearestTree)) {
         

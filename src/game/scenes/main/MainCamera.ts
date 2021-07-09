@@ -16,6 +16,7 @@ interface TransitionAnimation {
     sourceY: number;
     dX: number;
     dY: number;
+    angle?: number;
     steps: number;
     progress: number;
 }
@@ -217,15 +218,12 @@ class MainCamera extends Phaser.Scene {
                     let x = u.x;
                     let y = u.y;
                     let w = u.size * tileSize;
-                    // let bar = scene.add.rectangle(x, y, w * u.getProgress(), 8,0x42c5f5);
                     let bar = new Bar(this, x, y, u.getProgress(), w, 8, 0x42c5f5);
                     
                     gameUnit.progressBar = bar;
                 } else {
                     gameUnit.progressBar.updateProgress( u.getProgress());
                 }
-                
-
             }
         })
 

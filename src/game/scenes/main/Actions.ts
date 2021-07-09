@@ -34,18 +34,20 @@ const animateResourceCollected = (scene: MainCamera) => {
             case ResourceName.STONE:
                 respurceSprite = 'stone';
         }
-        let logSprite = scene.add.sprite(data.source.x, data.source.y, respurceSprite);
-        logSprite.setOrigin(0);
+        let sourceCentre = data.source.getCentre();
+        let targetCentre = data.collector.getCentre();
+
+        let logSprite = scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
         logSprite.setScale(0.25);
 
         let steps = 50;
 
         let transitionAnimation : TransitionAnimation = {
             sprite: logSprite,
-            sourceX: data.source.x,
-            sourceY: data.source.y,
-            dX: (data.collector.x - data.source.x)/steps,
-            dY: (data.collector.y - data.source.y)/steps,
+            sourceX: sourceCentre.x,
+            sourceY: sourceCentre.y,
+            dX: (targetCentre.x - sourceCentre.x)/steps,
+            dY: (targetCentre.y - sourceCentre.y)/steps,
             steps: steps,
             progress: 0
         }
@@ -58,24 +60,29 @@ const animateDamageDealt = (scene: MainCamera) => {
         
         let data: DamageDealtEventData = event.data;
         let respurceSprite = 'arrow';
-        let logSprite = scene.add.sprite(data.source.x, data.source.y, respurceSprite);
-        logSprite.setOrigin(0);
-        logSprite.setScale(0.25);
-
-        let steps = 50;
-
         let sourceCentre = data.source.getCentre();
         let targetCentre = data.target.getCentre();
 
+        
+        let arrowSprite = scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
+        arrowSprite.setScale(0.25);
+
+        let steps = 50;
+        
         let transitionAnimation : TransitionAnimation = {
-            sprite: logSprite,
-            sourceX: data.source.x,
-            sourceY: data.source.y,
+            sprite: arrowSprite,
+            sourceX: sourceCentre.x,
+            sourceY: sourceCentre.y,
             dX: (targetCentre.x - sourceCentre.x)/steps,
             dY: (targetCentre.y - sourceCentre.y)/steps,
             steps: steps,
             progress: 0
         }
+
+        transitionAnimation.angle = 
+        360*Math.atan2(targetCentre.y - sourceCentre.y, targetCentre.x - sourceCentre.x)/(2*Math.PI);
+        arrowSprite.angle = transitionAnimation.angle;
+        
         scene.addTransitionAnimation(transitionAnimation);
     }
 }

@@ -15,7 +15,6 @@ interface RangeFilter {
     range: number;
 }
 
-
 class UnitStorage {
 
     units: Unit[];
@@ -43,6 +42,7 @@ class UnitStorage {
 
     getUnits(unitFilter: UnitFilter): Unit[] {
         let units = this.units;
+        
         
         if(unitFilter.owner) {
             units = units.filter((unit) => unit.player == unitFilter.owner);

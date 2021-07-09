@@ -63,7 +63,7 @@ class UnitFactory {
                 actionInterval: 5,
                 actionRange: 300,
                 constructionTime: 20,
-                maxHP: 400
+                maxHP: 800
             },
             sawmill: {
                 name: 'Sawmill',
@@ -133,7 +133,7 @@ class UnitFactory {
                 constructionTime: 30,
                 actions: [],
                 actionRange: 0,
-                maxHP: 200
+                maxHP: 2000
             },
             tree: {
                 name: "Tree",
@@ -142,7 +142,7 @@ class UnitFactory {
                 size: 1,
                 type: UnitTypes.RESOURCE,
                 cost: [],
-                resources: [[ResourceName.WOOD, 5]],
+                resources: [[ResourceName.WOOD, 200]],
                 actions: [],
                 actionRange: 0,
                 constructionTime: 0
@@ -154,7 +154,7 @@ class UnitFactory {
                 size: 2,
                 type: UnitTypes.RESOURCE,
                 cost: [],
-                resources: [[ResourceName.STONE, 250]],
+                resources: [[ResourceName.STONE, 400]],
                 actions: [],
                 actionRange: 0,
                 constructionTime: 0
