@@ -6,9 +6,10 @@ import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
 import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameEvent } from '../../engine/events/GameEvent';
-import { MapBoard } from '../../engine/MapBoard';
+import { MapBoard } from '../../engine/map/MapBoard';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
+import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -230,24 +231,35 @@ class MainCamera extends Phaser.Scene {
     }
 
     drawMap(gameEngine: GameEngine) {
-        var map = this.gameEngine.getMap();
-        let unitStorage = this.gameEngine.unitStorage;
-        unitStorage.getUnits({}).forEach(unit => {
+        let vision : PlayersVision = gameEngine.getPlayerVision();
+        let units = vision.units;
+        this.drawBackground(vision.tiles);
+        
+        units.forEach(unit => {
             var gameUnit = this.createGameUnit(this, unit);
             this.gameUnits.push(gameUnit);
         });
-        this.drawBackground(map);
+        
     }
 
-    drawBackground(map: MapBoard) {
-        for(let i = 0; i < map.width/GameDimensions.grid.tileSize; i++ ) {
-            for(let j = 0; j < map.height/GameDimensions.grid.tileSize ; j++) {
-                this.add.sprite(i*GameDimensions.grid.tileSize, j*GameDimensions.grid.tileSize, 'grass')
+    // drawBackground(map: MapBoard) {
+    //     for(let i = 0; i < map.width/GameDimensions.grid.tileSize; i++ ) {
+    //         for(let j = 0; j < map.height/GameDimensions.grid.tileSize ; j++) {
+    //             this.add.sprite(i*GameDimensions.grid.tileSize, j*GameDimensions.grid.tileSize, 'grass')
+    //             .setDepth(-2)
+    //             .setOrigin(0)
+    //             .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01);
+    //         }
+    //     }
+    // }
+
+    drawBackground(tiles: Set<Tile>) {
+        tiles.forEach(t => {
+            this.add.sprite(t.x, t.y, 'grass')
                 .setDepth(-2)
                 .setOrigin(0)
                 .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01);
-            }
-        }
+        })
     }
 
     createGameUnit(game: MainCamera, unit: Unit): GameUnit {

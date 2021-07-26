@@ -1,4 +1,4 @@
-import { MapBoard } from './MapBoard';
+import { MapBoard } from './map/MapBoard';
 import { GameDimensions } from '../GameDimensions';
 import { UnitFactory, UnitName } from './units/UnitFactory';
 import { Player } from './Player';
@@ -8,6 +8,7 @@ import { ResourceName } from "./Resources";
 import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
+import { getPlayerVision } from './map/PlayerVision';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -58,6 +59,10 @@ class GameEngine {
 
     getMap() {
         return this.mapBoard;
+    }
+
+    getPlayerVision() {
+        return getPlayerVision(this);
     }
 
     canBuild(unitType: UnitName, player: Player) {

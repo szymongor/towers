@@ -132,7 +132,7 @@ class UnitFactory {
                 canPlace: canPlaceStandard,
                 constructionTime: 30,
                 actions: [],
-                actionRange: 0,
+                actionRange: 10,
                 maxHP: 2000
             },
             tree: {

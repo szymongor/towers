@@ -1,7 +1,7 @@
-import { GameDimensions } from  '../GameDimensions';
-import { Unit } from './units/Unit';
-import { UnitFactory, UnitName } from './units/UnitFactory';
-import { UnitStorage } from './units/UnitsStorage';
+import { GameDimensions } from  '../../GameDimensions';
+import { Unit } from '../units/Unit';
+import { UnitFactory, UnitName } from '../units/UnitFactory';
+import { UnitStorage } from '../units/UnitsStorage';
 
 class MapBoard {
 

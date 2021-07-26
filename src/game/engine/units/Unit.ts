@@ -8,6 +8,9 @@ import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
+import { Tile } from '../map/PlayerVision';
+
+const TILE_SIZE = GameDimensions.grid.tileSize;
 
 enum UnitTypes {
     BUILDING = "BUILDING",
@@ -226,6 +229,22 @@ class Unit {
         if(this.hp.value <= 0) {
             this.kill();
         }
+    }
+
+    containsCoord(x: number, y: number) {
+        return Math.abs(x - this.x) < this.size * GameDimensions.grid.tileSize
+        &&
+        Math.abs(y - this.y) < this.size * GameDimensions.grid.tileSize;
+    }
+
+    getUnitTiles(): Tile[] {
+        let tiles : Tile[] = [];
+        for(let i = this.x ; i < this.x + this.size*TILE_SIZE ; i += TILE_SIZE ) {
+            for(let j = this.y ; j < this.y +  this.size*TILE_SIZE ; j += TILE_SIZE ) {
+                tiles.push({ x : i, y : j});
+            }
+        }
+        return tiles;
     }
 }
 

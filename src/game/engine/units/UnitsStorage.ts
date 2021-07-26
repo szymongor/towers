@@ -1,3 +1,4 @@
+import { Tile } from "../map/PlayerVision";
 import { Player } from "../Player";
 import { Unit, UnitTypes } from "./Unit";
 import { UnitName } from "./UnitFactory";
@@ -68,6 +69,23 @@ class UnitStorage {
         
         return units;
     }
+
+    getUnitsInVision(unitFilter: UnitFilter, vision: Set<Tile>) {
+        let units = this.getUnits(unitFilter);
+        units = units.filter(u => {
+            return this.isUnitInVision(u, vision);
+        } );
+        
+        return units;
+    }
+
+    isUnitInVision(unit: Unit, vision: Set<Tile>): boolean {
+        return Array.from(vision).some(tile => {
+            return unit.containsCoord(tile.x, tile.y);
+        })
+    }
+
+
 
     getUnitsInRange(unitFilter: UnitFilter, unit: Unit, range: Number): Unit[] {
         let units = this.getUnits(unitFilter);
