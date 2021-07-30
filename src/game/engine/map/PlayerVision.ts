@@ -16,7 +16,7 @@ interface PlayersVision {
 }
 
 const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
-    let tilesInRange : Set<Tile> = new Set();
+    let tilesInRange = new Map<String, Tile>();
     
     let visibleUnits = new Set<Unit>();
 
@@ -28,14 +28,24 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
         visibleUnits.add(u);
         let ux = u.getCentre().x;
         let uy = u.getCentre().y;
-        let uSize = u.actionRange/2 * TILE_SIZE;
-        for(let i = ux - uSize -TILE_SIZE/2; i < ux + uSize +TILE_SIZE/2 ; i += TILE_SIZE) {
-            for(let j = uy - uSize-TILE_SIZE/2; j < uy + uSize+TILE_SIZE/2 ; j += TILE_SIZE) {
-                let tile: Tile = {
-                    x: i,
-                    y: j
+        let uRange = u.actionRange;
+
+        let topLeftX = ((ux-uRange)%50)*50;
+        let topLeftY = ((uy-uRange)%50)*50;
+        
+        
+        for(let i = topLeftX; i < ux + uRange +u.size ; i += TILE_SIZE) {
+            for(let j = topLeftY; j < uy + uRange+ u.size ; j += TILE_SIZE) {
+                let distX = (ux - i)*(ux - i);
+                let distY = (uy - j)*(uy - j);
+                if(Math.sqrt(distX+distY) < uRange) {
+                    let tile: Tile = {
+                        x: i,
+                        y: j
+                    }
+                    tilesInRange.set(i+':'+j, tile);
                 }
-                tilesInRange.add(tile)
+                    
             }
         }
     });
@@ -44,16 +54,16 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
         player_ne : gameEngine.getPlayer()
     }
 
-    let unitsInVison = gameEngine.unitStorage.getUnitsInVision(unitFilter, tilesInRange);
+    let unitsInVison = gameEngine.unitStorage.getUnitsInVision(unitFilter, new Set(tilesInRange.values()));
     unitsInVison.forEach(vu => { 
         visibleUnits.add(vu);
         vu.getUnitTiles().forEach(unitTile => {
-            tilesInRange.add(unitTile);
+            tilesInRange.set(unitTile.x+':'+unitTile.y, unitTile);
         })
     });
 
     let playersVison : PlayersVision = {
-        tiles: tilesInRange,
+        tiles: new Set(tilesInRange.values()),
         units: visibleUnits
     }
 

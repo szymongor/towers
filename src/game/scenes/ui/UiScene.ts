@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
-import { GameUnit } from '../../engine/units/Unit';
+import { CustomSprite } from '../../engine/units/Unit';
 import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
 
 interface UIButton {
@@ -56,7 +56,7 @@ class UiScene extends Phaser.Scene {
     }
 
     unitSelected(uiScene: UiScene) {
-        return (gameUnit: GameUnit) => {
+        return (gameUnit: CustomSprite) => {
             uiScene.clearButtonsTint(uiScene);
             if(gameUnit) {
                 // uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y

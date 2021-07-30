@@ -28,7 +28,7 @@ interface UnitState {
     progress: UnitStateProgress;
 }
 
-interface GameUnit extends Phaser.GameObjects.Sprite, Selectable {
+interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
     progressBar?: Bar;
     unit?: Unit;
     highlight?: Phaser.GameObjects.Sprite;
@@ -94,7 +94,7 @@ class Unit {
     size: number;
     player: Player;
     state: UnitState;
-    gameUnit: GameUnit;
+    sprite: CustomSprite;
     resources?: ResourcesStorage;
     actions: UnitAction[];
     actionRange: number;
@@ -146,11 +146,11 @@ class Unit {
     }
 
     updateTexture() {
-        if(this.gameUnit) {
-            this.gameUnit.setTexture(this.getTexture());
-            if(this.gameUnit.progressBar) {
-                this.gameUnit.progressBar.destroy();
-                this.gameUnit.progressBar = null;
+        if(this.sprite) {
+            this.sprite.setTexture(this.getTexture());
+            if(this.sprite.progressBar) {
+                this.sprite.progressBar.destroy();
+                this.sprite.progressBar = null;
             }
         }
     }
@@ -184,7 +184,7 @@ class Unit {
     }
 
     destroy() {
-        this.gameUnit.destroy();
+        this.sprite.destroy();
     }
 
     distanceToUnit(unit: Unit): number {
@@ -239,8 +239,8 @@ class Unit {
 
     getUnitTiles(): Tile[] {
         let tiles : Tile[] = [];
-        for(let i = this.x ; i < this.x + this.size*TILE_SIZE ; i += TILE_SIZE ) {
-            for(let j = this.y ; j < this.y +  this.size*TILE_SIZE ; j += TILE_SIZE ) {
+        for(let i = this.x; i < this.x + this.size*TILE_SIZE ; i += TILE_SIZE ) {
+            for(let j = this.y; j < this.y +  this.size*TILE_SIZE ; j += TILE_SIZE ) {
                 tiles.push({ x : i, y : j});
             }
         }
@@ -248,4 +248,4 @@ class Unit {
     }
 }
 
-export { Unit, UnitTypes, GameUnit, DealtDamage as Damage };
+export { Unit, UnitTypes, CustomSprite, DealtDamage as Damage };

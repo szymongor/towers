@@ -1,4 +1,4 @@
-import { GameUnit, Unit, UnitTypes } from '../../engine/units/Unit';
+import { CustomSprite, Unit, UnitTypes } from '../../engine/units/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
@@ -40,10 +40,10 @@ interface ViewCamera extends Phaser.Cameras.Scene2D.Camera {
 }
 
 interface Selectable {
-    gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
-    gameObjectOut?: (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => void;
-    selectUnit?: (gameUnit: GameUnit) => void;
-    deselectUnit?: (gameUnit: GameUnit) => void;
+    gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => void;
+    gameObjectOut?: (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => void;
+    selectUnit?: (gameUnit: CustomSprite) => void;
+    deselectUnit?: (gameUnit: CustomSprite) => void;
 }
 
 interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
@@ -53,10 +53,10 @@ interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
 
 class MainCamera extends Phaser.Scene {
     gameEngine: GameEngine;
-    gameUnits: GameUnit[];
+    gameUnits: CustomSprite[];
     active: boolean;
     cursorFollow: CursorFollow;
-    selectedUnit?: GameUnit;
+    selectedUnit?: CustomSprite;
     cameras: CameraManager;
     transitionAnimations: Set<TransitionAnimation>;
 
@@ -88,20 +88,20 @@ class MainCamera extends Phaser.Scene {
     }
 
     selectSprite() {
-        this.input.on('gameobjectover', (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
+        this.input.on('gameobjectover', (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
             if(gameObject.gameObjectOver) {
                 gameObject.gameObjectOver(pointer, gameObject);
             }
         });
 
-        this.input.on('gameobjectout', (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
+        this.input.on('gameobjectout', (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
             if(gameObject.gameObjectOut) {
                 gameObject.gameObjectOut(pointer, gameObject);
             }
         });
 
         //highlight selected unit
-        this.events.on('unitselected',(gameUnit: GameUnit) => {
+        this.events.on('unitselected',(gameUnit: CustomSprite) => {
             if(this.selectedUnit != null) {
                 this.selectedUnit.deselectUnit(this.selectedUnit);
             }
@@ -165,7 +165,8 @@ class MainCamera extends Phaser.Scene {
         return (event: GameEvent) => {
             let unit = event.data.unitPrototype;
             if(unit) {
-                scene.gameUnits.push(scene.createGameUnit(scene, unit));
+                scene.gameUnits.push(scene.createCustomSprite(scene, unit));
+                scene.drawMap(scene.gameEngine);
             }
         }
         
@@ -231,13 +232,18 @@ class MainCamera extends Phaser.Scene {
     }
 
     drawMap(gameEngine: GameEngine) {
+        
         let vision : PlayersVision = gameEngine.getPlayerVision();
         let units = vision.units;
         this.drawBackground(vision.tiles);
+        console.log(vision.tiles.size);
+        
         
         units.forEach(unit => {
-            var gameUnit = this.createGameUnit(this, unit);
-            this.gameUnits.push(gameUnit);
+            if(unit.sprite == undefined) {
+                var gameUnit = this.createCustomSprite(this, unit);
+                this.gameUnits.push(gameUnit);
+            }
         });
         
     }
@@ -255,6 +261,7 @@ class MainCamera extends Phaser.Scene {
 
     drawBackground(tiles: Set<Tile>) {
         tiles.forEach(t => {
+            
             this.add.sprite(t.x, t.y, 'grass')
                 .setDepth(-2)
                 .setOrigin(0)
@@ -262,10 +269,10 @@ class MainCamera extends Phaser.Scene {
         })
     }
 
-    createGameUnit(game: MainCamera, unit: Unit): GameUnit {
-        var gameUnit:GameUnit = game.add.sprite(unit.x, unit.y, unit.getTexture());
+    createCustomSprite(game: MainCamera, unit: Unit): CustomSprite {
+        var gameUnit:CustomSprite = game.add.sprite(unit.x, unit.y, unit.getTexture());
         gameUnit.unit = unit;
-        unit.gameUnit = gameUnit;
+        unit.sprite = gameUnit;
         gameUnit.setScale(unit.getScale());
         gameUnit.setOrigin(0);
 

@@ -1,9 +1,9 @@
 import { GameObjects } from "phaser";
-import { GameUnit, Unit } from "../../engine/units/Unit";
+import { CustomSprite, Unit } from "../../engine/units/Unit";
 import { MainCamera } from "./MainCamera";
 
 const buildingObjectOver = function(gameScene: MainCamera) {
-    return (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
+    return (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
             var highlightSprite = gameScene.add.sprite(gameObject.x, gameObject.y, gameObject.texture );
             highlightSprite.setTintFill(0xffffff);
             highlightSprite.setDepth(-2);
@@ -14,7 +14,7 @@ const buildingObjectOver = function(gameScene: MainCamera) {
 };
 
 const buildingObjectOut = function(gameScene: MainCamera) {
-    return (pointer: Phaser.Input.Pointer, gameObject: GameUnit) => {
+    return (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
         gameObject.clearTint();
         gameObject.highlight.destroy();
     }
@@ -42,21 +42,21 @@ const createRangeHighlight = function(gameScene: MainCamera, unit: Unit) {
 }
 
 const deselectUnit = function() {
-    return function(gameUnit: GameUnit) {
+    return function(gameUnit: CustomSprite) {
         this.clearTint();
         this.highlightSelected.destroy();
         this.rangeHighlight.visible = false;
     }
 }
 
-const selectUnitEmitEvent = function(gameScene: MainCamera, gameObject: GameUnit) {
+const selectUnitEmitEvent = function(gameScene: MainCamera, gameObject: CustomSprite) {
     
     return function() {
         gameScene.events.emit('unitselected', gameObject);
     }
 }
 
-const deselectUnitEmitEvent = function(gameScene: MainCamera, gameObject: GameUnit) {
+const deselectUnitEmitEvent = function(gameScene: MainCamera, gameObject: CustomSprite) {
     
     return function() {
         if(gameScene.cursorFollow == null) {
