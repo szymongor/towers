@@ -167,6 +167,7 @@ class MainCamera extends Phaser.Scene {
             if(unit) {
                 scene.gameUnits.push(scene.createCustomSprite(scene, unit));
                 scene.drawMap(scene.gameEngine);
+                
             }
         }
         
@@ -236,10 +237,9 @@ class MainCamera extends Phaser.Scene {
         let vision : PlayersVision = gameEngine.getPlayerVision();
         let units = vision.units;
         this.drawBackground(vision.tiles);
-        console.log(vision.tiles.size);
-        
         
         units.forEach(unit => {
+            
             if(unit.sprite == undefined) {
                 var gameUnit = this.createCustomSprite(this, unit);
                 this.gameUnits.push(gameUnit);

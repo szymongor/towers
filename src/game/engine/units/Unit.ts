@@ -232,9 +232,9 @@ class Unit {
     }
 
     containsCoord(x: number, y: number) {
-        return Math.abs(x - this.x) < this.size * GameDimensions.grid.tileSize
+        return Math.abs(x - this.x) < this.size * GameDimensions.grid.tileSize/2
         &&
-        Math.abs(y - this.y) < this.size * GameDimensions.grid.tileSize;
+        Math.abs(y - this.y) < this.size * GameDimensions.grid.tileSize/2;
     }
 
     getUnitTiles(): Tile[] {

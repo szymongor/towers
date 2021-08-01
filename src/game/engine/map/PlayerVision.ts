@@ -30,14 +30,15 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
         let uy = u.getCentre().y;
         let uRange = u.actionRange;
 
-        let topLeftX = ((ux-uRange)%50)*50;
-        let topLeftY = ((uy-uRange)%50)*50;
-        
-        
-        for(let i = topLeftX; i < ux + uRange +u.size ; i += TILE_SIZE) {
-            for(let j = topLeftY; j < uy + uRange+ u.size ; j += TILE_SIZE) {
-                let distX = (ux - i)*(ux - i);
-                let distY = (uy - j)*(uy - j);
+        let topLeftX = Math.ceil((ux-uRange)/TILE_SIZE)*TILE_SIZE;
+        let topLeftY = Math.ceil((uy-uRange)/TILE_SIZE)*TILE_SIZE;
+        let topRightY = ux + uRange +u.size;
+        let botomLeftY = uy + uRange+ u.size
+
+        for(let i = topLeftX; i < topRightY; i += TILE_SIZE) {
+            for(let j = topLeftY; j <  botomLeftY ; j += TILE_SIZE) {
+                let distX = (ux - i-TILE_SIZE/2)*(ux - i-TILE_SIZE/2);
+                let distY = (uy - j-TILE_SIZE/2)*(uy - j-TILE_SIZE/2);
                 if(Math.sqrt(distX+distY) < uRange) {
                     let tile: Tile = {
                         x: i,
