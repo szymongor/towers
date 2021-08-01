@@ -27,6 +27,11 @@ interface CursorFollow extends Phaser.GameObjects.Sprite {
     action?: UiMode;
 }
 
+interface TileSprite extends Phaser.GameObjects.Sprite {
+    x: number;
+    y: number;
+}
+
 interface CameraManager extends Phaser.Cameras.Scene2D.CameraManager {
     main: ViewCamera
 }
@@ -38,6 +43,12 @@ interface ViewRectangle extends Phaser.GameObjects.Shape {
 interface ViewCamera extends Phaser.Cameras.Scene2D.Camera {
     viewRectangle?: ViewRectangle
 }
+
+interface VisibleSprites {
+    tiles: Set<Phaser.GameObjects.Sprite>;
+    units: Set<CustomSprite>;
+}
+
 
 interface Selectable {
     gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => void;
@@ -53,22 +64,23 @@ interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
 
 class MainCamera extends Phaser.Scene {
     gameEngine: GameEngine;
-    gameUnits: CustomSprite[];
     active: boolean;
     cursorFollow: CursorFollow;
     selectedUnit?: CustomSprite;
     cameras: CameraManager;
     transitionAnimations: Set<TransitionAnimation>;
+    latestVision: PlayersVision;
+    latestVisibleSprites: VisibleSprites;
 
 
     constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
         this.gameEngine;
-        this.gameUnits = [];
         this.active = false;
         this.cursorFollow;
         this.transitionAnimations = new Set();
         this.gameEngine = gameEngine;
+        this.latestVisibleSprites = {tiles: new Set(), units: new Set() }
     }
 
     //load assets
@@ -84,6 +96,7 @@ class MainCamera extends Phaser.Scene {
         this.registerUnitPlaced(this);
         registerOnResourceCollect(this, this.gameEngine);
         registerOnDamageDealt(this, this.gameEngine);
+        this.registerUnitDestroyed(this);
         this.selectSprite();
     }
 
@@ -165,7 +178,7 @@ class MainCamera extends Phaser.Scene {
         return (event: GameEvent) => {
             let unit = event.data.unitPrototype;
             if(unit) {
-                scene.gameUnits.push(scene.createCustomSprite(scene, unit));
+                scene.latestVisibleSprites.units.add(scene.createCustomSprite(scene, unit));
                 scene.drawMap(scene.gameEngine);
                 
             }
@@ -176,10 +189,7 @@ class MainCamera extends Phaser.Scene {
     placeUnit(scene: MainCamera) {
         return () => {
             if(scene.cursorFollow && scene.cursorFollow.action == UiMode.BUILD_BUILDING) {
-                let unit = scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
-                // if(unit) {
-                //     scene.createGameUnit(scene, unit);
-                // }
+                scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
                 selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
 
             }
@@ -211,7 +221,7 @@ class MainCamera extends Phaser.Scene {
 
     updateProgress(scene: MainCamera) {
         
-        scene.gameUnits.forEach(gameUnit => {
+        scene.latestVisibleSprites.units.forEach(gameUnit => {
             if(gameUnit.unit.state.construction) {
                 let u = gameUnit.unit;
                 let tileSize = GameDimensions.grid.tileSize;
@@ -232,40 +242,52 @@ class MainCamera extends Phaser.Scene {
 
     }
 
+    registerUnitDestroyed(scene: MainCamera) {
+        let subscriber = {
+            call: () => {scene.drawMap(scene.gameEngine)}
+        }
+        scene.gameEngine.events.subscribe(EventChannels.UNIT_DESTROYED, subscriber);
+    }
+
     drawMap(gameEngine: GameEngine) {
         
         let vision : PlayersVision = gameEngine.getPlayerVision();
         let units = vision.units;
         this.drawBackground(vision.tiles);
+
+        this.latestVisibleSprites.units.forEach(u => {
+            if(!units.has(u.unit)) {
+                u.unit.sprite = undefined;
+                u.destroy();
+            }
+        })
         
         units.forEach(unit => {
-            
             if(unit.sprite == undefined) {
                 var gameUnit = this.createCustomSprite(this, unit);
-                this.gameUnits.push(gameUnit);
+                this.latestVisibleSprites.units.add(gameUnit);
             }
         });
-        
+
+        this.latestVisibleSprites.units = new Set();
+
+        units.forEach(u => {
+            this.latestVisibleSprites.units.add(u.sprite);
+        })        
     }
 
-    // drawBackground(map: MapBoard) {
-    //     for(let i = 0; i < map.width/GameDimensions.grid.tileSize; i++ ) {
-    //         for(let j = 0; j < map.height/GameDimensions.grid.tileSize ; j++) {
-    //             this.add.sprite(i*GameDimensions.grid.tileSize, j*GameDimensions.grid.tileSize, 'grass')
-    //             .setDepth(-2)
-    //             .setOrigin(0)
-    //             .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01);
-    //         }
-    //     }
-    // }
-
     drawBackground(tiles: Set<Tile>) {
+
+        this.latestVisibleSprites.tiles.forEach(t => {
+            t.destroy()});
+            this.latestVisibleSprites.tiles = new Set();
+        let scene = this;
+
         tiles.forEach(t => {
-            
-            this.add.sprite(t.x, t.y, 'grass')
+            scene.latestVisibleSprites.tiles.add(scene.add.sprite(t.x, t.y, 'grass')
                 .setDepth(-2)
                 .setOrigin(0)
-                .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01);
+                .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01));
         })
     }
 
