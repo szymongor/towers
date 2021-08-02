@@ -276,7 +276,7 @@ class MainCamera extends Phaser.Scene {
         })        
     }
 
-    drawBackground(tiles: Set<Tile>) {
+    drawBackground(tiles: Map<String, Tile>) {
 
         this.latestVisibleSprites.tiles.forEach(t => {
             t.destroy()});

@@ -8,7 +8,7 @@ import { ResourceName } from "./Resources";
 import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
-import { getPlayerVision } from './map/PlayerVision';
+import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -77,13 +77,11 @@ class GameEngine {
     }
 
     canPlaceUnit(unit: Unit) {
-        return unit.canPlace(unit, this.unitStorage);
+        return isUnitInVision(this, unit) && unit.canPlace(unit, this.unitStorage);
     }
-
     
-
     orderBuilding(unitPrototype: Unit) {
-        if(unitPrototype.canPlace(unitPrototype, this.unitStorage)) {
+        if(this.canPlaceUnit(unitPrototype)) {
             let data = {
                 unitPrototype: unitPrototype,
                 player: this.getPlayer()

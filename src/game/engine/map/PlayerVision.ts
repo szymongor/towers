@@ -11,7 +11,7 @@ interface Tile {
 }
 
 interface PlayersVision {
-    tiles: Set<Tile>,
+    tiles: Map<String, Tile>,
     units: Set<Unit>
 }
 
@@ -64,13 +64,19 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
     });
 
     let playersVison : PlayersVision = {
-        tiles: new Set(tilesInRange.values()),
+        tiles: tilesInRange,
         units: visibleUnits
     }
 
     return playersVison;
 }
 
+const isUnitInVision = function(gameEngine: GameEngine, unit: Unit) : boolean {
+    let visionTiles = getPlayerVision(gameEngine).tiles;
+    let unitTiles = unit.getUnitTiles();
+    return unitTiles.every(tile => visionTiles.has(tile.x+":"+tile.y));
+}
 
 
-export { getPlayerVision, Tile, PlayersVision }
+
+export { getPlayerVision, Tile, PlayersVision, isUnitInVision }
