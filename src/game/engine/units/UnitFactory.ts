@@ -46,7 +46,7 @@ class UnitFactory {
                 name: "Tower",
                 unitName: UnitName.TOWER,
                 spriteName: 'tower',
-                size: 2,
+                size: 5,
                 type: UnitTypes.BUILDING,
                 cost: [
                     [
@@ -69,7 +69,7 @@ class UnitFactory {
                 name: 'Sawmill',
                 unitName: UnitName.SAWMILL,
                 spriteName: 'sawmill',
-                size: 1,
+                size: 4,
                 type: UnitTypes.BUILDING,
                 cost: [
                     [
@@ -93,7 +93,7 @@ class UnitFactory {
                 name: 'Mine',
                 unitName: UnitName.MINE,
                 spriteName: 'mine',
-                size: 2,
+                size: 4,
                 type: UnitTypes.BUILDING,
                 cost: [
                     [
@@ -117,7 +117,7 @@ class UnitFactory {
                 name: 'Castle',
                 unitName: UnitName.CASTLE,
                 spriteName: 'castle',
-                size: 3,
+                size: 9,
                 type: UnitTypes.BUILDING,
                 cost: [
                     [
@@ -139,7 +139,7 @@ class UnitFactory {
                 name: "Tree",
                 unitName: UnitName.TREE,
                 spriteName: 'tree',
-                size: 1,
+                size: 3,
                 type: UnitTypes.RESOURCE,
                 cost: [],
                 resources: [[ResourceName.WOOD, 200]],
@@ -151,7 +151,7 @@ class UnitFactory {
                 name: 'Stones',
                 unitName: UnitName.STONES,
                 spriteName: 'stones',
-                size: 2,
+                size: 4,
                 type: UnitTypes.RESOURCE,
                 cost: [],
                 resources: [[ResourceName.STONE, 400]],

@@ -10,6 +10,8 @@ import { MapBoard } from '../../engine/map/MapBoard';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
 import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
+import { tileSizeFloor } from '../../utils/utils';
+import { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor } from './orders/NewBuildingOrder';
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -93,7 +95,7 @@ class MainCamera extends Phaser.Scene {
 
         this.drawMap(this.gameEngine);
         
-        this.registerUnitPlaced(this);
+        registerNewBuildingOrderEvents(this);
         registerOnResourceCollect(this, this.gameEngine);
         registerOnDamageDealt(this, this.gameEngine);
         this.registerUnitDestroyed(this);
@@ -140,50 +142,7 @@ class MainCamera extends Phaser.Scene {
     }
 
     registerOuterEvents() {
-        //TODO - export to UiControls
-        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.BUILDBUILDING, (e: UiSetBuildingModeEvent) => {
-            if(this.cursorFollow) {
-                this.cursorFollow.destroy();
-            }
-            let tempCoords = {
-                x: -100,
-                y: -100
-            }
-            let unitPrototype = this.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y, null);
-            this.cursorFollow = this.add.sprite(tempCoords.x, tempCoords.y, unitPrototype.getTexture());
-            this.cursorFollow.unitPrototype = unitPrototype;
-            this.cursorFollow.setTintFill(0x00ff00);
-            this.cursorFollow.setScale(unitPrototype.getScale());
-            this.cursorFollow.setOrigin(0);
-            this.cursorFollow.action = UiMode.BUILD_BUILDING;
-        })
-
-        this.scene.get(Scenes.UIScene).events.on(UiSceneEvents.DESELECT_BUILDING, (e: UiSetBuildingModeEvent) => {
-            if(this.cursorFollow) {
-                this.cursorFollow.destroy();
-            }
-            this.cursorFollow = null;
-        })
-
-    }
-
-    registerUnitPlaced(scene: MainCamera) {
-        let subscriber = {
-            call: scene.unitPlaced(scene)
-        }
-        scene.gameEngine.events.subscribe(EventChannels.BUILDING_PLACED, subscriber);
-    }
-
-    unitPlaced(scene: MainCamera) {
-        return (event: GameEvent) => {
-            let unit = event.data.unitPrototype;
-            if(unit) {
-                scene.latestVisibleSprites.units.add(scene.createCustomSprite(scene, unit));
-                scene.drawMap(scene.gameEngine);
-                
-            }
-        }
-        
+        registerOuterUIEvents(this);
     }
 
     placeUnit(scene: MainCamera) {
@@ -191,7 +150,6 @@ class MainCamera extends Phaser.Scene {
             if(scene.cursorFollow && scene.cursorFollow.action == UiMode.BUILD_BUILDING) {
                 scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
                 selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
-
             }
         }
     }
@@ -200,20 +158,7 @@ class MainCamera extends Phaser.Scene {
         this.updateProgress(this);
         //TODO - export to UiControls
         if(this.cursorFollow) {
-            let tileSize = GameDimensions.grid.tileSize;
-            var x = Math.floor((this.input.mousePointer.x+this.cameras.main.scrollX)/tileSize)*tileSize;
-            var y = Math.floor(((this.input.mousePointer.y+this.cameras.main.scrollY))/tileSize)*tileSize;
-
-            if(this.cameras.main.viewRectangle.geom.contains(x,y)) {
-                this.cursorFollow.setPosition(x, y);
-                this.cursorFollow.unitPrototype.x = x;
-                this.cursorFollow.unitPrototype.y = y;
-                if(!this.gameEngine.canPlaceUnit(this.cursorFollow.unitPrototype)) {
-                    this.cursorFollow.setTintFill(0xff0000);
-                } else {
-                    this.cursorFollow.setTintFill(0x00ff00);
-                }
-            }
+            updateBuildingOrderCursor(this);
         }
 
         this.updateTransitionAnimation();

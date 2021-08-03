@@ -18,7 +18,7 @@ var GameDimensions = {
         width: 0
     },
     grid: {
-        tileSize: 50,
+        tileSize: 20,
         grassTileSize: 100,
         imgSize: 200
     },

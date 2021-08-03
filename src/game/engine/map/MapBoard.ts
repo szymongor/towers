@@ -3,6 +3,8 @@ import { Unit } from '../units/Unit';
 import { UnitFactory, UnitName } from '../units/UnitFactory';
 import { UnitStorage } from '../units/UnitsStorage';
 
+const TILE_SIZE = GameDimensions.grid.tileSize;
+
 class MapBoard {
 
     height: number;
@@ -26,11 +28,12 @@ class MapBoard {
 
     randomAllUnits(width: number, height: number): Unit[] {
         let grid: any = {};
-        let rand = -56;
-        let sParam = 15;
-        for(let i = 0 ; i < width ; i+=GameDimensions.grid.tileSize ) {
+        let rand = -506;
+        let sParam = 30;
+        let TILE_SPAN = GameDimensions.grid.tileSize;
+        for(let i = 0 ; i < width ; i+=TILE_SPAN ) {
             grid[i]={};
-            for(let j = 0 ; j < height ; j+=GameDimensions.grid.tileSize ) {
+            for(let j = 0 ; j < height ; j+=TILE_SPAN ) {
                 grid[i][j] = Math.sin((i/sParam+rand)*(-j/sParam+rand));
             }
         }
@@ -41,38 +44,61 @@ class MapBoard {
 
         
 
-        for(let i = 0 ; i < width ; i+= GameDimensions.grid.tileSize ) {
+        for(let i = 0 ; i < width ; i+= TILE_SPAN ) {
             if(!gridWithUnits[i]){
                 gridWithUnits[i] = {};
             }
-
-            if(!gridWithUnits[i+GameDimensions.grid.tileSize]){
-                gridWithUnits[i+GameDimensions.grid.tileSize] = {};
-            }
-            
-            for(let j = 0 ; j < height; j+=GameDimensions.grid.tileSize ) {
+            for(let j = 0 ; j < height; j+=TILE_SPAN ) {
                 if(!gridWithUnits[i][j]) {
                     
-                    
-                    if(grid[i][j] < 0.6) {
+                    if(grid[i][j] < 0.8) {
                         gridWithUnits[i][j] = -1;
                     }
                     else if(grid[i][j] < 0.99) {
-                        gridWithUnits[i][j] = 1;
-                        units.push(this.unitFactory.of(UnitName.TREE, i, j, null))
+                        let unit = this.unitFactory.of(UnitName.TREE, i, j, null);
+                        if(this.checkIfCanPlaceUnit(gridWithUnits, unit)) {
+                            for(let ui = i ; ui <= i+unit.size*TILE_SPAN  ; ui +=TILE_SPAN ) { 
+                                if(!gridWithUnits[ui]){
+                                    gridWithUnits[ui] = {};
+                                }
+                                for(let uj = j ; uj <= j+unit.size*TILE_SPAN  ; uj +=TILE_SPAN ) {
+                                    gridWithUnits[ui][uj] = 1;
+                                }
+                            }
+                            units.push(unit);
+                        }
+                        
+                        
                     }
                     else if(grid[i][j] < 1) {
-                        gridWithUnits[i][j] = 2;
-                        gridWithUnits[i+GameDimensions.grid.tileSize][j] = 2;
-                        gridWithUnits[i+GameDimensions.grid.tileSize][j+GameDimensions.grid.tileSize] = 2;
-                        gridWithUnits[i][j+GameDimensions.grid.tileSize] = 2;
-                        units.push(this.unitFactory.of(UnitName.STONES,i, j, null))
+                        let unit = this.unitFactory.of(UnitName.STONES, i, j, null);
+                        if(this.checkIfCanPlaceUnit(gridWithUnits, unit)) {
+                            for(let ui = i ; ui <= i+unit.size*TILE_SPAN  ; ui +=TILE_SPAN ) {
+                                if(!gridWithUnits[ui]){
+                                    gridWithUnits[ui] = {};
+                                }
+                                for(let uj = j ; uj <= j+unit.size*TILE_SPAN  ; uj +=TILE_SPAN ) {
+                                    gridWithUnits[ui][uj] = 2;
+                                }
+                            }
+                            units.push(unit);
+                        }
                     }
                 }
             }
         }
 
         return units;
+    }
+
+    checkIfCanPlaceUnit(gridWithUnits: any, unit: Unit) {
+        if(!gridWithUnits[unit.x+TILE_SIZE*unit.size]){
+            gridWithUnits[unit.x+TILE_SIZE*unit.size] = {};
+        }
+        return !gridWithUnits[unit.x][unit.y] 
+        && !gridWithUnits[unit.x+TILE_SIZE*unit.size][unit.y]
+        && !gridWithUnits[unit.x][unit.y+TILE_SIZE*unit.size] 
+        && !gridWithUnits[unit.x+TILE_SIZE*unit.size][unit.y+TILE_SIZE*unit.size]
     }
 
     randomTrees(n: number, width: number, heighth: number) {
