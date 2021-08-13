@@ -1,7 +1,6 @@
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
-import { GameEngine } from "../../GameEngine"
-import { Player } from "../../Player";
+import { GameEngine } from "../../GameEngine";
 import { ResourceName } from "../../Resources";
 import { Unit, UnitTypes, Damage } from "../Unit";
 import { UnitName } from "../UnitFactory";
@@ -139,9 +138,6 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
         }
 
     }
-
-
-    
 
 }
 

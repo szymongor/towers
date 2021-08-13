@@ -44,6 +44,7 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnit: Unit) => {
     selectedUnitUI.hpBar = createHPBar(scene, selectedUnit, selectedUnitUI);
 
     infoTxt.text = getUnitInfoText(selectedUnit);
+    drawUnitActionUI(scene, selectedUnit);
 
 }
 
@@ -54,6 +55,18 @@ const getUnitInfoText = (unit: Unit): string => {
     info += "Player: " + unitInfo.player.id + '\n'
     info += "Coords: " + unitInfo.x + "," + unitInfo.y;
     return info;
+}
+
+const drawUnitActionUI = (scene: UiScene, unit: Unit): void => {
+    for(let i = 0 ; i < unit.actionUI.length ; i++) {
+        let actionUI = unit.actionUI[i];
+        let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
+        icon.setOrigin(0);
+        icon.setScale(0.25);
+        icon.setInteractive();
+        icon.on(Phaser.Input.Events.POINTER_DOWN,actionUI.execute);
+        scene.uiButtons.push(icon);
+    }
 }
 
 const createHPBar = (scene: UiScene, selectedUnit: Unit, selectedUnitUI: SelectedUnitUI ): Bar => {

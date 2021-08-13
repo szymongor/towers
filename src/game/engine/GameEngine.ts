@@ -18,7 +18,7 @@ class GameEngine {
     events: EventRegistry;
 
     constructor() {
-        this.unitFactory = new UnitFactory();
+        this.unitFactory = new UnitFactory(this);
         this.unitStorage = new UnitStorage();
         this.mapBoard = this.createMapBoard();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];

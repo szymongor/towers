@@ -3,6 +3,9 @@ var GameDimensions = {
     gameHeight: 600,
     uiSceneWidth: 200,
     uiSceneHeight: 400,
+    ui: {
+        uiButtonsY: 420
+    },
     minimapWidth: 0,
     minimapHeight: 0,
     mainCameraWidth: 0,

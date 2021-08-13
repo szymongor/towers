@@ -11,24 +11,23 @@ interface UIButton {
     setTintFill: (prop: number) => void;
 }
 
-interface GameEngineRegistry {
-
-}
-
 class UiScene extends Phaser.Scene {
 
     gameEngine: GameEngine;
-    originX: number;
-    originY: number;
+    originX: number;            //
+    originY: number;            //    
+    originActionUIX: number;    //
+    originActionUIY: number;    //TODO - UI Dimensions
     selectedUnitUI?: SelectedUnitUI;
 
-    baseUIButtons: UIButton[];
+    uiButtons: UIButton[];
 
     constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
         Phaser.Scene.call(this, { key: handle, active: true });
-        this.baseUIButtons = [];
+        this.uiButtons = [];
         this.gameEngine = gameEngine;
+        this.originActionUIY = GameDimensions.ui.uiButtonsY;
     }
 
     preload() {
@@ -60,16 +59,18 @@ class UiScene extends Phaser.Scene {
             uiScene.clearButtonsTint(uiScene);
             if(gameUnit) {
                 // uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y
-                showSelectedUnitUI(this, gameUnit.unit);
-                uiScene.baseUIButtons.forEach(btn => {
+                uiScene.uiButtons.forEach(btn => {
                     btn.setVisible(false);
                 });
+                uiScene.uiButtons = [];
+                showSelectedUnitUI(this, gameUnit.unit);
+                
     
             } else {
                 if(this.selectedUnitUI){
                     this.selectedUnitUI.hide();
                 }
-                uiScene.baseUIButtons.forEach(btn => {
+                uiScene.uiButtons.forEach(btn => {
                     btn.setVisible(true);
                 });
             }
@@ -77,7 +78,7 @@ class UiScene extends Phaser.Scene {
     }
 
     clearButtonsTint(uiScene: UiScene) {
-        uiScene.baseUIButtons.forEach(btn => {
+        uiScene.uiButtons.forEach(btn => {
             btn.clearTint();
         });
     }

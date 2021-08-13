@@ -30,7 +30,7 @@ const createBaseUIButtons = function(scene: UiScene) {
     buttonCastle.on(Phaser.Input.Events.POINTER_DOWN, castleButtonClick(buttonCastle, scene));
 
 
-    scene.baseUIButtons.push(buttonTower, buttonSawmill, buttonMine, buttonCastle);
+    scene.uiButtons.push(buttonTower, buttonSawmill, buttonMine, buttonCastle);
 }
 
 const towerButtonClick = function(button: UIButton, scene: UiScene) {

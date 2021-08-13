@@ -4,6 +4,8 @@ import { ResourceName, Resources, ResourcesStorage } from '../Resources';
 import { UnitAction, SawmillWoodCollect, MineStoneCollect, TowerAttack } from './actions/UnitActions';
 import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
+import { soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
+import { GameEngine } from "../GameEngine";
 
 enum UnitName {
     TOWER = "tower",
@@ -29,6 +31,7 @@ interface UnitConfig {
     resources?: [ResourceName, number][];
     constructionTime: number;
     actions: UnitAction[];
+    uiActions?: UnitActionUIProvider[];
     actionRange: number;
     actionInterval?: number;
     maxHP?: number;
@@ -38,9 +41,11 @@ interface UnitConfig {
 class UnitFactory {
 
     unitConfig: UnitsConfig;
+    gameEngine: GameEngine;
     static Units: { [key: string]: UnitName };
 
-    constructor () {
+    constructor (gameEngine: GameEngine) {
+        this.gameEngine = gameEngine;
         this.unitConfig = {
             tower: {
                 name: "Tower",
@@ -60,6 +65,7 @@ class UnitFactory {
                 ],
                 canPlace: canPlaceStandard,
                 actions: [TowerAttack],
+                uiActions: [],
                 actionInterval: 5,
                 actionRange: 300,
                 constructionTime: 20,
@@ -86,6 +92,7 @@ class UnitFactory {
                 actions: [
                     SawmillWoodCollect
                 ],
+                uiActions: [],
                 actionRange: 200,
                 maxHP: 200
             },
@@ -110,6 +117,7 @@ class UnitFactory {
                 actions: [
                     MineStoneCollect
                 ],
+                uiActions: [],
                 actionRange: 0,
                 maxHP: 200
             },
@@ -132,6 +140,7 @@ class UnitFactory {
                 canPlace: canPlaceStandard,
                 constructionTime: 30,
                 actions: [],
+                uiActions: [soldierProductionProvider],
                 actionRange: 500,
                 maxHP: 2000
             },
@@ -144,6 +153,7 @@ class UnitFactory {
                 cost: [],
                 resources: [[ResourceName.WOOD, 200]],
                 actions: [],
+                uiActions: [],
                 actionRange: 0,
                 constructionTime: 0
             },
@@ -156,6 +166,7 @@ class UnitFactory {
                 cost: [],
                 resources: [[ResourceName.STONE, 400]],
                 actions: [],
+                uiActions: [],
                 actionRange: 0,
                 constructionTime: 0
             }
@@ -165,7 +176,7 @@ class UnitFactory {
 
     createTower(x: number, y: number, eventRegistry: EventRegistry, player: Player): Unit {
         let tower = new Unit(x, y,
-            this.unitConfig.tower, eventRegistry, player);
+            this.unitConfig.tower, this.gameEngine, eventRegistry, player);
         
         tower.hp.value = tower.hp.max;
         return tower;
@@ -179,7 +190,7 @@ class UnitFactory {
     }
 
     of(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player?: Player): Unit {
-        let unit = new Unit(x, y, this.unitConfig[type], eventRegistry, player);
+        let unit = new Unit(x, y, this.unitConfig[type], this.gameEngine, eventRegistry, player);
 
         if(this.unitConfig[type].type == UnitTypes.RESOURCE) {
             this.addResource(unit, type);

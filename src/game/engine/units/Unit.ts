@@ -9,6 +9,8 @@ import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
 import { Tile } from '../map/PlayerVision';
+import { UnitActionUI } from './actions/UnitActionsUI';
+import { GameEngine } from '../GameEngine';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -97,6 +99,7 @@ class Unit {
     sprite: CustomSprite;
     resources?: ResourcesStorage;
     actions: UnitAction[];
+    actionUI: UnitActionUI[];
     actionRange: number;
     actionInterval: number;
     currentActions: Map<string, ActionProgress>;
@@ -105,7 +108,7 @@ class Unit {
     canPlace: CanPlaceRule;
 
 
-    constructor(xPos: number, yPos: number, config: UnitConfig, eventRegistry: EventRegistry, player?: Player) {
+    constructor(xPos: number, yPos: number, config: UnitConfig, gameEngine: GameEngine, eventRegistry: EventRegistry, player?: Player) {
         this.x = xPos;
         this.y = yPos;
         this.name = config.name;
@@ -124,6 +127,7 @@ class Unit {
             }
         };
         this.actions = config.actions;
+        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry));
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
         this.currentActions = new Map();
