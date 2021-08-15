@@ -9,6 +9,7 @@ interface UIButton {
     clearTint: () => void;
     setVisible: (prop: boolean) => void;
     setTintFill: (prop: number) => void;
+    destroy: () => void;
 }
 
 class UiScene extends Phaser.Scene {
@@ -57,22 +58,17 @@ class UiScene extends Phaser.Scene {
     unitSelected(uiScene: UiScene) {
         return (gameUnit: CustomSprite) => {
             uiScene.clearButtonsTint(uiScene);
+            uiScene.uiButtons.forEach(btn => {
+                btn.destroy();
+            });
             if(gameUnit) {
-                // uiScene.selectedUnitInfo.text = "x: "+gameUnit.unit.x+",\ny: "+gameUnit.unit.y
-                uiScene.uiButtons.forEach(btn => {
-                    btn.setVisible(false);
-                });
                 uiScene.uiButtons = [];
                 showSelectedUnitUI(this, gameUnit.unit);
-                
-    
             } else {
                 if(this.selectedUnitUI){
                     this.selectedUnitUI.hide();
                 }
-                uiScene.uiButtons.forEach(btn => {
-                    btn.setVisible(true);
-                });
+                createBaseUIButtons(this);
             }
         }
     }
