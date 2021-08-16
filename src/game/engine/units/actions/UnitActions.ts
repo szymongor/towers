@@ -5,6 +5,7 @@ import { ResourceName } from "../../Resources";
 import { Unit, UnitTypes, Damage } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitFilter } from "../UnitsStorage";
+import { UnitTask } from "../UnitTask";
 
 interface ResourceCollectedEventData {
     collector: Unit;
@@ -100,41 +101,37 @@ const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: 
 const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
 
     let actionName = "TOWER_ATTACK";
-    if(unit.currentActions.has(actionName)) {
-        let action = unit.currentActions.get(actionName);
-        action.value+=1;
-        if(action.value == action.limit) {
-            let dmg: Damage = {
-                value: 50,
-                source: unit
-            }
-            action.target.dealDamage(dmg);
-            unit.currentActions.delete(actionName);
-            let damageDealtEventData : DamageDealtEventData = {
-                target: action.target,
-                source: unit
-            }
-            let damageDealtEvent = new GameEvent(EventChannels.DAMAGE_DEALT, damageDealtEventData);
-            eventRegistry.emit(damageDealtEvent);
-        }
+    
+    if(unit.currentTasks.has(actionName)) {
+
     } else {
         let unitFilter: UnitFilter = {
             type: UnitTypes.BUILDING,
             range: {
                 unit: unit,
                 range: unit.actionRange,
-                
             },
             player_ne: unit.player
         }
         let nearestEnemy = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
         if(nearestEnemy) {
-            let action = {
-                limit: unit.actionInterval,
-                value: 1,
-                target: nearestEnemy
+            let callback = () => {
+                let dmg: Damage = {
+                    value: 50,
+                    source: unit
+                }
+                nearestEnemy.dealDamage(dmg);
+                unit.currentTasks.delete(actionName);
+                let damageDealtEventData : DamageDealtEventData = {
+                    target: nearestEnemy,
+                    source: unit
+                }
+                let damageDealtEvent = new GameEvent(EventChannels.DAMAGE_DEALT, damageDealtEventData);
+                eventRegistry.emit(damageDealtEvent);
             }
-            unit.currentActions.set(actionName, action);
+
+            let action: UnitTask = new UnitTask(actionName, unit.actionInterval, callback);
+            unit.currentTasks.set(actionName, action);
         }
 
     }

@@ -18,6 +18,7 @@ const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, ga
         canExecute: () => true,
         execute: () => {
             console.log("Soldier production");
+            // gameEngine.startCreatureProduction() TODO
         }
     }
 }

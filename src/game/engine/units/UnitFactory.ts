@@ -13,7 +13,8 @@ enum UnitName {
     MINE = "mine",
     CASTLE = "castle",
     TREE = "tree",
-    STONES = "stones"
+    STONES = "stones",
+    SOLDIER = "soldier"
 }
 
 interface UnitsConfig {
@@ -141,7 +142,7 @@ class UnitFactory {
                 constructionTime: 30,
                 actions: [],
                 uiActions: [soldierProductionProvider],
-                actionRange: 500,
+                actionRange: 1000,
                 maxHP: 2000
             },
             tree: {
@@ -169,6 +170,26 @@ class UnitFactory {
                 uiActions: [],
                 actionRange: 0,
                 constructionTime: 0
+            },
+            soldier: {
+                name: 'Soldier',
+                unitName: UnitName.SOLDIER,
+                spriteName: 'soldier',
+                size: 2,
+                type: UnitTypes.CREATURE,
+                cost: [
+                    [
+                        ResourceName.WOOD,
+                        10
+                    ],
+                    [
+                        ResourceName.STONE,
+                        10
+                    ]
+                ],
+                actions: [],
+                actionRange: 50,
+                constructionTime: 30
             }
 
         }

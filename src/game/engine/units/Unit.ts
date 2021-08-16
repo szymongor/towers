@@ -11,23 +11,20 @@ import { CanPlaceRule } from './actions/UnitRules';
 import { Tile } from '../map/PlayerVision';
 import { UnitActionUI } from './actions/UnitActionsUI';
 import { GameEngine } from '../GameEngine';
+import { TaskProgress, UnitTask } from './UnitTask';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
 enum UnitTypes {
     BUILDING = "BUILDING",
-    RESOURCE = "RESOURCE"
-}
-
-interface UnitStateProgress {
-    limit: number;
-    value: number;
+    RESOURCE = "RESOURCE",
+    CREATURE = "CREATURE"
 }
 
 interface UnitState {
     destroyed: boolean;
     construction: boolean;
-    progress: UnitStateProgress;
+    progress: TaskProgress;
 }
 
 interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
@@ -82,9 +79,10 @@ class HP {
     }
 }
 
-interface ActionProgress extends UnitStateProgress {
-    target?: Unit;
-}
+// interface ActionProgress extends TaskProgress {
+//     target?: Unit;
+//     callback?: () => void;
+// }
 
 class Unit {
     x: number;
@@ -102,7 +100,7 @@ class Unit {
     actionUI: UnitActionUI[];
     actionRange: number;
     actionInterval: number;
-    currentActions: Map<string, ActionProgress>;
+    currentTasks: Map<string, UnitTask>;
     hp: HP;
     eventRegistry: EventRegistry;
     canPlace: CanPlaceRule;
@@ -130,7 +128,7 @@ class Unit {
         this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry));
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
-        this.currentActions = new Map();
+        this.currentTasks = new Map();
         this.hp = new HP(config.maxHP, config.maxHP);
         this.eventRegistry = eventRegistry;
         this.canPlace = config.canPlace;
@@ -201,9 +199,7 @@ class Unit {
 
     isUnitInRange(unit: Unit): boolean {
         let distnace = this.distanceToUnit(unit);
-
         return distnace < this.actionRange + (unit.size * GameDimensions.grid.tileSize);
-
     }
 
     getUnitInfo(): UnitInfo {
@@ -233,6 +229,10 @@ class Unit {
         if(this.hp.value <= 0) {
             this.kill();
         }
+    }
+
+    addUnitTask(unitTask: UnitTask) {
+        this.currentTasks.set(unitTask.name, unitTask);
     }
 
     containsCoord(x: number, y: number) {

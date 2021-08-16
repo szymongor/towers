@@ -9,6 +9,7 @@ import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
+import { UnitAction } from './units/actions/UnitActions';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -109,6 +110,15 @@ class GameEngine {
         }
     }
 
+    startCreatureProduction(productionBuilding: Unit, creaturePrototype: Unit, productionAction: UnitAction) {
+        let ownerPlayer = productionBuilding.player;
+        let unitCosts = this.unitFactory.getConfig(creaturePrototype.unitName).cost;
+        if(ownerPlayer.checkEnoughResources(unitCosts)) {
+            // productionBuilding.add TODO
+        }
+
+    }
+
     registerOrderBuildingFlow() {
         var subscriber = {
             call: this.receiveBuildingOrder(this)
@@ -153,17 +163,20 @@ class GameEngine {
         
         // this.getPlayer().addResources(resourcesAdd);
 
-        this.runUnitActions();
+        this.runUnitActionsAndTasks();
 
         this.updateConstruction();
     }
 
-    runUnitActions() {
+    runUnitActionsAndTasks() {
         let ge = this;
         let events = this.events;
         this.unitStorage.units.forEach(u => {
             u.actions.forEach( action => {
                 action(events, ge, u);
+            });
+            u.currentTasks.forEach(e => {
+                e.processTask();
             })
         })
     }
