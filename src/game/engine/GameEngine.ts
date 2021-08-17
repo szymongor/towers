@@ -158,14 +158,7 @@ class GameEngine {
     }
 
     update() {
-        //TODO receiving resources from owned units;
-        // let resourcesAdd: [ResourceName, number][] = [[ResourceName.WOOD, 2]];
-        
-        // this.getPlayer().addResources(resourcesAdd);
-
         this.runUnitActionsAndTasks();
-
-        this.updateConstruction();
     }
 
     runUnitActionsAndTasks() {
@@ -175,20 +168,16 @@ class GameEngine {
             u.actions.forEach( action => {
                 action(events, ge, u);
             });
-            u.currentTasks.forEach(e => {
-                e.processTask();
-            })
-        })
-    }
-
-    updateConstruction() {
-        this.unitStorage.getUnits({type: UnitTypes.BUILDING}).forEach(unit => {
-            if(unit.state.construction) {
-                let finished = unit.processTasks();
-                if(finished) {
-                    unit.updateTexture();
+            let doneTasksKeys : string[] = [];
+            u.currentTasks.forEach((task, key) => {
+                let done = task.processTask();
+                if(done) {
+                    doneTasksKeys.push(key);
                 }
-            }
+            });
+            doneTasksKeys.forEach( key => {
+                u.clearUnitTask(key);
+            })
         })
     }
 

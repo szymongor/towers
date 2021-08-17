@@ -12,6 +12,7 @@ import { Bar } from '../utils/bars';
 import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
 import { tileSizeFloor } from '../../utils/utils';
 import { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor } from './orders/NewBuildingOrder';
+import { UnitTaskNames } from '../../engine/units/UnitTask';
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -167,7 +168,9 @@ class MainCamera extends Phaser.Scene {
     updateProgress(scene: MainCamera) {
         
         scene.latestVisibleSprites.units.forEach(gameUnit => {
+            let unitProgress = gameUnit.unit.getProgress();
             if(gameUnit.unit.state.construction) {
+                //CONSTRUCTION PROGRESS BAR
                 let u = gameUnit.unit;
                 let tileSize = GameDimensions.grid.tileSize;
                 let w = u.size * tileSize;
@@ -176,12 +179,33 @@ class MainCamera extends Phaser.Scene {
                     let x = u.x;
                     let y = u.y;
                     let w = u.size * tileSize;
-                    let bar = new Bar(this, x, y, u.getProgress(), w, 8, 0x42c5f5);
+                    let bar = new Bar(this, x, y, unitProgress.get(UnitTaskNames.CONSTRUCTION), w, 8, 0x42c5f5);
                     
                     gameUnit.progressBar = bar;
                 } else {
-                    gameUnit.progressBar.updateProgress( u.getProgress());
+                    gameUnit.progressBar.updateProgress( unitProgress.get(UnitTaskNames.CONSTRUCTION));
                 }
+            } else {
+                //PRODUCTUION PROGRESS BAR
+                if(unitProgress.get(UnitTaskNames.PRODUCTION)) {
+                    let u = gameUnit.unit;
+                    let tileSize = GameDimensions.grid.tileSize;
+                    let w = u.size * tileSize;
+                    if(gameUnit.progressBar == null) {
+                        
+                        let x = u.x;
+                        let y = u.y;
+                        let w = u.size * tileSize;
+                        let bar = new Bar(this, x, y, unitProgress.get(UnitTaskNames.PRODUCTION), w, 8, 0xf5ad42);
+                        
+                        gameUnit.progressBar = bar;
+                    } else {
+                        gameUnit.progressBar.updateProgress( unitProgress.get(UnitTaskNames.PRODUCTION));
+                    }
+
+                }
+                
+
             }
         })
 

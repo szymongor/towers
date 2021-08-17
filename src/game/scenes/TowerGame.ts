@@ -14,6 +14,7 @@ import stonePng from '../../images/stone.png';
 import stonesPng from '../../images/stones.png';
 import arrowPng from '../../images/arrow.png';
 import soldierProductionIcon from '../../images/soldier_production_icon.png';
+import soldierPng from '../../images/soldier.png';
 import { GameEngine } from '../engine/GameEngine';
 import { StartScene } from './meta/StartScene';
 import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
@@ -47,6 +48,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('mine', minePng);
         this.loader.image('castle', towerPng);
         this.loader.image('soldier_production_icon', soldierProductionIcon);
+        this.loader.image('soldier', soldierPng);
         
 
         this.loader.start();

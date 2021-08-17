@@ -9,7 +9,7 @@ interface CanPlaceRule {
 
 const canPlaceStandard = (unit: Unit, unitStorage: UnitStorage): boolean => {
     let units = unitStorage.getUnits({});
-    return 0 == units.filter(u=> unitIntersect(u, unit.x, unit.y, unit.size)).length; 
+    return 0 == units.filter(u=> unitIntersect(u, unit.x, unit.y, unit.size)).length;
 }
 
 const canPlaceMine = (unit: Unit, unitStorage: UnitStorage): boolean => {

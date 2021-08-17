@@ -1,6 +1,9 @@
-import { EventRegistry } from "../../events/EventsRegistry";
+import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
+import { GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
 import { Unit } from "../Unit";
+import { UnitName } from "../UnitFactory";
+import { UnitTask, UnitTaskNames } from "../UnitTask";
 
 interface UnitActionUIProvider {
     (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry): UnitActionUI
@@ -18,9 +21,26 @@ const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, ga
         canExecute: () => true,
         execute: () => {
             console.log("Soldier production");
-            // gameEngine.startCreatureProduction() TODO
+            unit.addUnitTask(soldierProductionTask(unit, gameEngine,eventRegistry))
         }
     }
+}
+
+const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry ) => {
+    let done = () => {
+        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, eventRegistry);
+        gameEngine.unitStorage.addUnit(soldier);
+
+        // TODO BUILDING_PLACED event_data type
+        // TODO UNIT_PRODUCED event and event_data types
+        let data : any = {
+            unitPrototype: soldier
+        }
+        let event = new GameEvent(EventChannels.BUILDING_PLACED, data)
+        eventRegistry.emit(event);
+
+    }
+    return new UnitTask(UnitTaskNames.PRODUCTION, 3, done);
 }
 
 export { UnitActionUI, UnitActionUIProvider, soldierProductionProvider }
