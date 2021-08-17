@@ -6,6 +6,7 @@ import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
 import { soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
 import { GameEngine } from "../GameEngine";
+import { UnitTask, UnitTaskNames } from "./UnitTask";
 
 enum UnitName {
     TOWER = "tower",
@@ -222,11 +223,21 @@ class UnitFactory {
     constructionOf(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player: Player) {
         let constructedUnit = this.of(type, x, y, eventRegistry, player);
         constructedUnit.state.construction = true;
-        constructedUnit.state.progress = {
-            limit: this.unitConfig[type].constructionTime,
-            value: 0
-        }
         constructedUnit.hp.value = 0;
+
+        let constructionTime = this.unitConfig[type].constructionTime;
+
+        let constructionCallback = () => {
+            constructedUnit.hp.addHealthValue(constructedUnit.hp.max/constructionTime);
+        }
+
+        let constructionFinish = () => {
+            constructedUnit.state.construction = false;
+            constructedUnit.updateTexture();
+        }
+        let constructionTask = new UnitTask(UnitTaskNames.CONSTRUCTION, 
+            constructionTime,  constructionFinish, constructionCallback);
+        constructedUnit.addUnitTask(constructionTask);
         return constructedUnit;
     }
 

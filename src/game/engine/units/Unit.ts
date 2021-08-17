@@ -24,7 +24,6 @@ enum UnitTypes {
 interface UnitState {
     destroyed: boolean;
     construction: boolean;
-    progress: TaskProgress;
 }
 
 interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
@@ -118,11 +117,7 @@ class Unit {
         
         this.state = {
             destroyed: false,
-            construction: false,
-            progress: {
-                limit:0,
-                value: 0
-            }
+            construction: false
         };
         this.actions = config.actions;
         this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry));
@@ -135,8 +130,14 @@ class Unit {
 
     }
 
-    getProgress() {
-        return this.state.progress.value / this.state.progress.limit;
+    getProgress(): Map<string, number> {
+        var taskNameToProgress = new Map();
+
+        this.currentTasks.forEach(({progress}, key) => {
+            taskNameToProgress.set(key, progress.value/progress.limit);
+        });
+
+        return taskNameToProgress;
     }
 
     getTexture() {
@@ -174,15 +175,15 @@ class Unit {
     }
 
     processTasks() { 
-        let progres = this.state.progress;
-        if(progres.limit == progres.value) {
-            this.state.construction = false;
-            return true;
-        } else {
-            this.hp.value += this.hp.max * 1/progres.limit
-            this.state.progress.value++;
-            return false;
-        }
+        // let progres = this.state.progress;
+        // if(progres.limit == progres.value) {
+        //     this.state.construction = false;
+        //     return true;
+        // } else {
+        //     this.hp.value += this.hp.max * 1/progres.limit
+        //     this.state.progress.value++;
+        //     return false;
+        // }
     }
 
     destroy() {
@@ -233,6 +234,10 @@ class Unit {
 
     addUnitTask(unitTask: UnitTask) {
         this.currentTasks.set(unitTask.name, unitTask);
+    }
+
+    clearUnitTask(unitTaskName: string) {
+        this.currentTasks.delete(unitTaskName);
     }
 
     containsCoord(x: number, y: number) {
