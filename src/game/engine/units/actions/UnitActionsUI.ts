@@ -28,7 +28,7 @@ const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, ga
 
 const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry ) => {
     let done = () => {
-        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, eventRegistry);
+        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, eventRegistry, gameEngine.getPlayer());
         gameEngine.unitStorage.addUnit(soldier);
 
         // TODO BUILDING_PLACED event_data type

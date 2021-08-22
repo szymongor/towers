@@ -151,10 +151,6 @@ class Unit {
     updateTexture() {
         if(this.sprite) {
             this.sprite.setTexture(this.getTexture());
-            if(this.sprite.progressBar) {
-                this.sprite.progressBar.destroy();
-                this.sprite.progressBar = null;
-            }
         }
     }
 
@@ -172,18 +168,6 @@ class Unit {
 
     getActionRange() {
         return this.actionRange;
-    }
-
-    processTasks() { 
-        // let progres = this.state.progress;
-        // if(progres.limit == progres.value) {
-        //     this.state.construction = false;
-        //     return true;
-        // } else {
-        //     this.hp.value += this.hp.max * 1/progres.limit
-        //     this.state.progress.value++;
-        //     return false;
-        // }
     }
 
     destroy() {
@@ -238,6 +222,10 @@ class Unit {
 
     clearUnitTask(unitTaskName: string) {
         this.currentTasks.delete(unitTaskName);
+        if(this.sprite.progressBar) {
+            this.sprite.progressBar.destroy();
+            this.sprite.progressBar = null;
+        }
     }
 
     containsCoord(x: number, y: number) {

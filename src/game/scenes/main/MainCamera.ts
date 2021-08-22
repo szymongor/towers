@@ -277,11 +277,18 @@ class MainCamera extends Phaser.Scene {
                 
                 gameUnit.setInteractive();
                 break;
+            case UnitTypes.CREATURE:
+                gameUnit.gameObjectOver = buildingObjectOver(this);
+                gameUnit.gameObjectOut = buildingObjectOut(this);
+                gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
+                gameUnit.selectUnit = selectUnit(this, unit);
+                gameUnit.deselectUnit = deselectUnit();
+                unit.sprite.setDepth(2);
+                gameUnit.setInteractive();
+                break;
             case UnitTypes.RESOURCE:
                 gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit();
-                
-
                 break;
             default:
                 gameUnit.gameObjectOver = (pointer, gameObject) => { };
