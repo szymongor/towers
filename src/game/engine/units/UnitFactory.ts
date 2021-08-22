@@ -191,7 +191,8 @@ class UnitFactory {
                 actions: [],
                 uiActions: [],
                 actionRange: 50,
-                constructionTime: 30
+                constructionTime: 3,
+                maxHP: 50
             }
 
         }

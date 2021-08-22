@@ -40,7 +40,8 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry
         eventRegistry.emit(event);
 
     }
-    return new UnitTask(UnitTaskNames.PRODUCTION, 3, done);
+    let constructionTime = gameEngine.unitFactory.unitConfig[UnitName.SOLDIER].constructionTime;
+    return new UnitTask(UnitTaskNames.PRODUCTION, constructionTime, done);
 }
 
 export { UnitActionUI, UnitActionUIProvider, soldierProductionProvider }
