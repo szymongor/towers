@@ -1,3 +1,4 @@
+import { UiActionType, UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
 import { Unit } from "../../engine/units/Unit";
 import { GameDimensions } from "../../GameDimensions";
 import { selectUnit } from "../main/UnitsControls";
@@ -60,13 +61,29 @@ const getUnitInfoText = (unit: Unit): string => {
 const drawUnitActionUI = (scene: UiScene, unit: Unit): void => {
     for(let i = 0 ; i < unit.actionUI.length ; i++) {
         let actionUI = unit.actionUI[i];
-        let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
+        switch(actionUI.type) {
+            case UiActionType.ORDERING:
+                orderingButton(scene, actionUI);
+                break;
+            case UiActionType.TARGETING: 
+                targetingButton(scene, actionUI);
+                break;
+                
+        }
+    }
+}
+
+const orderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
+    let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
         icon.setInteractive();
         icon.on(Phaser.Input.Events.POINTER_DOWN,actionUI.execute);
         scene.uiButtons.push(icon);
-    }
+}
+
+const targetingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
+    console.log("TO DO");
 }
 
 const createHPBar = (scene: UiScene, selectedUnit: Unit, selectedUnitUI: SelectedUnitUI ): Bar => {

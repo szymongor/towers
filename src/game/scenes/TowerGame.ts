@@ -48,6 +48,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('mine', minePng);
         this.loader.image('castle', towerPng);
         this.loader.image('soldier_production_icon', soldierProductionIcon);
+        this.loader.image('change_position_icon', soldierProductionIcon);
         this.loader.image('soldier', soldierPng);
         
 

@@ -1,6 +1,7 @@
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
+import { Tile } from "../../map/PlayerVision";
 import { Unit } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitTask, UnitTaskNames } from "../UnitTask";
@@ -9,14 +10,26 @@ interface UnitActionUIProvider {
     (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry): UnitActionUI
 }
 
+interface UnitActionParams {
+    target: Tile
+}
+
+enum UiActionType {
+    ORDERING = "ORDERING",
+    TARGETING = "TARGETING"
+
+}
+
 interface UnitActionUI {
+    type: UiActionType;
     actionIcon: string;
     canExecute: () => boolean;
-    execute: () => void;
+    execute: (params?: UnitActionParams) => void;
 }
 
 const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
     return {
+        type: UiActionType.ORDERING,
         actionIcon: "soldier_production_icon",
         canExecute: () => true,
         execute: () => {
@@ -44,4 +57,31 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry
     return new UnitTask(UnitTaskNames.PRODUCTION, constructionTime, done);
 }
 
-export { UnitActionUI, UnitActionUIProvider, soldierProductionProvider }
+
+
+const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
+    return {
+        type: UiActionType.TARGETING,
+        actionIcon: "change_position_icon",
+        canExecute: () => true,
+        execute: (props) => {
+            console.log("Change position");
+            unit.addUnitTask(changePositionTask(unit, gameEngine,eventRegistry, props.target))
+        }
+    }
+}
+
+const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Tile ) => {
+    let done = () => {
+        unit.x = target.x,
+        unit.y = target.y
+    }
+
+    let callBack = () => {
+    }
+
+    let constructionTime = 3;
+    return new UnitTask(UnitTaskNames.CHANGE_POSITION, constructionTime, done, callBack);
+}
+
+export { UnitActionUI, UnitActionUIProvider, UiActionType, soldierProductionProvider, changePositionProvider }

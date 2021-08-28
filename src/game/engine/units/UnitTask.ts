@@ -1,6 +1,7 @@
 enum UnitTaskNames {
     CONSTRUCTION = 'CONSTRUCTION',
-    PRODUCTION = 'PRODUCTION'
+    PRODUCTION = 'PRODUCTION',
+    CHANGE_POSITION = 'CHANGE_POSITION'
 }
 
 class TaskProgress {
