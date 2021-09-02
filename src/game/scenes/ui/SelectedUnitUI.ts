@@ -4,6 +4,7 @@ import { GameDimensions } from "../../GameDimensions";
 import { selectUnit } from "../main/UnitsControls";
 import { Bar } from "../utils/bars";
 import { UiScene } from "./UiScene";
+import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
 
 class SelectedUnitUI {
     unit: Unit;
@@ -66,7 +67,8 @@ const drawUnitActionUI = (scene: UiScene, unit: Unit): void => {
                 orderingButton(scene, actionUI);
                 break;
             case UiActionType.TARGETING: 
-                targetingButton(scene, actionUI);
+                let selectedUnits = Array.of(unit);
+                targetingButton(scene, actionUI, selectedUnits);
                 break;
                 
         }
@@ -82,8 +84,20 @@ const orderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
         scene.uiButtons.push(icon);
 }
 
-const targetingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
-    console.log("TO DO");
+const targetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] ) => {
+    let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
+        icon.setOrigin(0);
+        icon.setScale(0.25);
+        icon.setInteractive();
+        icon.on(Phaser.Input.Events.POINTER_DOWN,createTargetingCursorFollow(scene, actionUI, units));
+        scene.uiButtons.push(icon);
+}
+
+const createTargetingCursorFollow = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] ) => {
+    return () => {
+        let eventData: TargetingActionEvent = {action: actionUI, unitsSource: units};
+        scene.events.emit(UiSceneEvents.TARGETING_ACTION, eventData);
+    }
 }
 
 const createHPBar = (scene: UiScene, selectedUnit: Unit, selectedUnitUI: SelectedUnitUI ): Bar => {

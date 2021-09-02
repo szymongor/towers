@@ -151,6 +151,7 @@ class Unit {
     updateTexture() {
         if(this.sprite) {
             this.sprite.setTexture(this.getTexture());
+            this.sprite.setPosition(this.x, this.y);
         }
     }
 

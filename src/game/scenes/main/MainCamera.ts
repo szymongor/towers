@@ -11,8 +11,9 @@ import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
 import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
 import { tileSizeFloor } from '../../utils/utils';
-import { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor } from './orders/NewBuildingOrder';
+import { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor, updateTargetingAction } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
+import { UiActionType } from '../../engine/units/actions/UnitActionsUI';
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -28,6 +29,7 @@ interface TransitionAnimation {
 interface CursorFollow extends Phaser.GameObjects.Sprite {
     unitPrototype?: Unit;
     action?: UiMode;
+    actionOnClick?: () => void;
 }
 
 interface TileSprite extends Phaser.GameObjects.Sprite {
@@ -139,18 +141,17 @@ class MainCamera extends Phaser.Scene {
         });
 
 
-        this.input.on(Phaser.Input.Events.POINTER_DOWN, this.placeUnit(this));
+        this.input.on(Phaser.Input.Events.POINTER_DOWN, this.pointerDown(this));
     }
 
     registerOuterEvents() {
         registerOuterUIEvents(this);
     }
 
-    placeUnit(scene: MainCamera) {
+    pointerDown(scene: MainCamera) {
         return () => {
-            if(scene.cursorFollow && scene.cursorFollow.action == UiMode.BUILD_BUILDING) {
-                scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
-                selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
+            if(scene.cursorFollow) {
+                scene.cursorFollow.actionOnClick();
             }
         }
     }
@@ -159,7 +160,19 @@ class MainCamera extends Phaser.Scene {
         this.updateProgress(this);
         //TODO - export to UiControls
         if(this.cursorFollow) {
-            updateBuildingOrderCursor(this);
+            
+            switch(this.cursorFollow.action) {
+                case UiMode.BUILD_BUILDING: {
+                    updateBuildingOrderCursor(this);
+                    break;
+                }
+                case UiMode.TARGETING_ACTION: {
+                    updateTargetingAction(this);
+                    break;
+                }
+                
+            }
+            
         }
 
         this.updateTransitionAnimation();
@@ -322,7 +335,8 @@ class MainCamera extends Phaser.Scene {
 }
 
 enum UiMode {
-    BUILD_BUILDING = "BUILD_BUILDING"
+    BUILD_BUILDING = "BUILD_BUILDING",
+    TARGETING_ACTION = "TARGETING_ACTION"
 }
 
 export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation };

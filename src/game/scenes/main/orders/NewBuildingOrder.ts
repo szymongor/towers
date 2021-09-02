@@ -2,8 +2,9 @@ import { EventChannels } from "../../../engine/events/EventsRegistry";
 import { GameEvent } from "../../../engine/events/GameEvent";
 import { GameDimensions, Scenes } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
-import { UiSceneEvents, UiSetBuildingModeEvent } from "../../ui/UiSceneEvents";
+import { TargetingActionEvent, UiSceneEvents, UiSetBuildingModeEvent } from "../../ui/UiSceneEvents";
 import { MainCamera, UiMode } from "../MainCamera";
+import { selectUnitEmitEvent } from "../UnitsControls";
 
 
 const registerNewBuildingOrderEvents = function(scene: MainCamera): void {
@@ -35,7 +36,7 @@ const updateBuildingOrderCursor = function(scene: MainCamera): void {
     if(scene.cameras.main.viewRectangle.geom.contains(x,y)) {
         
         let unitHalfSize = tileSizeFloor(scene.cursorFollow.unitPrototype.size*tileSize/2);
-        let posX = x - unitHalfSize;;
+        let posX = x - unitHalfSize;
         let posY = y - unitHalfSize;
         scene.cursorFollow.setPosition(posX, posY);
         scene.cursorFollow.unitPrototype.x = posX;
@@ -44,6 +45,10 @@ const updateBuildingOrderCursor = function(scene: MainCamera): void {
             scene.cursorFollow.setTintFill(0xff0000);
         } else {
             scene.cursorFollow.setTintFill(0x00ff00);
+        }
+        scene.cursorFollow.actionOnClick = () => {
+            scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
+            selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
         }
     }
 }
@@ -64,14 +69,52 @@ const registerOuterUIEvents = function(scene: MainCamera): void {
         scene.cursorFollow.setTintFill(0x00ff00);
         scene.cursorFollow.setScale(unitPrototype.getScale());
         scene.cursorFollow.action = UiMode.BUILD_BUILDING;
-    })
+    });
 
     scene.scene.get(Scenes.UIScene).events.on(UiSceneEvents.DESELECT_BUILDING, (e: UiSetBuildingModeEvent) => {
         if(scene.cursorFollow) {
             scene.cursorFollow.destroy();
         }
         scene.cursorFollow = null;
-    })
+    });
+
+    scene.scene.get(Scenes.UIScene).events.on(UiSceneEvents.TARGETING_ACTION, onTargetingActionProvider(scene));
 }
 
-export { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor}
+// TARGETING ACTIONS
+
+const onTargetingActionProvider = (scene: MainCamera) => {
+    return (e: TargetingActionEvent) => {
+        if(scene.cursorFollow) {
+            scene.cursorFollow.destroy();
+        }
+        let tempCoords = {
+            x: -100,
+            y: -100
+        }
+        scene.cursorFollow = scene.add.sprite(tempCoords.x, tempCoords.y, e.action.actionIcon);
+        scene.cursorFollow.setScale(0.25);
+        scene.cursorFollow.setTintFill(0x00ff00);
+        scene.cursorFollow.action = UiMode.TARGETING_ACTION;
+        scene.cursorFollow.actionOnClick = () => {
+            let target = {x: scene.cursorFollow.x, y: scene.cursorFollow.y}
+            e.action.execute({target});
+            scene.cursorFollow.destroy();
+            scene.cursorFollow = null;
+        };
+    }
+}
+
+const updateTargetingAction = (scene: MainCamera): void => {
+    let tileSize = GameDimensions.grid.tileSize;
+    var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/tileSize)*tileSize;
+    var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/tileSize)*tileSize;
+    if(scene.cameras.main.viewRectangle.geom.contains(x,y)) {
+        let unitHalfSize = tileSizeFloor(tileSize/2);
+        let posX = x - unitHalfSize;;
+        let posY = y - unitHalfSize;
+        scene.cursorFollow.setPosition(posX, posY);
+    }
+}
+
+export { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor, updateTargetingAction}

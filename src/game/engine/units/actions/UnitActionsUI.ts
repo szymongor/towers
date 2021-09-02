@@ -75,6 +75,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
     let done = () => {
         unit.x = target.x,
         unit.y = target.y
+        unit.updateTexture();
     }
 
     let callBack = () => {
