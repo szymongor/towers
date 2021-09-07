@@ -1,7 +1,8 @@
 enum UnitTaskNames {
     CONSTRUCTION = 'CONSTRUCTION',
     PRODUCTION = 'PRODUCTION',
-    CHANGE_POSITION = 'CHANGE_POSITION'
+    CHANGE_POSITION = 'CHANGE_POSITION',
+    TOWER_ATTACK = "TOWER_ATTACK"
 }
 
 class TaskProgress {
@@ -20,12 +21,14 @@ class TaskProgress {
 
 class UnitTask {
     name: string;
+    type: UnitTaskNames;
     progress: TaskProgress;
     done: () => void;
     callback?: () => void;
 
-    constructor(name: string, limit: number, done: () => void, callback?: () => void) {
+    constructor(name: string, type: UnitTaskNames , limit: number, done: () => void, callback?: () => void) {
         this.name = name;
+        this.type = type;
         this.progress = new TaskProgress(limit);
         this.done = done;
         this.callback = callback;

@@ -1,5 +1,5 @@
 import { CustomSprite, Unit, UnitTypes } from '../../engine/units/Unit';
-import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit } from './UnitsControls';
+import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit, updateCursorFollow } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
@@ -158,23 +158,7 @@ class MainCamera extends Phaser.Scene {
 
     update() {
         this.updateProgress(this);
-        //TODO - export to UiControls
-        if(this.cursorFollow) {
-            
-            switch(this.cursorFollow.action) {
-                case UiMode.BUILD_BUILDING: {
-                    updateBuildingOrderCursor(this);
-                    break;
-                }
-                case UiMode.TARGETING_ACTION: {
-                    updateTargetingAction(this);
-                    break;
-                }
-                
-            }
-            
-        }
-
+        updateCursorFollow(this);
         this.updateTransitionAnimation();
     }
 

@@ -5,7 +5,7 @@ import { ResourceName } from "../../Resources";
 import { Unit, UnitTypes, Damage } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitFilter } from "../UnitsStorage";
-import { UnitTask } from "../UnitTask";
+import { UnitTask, UnitTaskNames } from "../UnitTask";
 
 interface ResourceCollectedEventData {
     collector: Unit;
@@ -130,7 +130,7 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
                 eventRegistry.emit(damageDealtEvent);
             }
 
-            let action: UnitTask = new UnitTask(actionName, unit.actionInterval, callback);
+            let action: UnitTask = new UnitTask(UnitTaskNames.TOWER_ATTACK, UnitTaskNames.TOWER_ATTACK, unit.actionInterval, callback);
             unit.currentTasks.set(actionName, action);
         }
 

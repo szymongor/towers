@@ -183,6 +183,13 @@ class Unit {
         return Math.sqrt( dX*dX + dY*dY);
     }
 
+    distanceToTile(tile: Tile): number {
+        let centre = this.getCentre();
+        let dX = tile.x+TILE_SIZE/2-centre.x;
+        let dY = tile.y+TILE_SIZE/2-centre.y;
+        return Math.sqrt( dX*dX + dY*dY);
+    }
+
     isUnitInRange(unit: Unit): boolean {
         let distnace = this.distanceToUnit(unit);
         return distnace < this.actionRange + (unit.size * GameDimensions.grid.tileSize);

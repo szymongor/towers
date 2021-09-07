@@ -237,7 +237,7 @@ class UnitFactory {
             constructedUnit.state.construction = false;
             constructedUnit.updateTexture();
         }
-        let constructionTask = new UnitTask(UnitTaskNames.CONSTRUCTION, 
+        let constructionTask = new UnitTask(UnitTaskNames.CONSTRUCTION, UnitTaskNames.CONSTRUCTION,
             constructionTime,  constructionFinish, constructionCallback);
         constructedUnit.addUnitTask(constructionTask);
         return constructedUnit;
