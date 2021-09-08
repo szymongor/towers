@@ -6,7 +6,7 @@ import { UnitName } from "./UnitFactory";
 interface UnitFilter {
     owner?: Player;
     player_ne?: Player;
-    type?: UnitTypes;
+    types?: UnitTypes[];
     unitName?: UnitName;
     range?: RangeFilter;
 }
@@ -53,8 +53,8 @@ class UnitStorage {
             units = units.filter((unit) => (unit.player != unitFilter.player_ne));
         }
 
-        if(unitFilter.type) {
-            units = units.filter((unit) => unit.type == unitFilter.type);
+        if(unitFilter.types) {
+            units = units.filter((unit) => unitFilter.types.includes(unit.type));
         }
 
         if(unitFilter.unitName) {

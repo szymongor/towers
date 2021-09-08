@@ -28,7 +28,7 @@ interface UnitAction {
 
 const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
     let unitFilter: UnitFilter = {
-        type: UnitTypes.RESOURCE,
+        types: [UnitTypes.RESOURCE],
         unitName: UnitName.TREE,
         range: {
             unit: unit,
@@ -65,7 +65,7 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
 
 const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
     let unitFilter: UnitFilter = {
-        type: UnitTypes.RESOURCE,
+        types: [UnitTypes.RESOURCE],
         unitName: UnitName.STONES,
         range: {
             unit: unit,
@@ -99,14 +99,12 @@ const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: 
 }
 
 const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
-
-    let actionName = "TOWER_ATTACK";
     
-    if(unit.currentTasks.has(actionName)) {
+    if(unit.currentTasks.has(UnitTaskNames.TOWER_ATTACK)) {
 
     } else {
         let unitFilter: UnitFilter = {
-            type: UnitTypes.BUILDING,
+            types: [UnitTypes.BUILDING, UnitTypes.CREATURE],
             range: {
                 unit: unit,
                 range: unit.actionRange,
@@ -121,7 +119,7 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
                     source: unit
                 }
                 nearestEnemy.dealDamage(dmg);
-                unit.currentTasks.delete(actionName);
+                unit.currentTasks.delete(UnitTaskNames.TOWER_ATTACK);
                 let damageDealtEventData : DamageDealtEventData = {
                     target: nearestEnemy,
                     source: unit
@@ -131,7 +129,7 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
             }
 
             let action: UnitTask = new UnitTask(UnitTaskNames.TOWER_ATTACK, UnitTaskNames.TOWER_ATTACK, unit.actionInterval, callback);
-            unit.currentTasks.set(actionName, action);
+            unit.currentTasks.set(UnitTaskNames.TOWER_ATTACK, action);
         }
 
     }

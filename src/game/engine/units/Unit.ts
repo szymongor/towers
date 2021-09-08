@@ -230,7 +230,7 @@ class Unit {
 
     clearUnitTask(unitTaskName: string) {
         this.currentTasks.delete(unitTaskName);
-        if(this.sprite.progressBar) {
+        if(this.sprite && this.sprite.progressBar) {
             this.sprite.progressBar.destroy();
             this.sprite.progressBar = null;
         }
