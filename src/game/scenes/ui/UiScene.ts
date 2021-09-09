@@ -4,6 +4,7 @@ import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
 import { CustomSprite } from '../../engine/units/Unit';
 import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
+import { MainCameraEvents } from '../main/MainCamera';
 
 interface UIButton {
     clearTint: () => void;
@@ -49,10 +50,10 @@ class UiScene extends Phaser.Scene {
 
     registerOuterEvents() {
         this.scene.get(Scenes.MainCamera)
-        .events.on('unitselected', this.unitSelected(this));
+        .events.on(MainCameraEvents.UNIT_SELECTED, this.unitSelected(this));
 
         this.scene.get(Scenes.MainCamera)
-        .events.on('deselect', this.unitSelected(this));
+        .events.on(MainCameraEvents.DESELECT, this.unitSelected(this));
     }
 
     unitSelected(uiScene: UiScene) {

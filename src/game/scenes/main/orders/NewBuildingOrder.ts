@@ -30,6 +30,8 @@ const unitPlaced = function(scene: MainCamera): (event: GameEvent) => void {
 
 const updateBuildingOrderCursor = function(scene: MainCamera): void {
     let tileSize = GameDimensions.grid.tileSize;
+    
+    //TODO utils
     var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/tileSize)*tileSize;
     var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/tileSize)*tileSize;
 
@@ -48,7 +50,7 @@ const updateBuildingOrderCursor = function(scene: MainCamera): void {
         }
         scene.cursorFollow.actionOnClick = () => {
             scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
-            selectUnitEmitEvent(scene, null)(); //TODO - deselectUnit
+            selectUnitEmitEvent(scene, null)(scene.input.mousePointer); //TODO - deselectUnit
         }
     }
 }

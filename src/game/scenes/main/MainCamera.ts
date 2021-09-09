@@ -1,19 +1,21 @@
 import { CustomSprite, Unit, UnitTypes } from '../../engine/units/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit, updateCursorFollow } from './UnitsControls';
 import { createMainCamera, createMiniMapCamera } from './CameraControls';
-import { GameDimensions, Scenes } from  '../../GameDimensions';
-import { UiSceneEvents, UiSetBuildingModeEvent } from '../ui/UiSceneEvents';
+import { GameDimensions } from  '../../GameDimensions';
 import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
-import { GameEvent } from '../../engine/events/GameEvent';
-import { MapBoard } from '../../engine/map/MapBoard';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
 import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
-import { tileSizeFloor } from '../../utils/utils';
-import { registerNewBuildingOrderEvents, registerOuterUIEvents, updateBuildingOrderCursor, updateTargetingAction } from './orders/NewBuildingOrder';
+import { registerNewBuildingOrderEvents, registerOuterUIEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
-import { UiActionType } from '../../engine/units/actions/UnitActionsUI';
+
+const TILE_SIZE = GameDimensions.grid.tileSize;
+
+enum MainCameraEvents {
+    UNIT_SELECTED = 'UNIT_SELECTED',
+    DESELECT = 'DESELECT'
+}
 
 interface TransitionAnimation {
     sprite: Phaser.GameObjects.Sprite;
@@ -53,7 +55,6 @@ interface VisibleSprites {
     tiles: Set<Phaser.GameObjects.Sprite>;
     units: Set<CustomSprite>;
 }
-
 
 interface Selectable {
     gameObjectOver?: (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => void;
@@ -119,7 +120,7 @@ class MainCamera extends Phaser.Scene {
         });
 
         //highlight selected unit
-        this.events.on('unitselected',(gameUnit: CustomSprite) => {
+        this.events.on(MainCameraEvents.UNIT_SELECTED,(gameUnit: CustomSprite) => {
             if(this.selectedUnit != null) {
                 this.selectedUnit.deselectUnit(this.selectedUnit);
             }
@@ -134,7 +135,7 @@ class MainCamera extends Phaser.Scene {
             }
         });
 
-        this.events.on('deselect', () => {
+        this.events.on(MainCameraEvents.DESELECT, () => {
             if(this.selectedUnit) {
                 this.selectedUnit.deselectUnit(this.selectedUnit);
             }
@@ -149,7 +150,25 @@ class MainCamera extends Phaser.Scene {
     }
 
     pointerDown(scene: MainCamera) {
-        return () => {
+        return (pointer: Phaser.Input.Pointer) => {
+
+            //on right click
+            if(pointer.rightButtonDown()) {
+                if(scene.selectedUnit && scene.selectedUnit.unit) {
+                    let unit = scene.selectedUnit.unit;
+
+                    //choose default action on right click
+                    if(unit.actionUI[0]) {
+                        //TODO utils
+                        var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/TILE_SIZE)*TILE_SIZE;
+                        var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/TILE_SIZE)*TILE_SIZE;
+                        let target = { x: x, y: y};
+                        unit.actionUI[0].execute({target: target});
+                        return;
+                    }
+                }
+            }
+            
             if(scene.cursorFollow) {
                 scene.cursorFollow.actionOnClick();
             }
@@ -323,4 +342,4 @@ enum UiMode {
     TARGETING_ACTION = "TARGETING_ACTION"
 }
 
-export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation };
+export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation, MainCameraEvents };

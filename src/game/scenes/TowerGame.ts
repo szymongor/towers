@@ -56,6 +56,7 @@ class TowerGame extends Phaser.Scene {
     }
 
     create() {
+        this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
         this.setStartScene();
     }
 

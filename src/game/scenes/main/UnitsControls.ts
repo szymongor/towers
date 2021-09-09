@@ -1,6 +1,5 @@
-import { GameObjects } from "phaser";
 import { CustomSprite, Unit } from "../../engine/units/Unit";
-import { MainCamera, UiMode } from "./MainCamera";
+import { MainCamera, MainCameraEvents, UiMode } from "./MainCamera";
 import { updateBuildingOrderCursor, updateTargetingAction } from "./orders/NewBuildingOrder";
 
 const buildingObjectOver = function (gameScene: MainCamera) {
@@ -52,16 +51,21 @@ const deselectUnit = function () {
 
 const selectUnitEmitEvent = function (gameScene: MainCamera, gameObject: CustomSprite) {
 
-    return function () {
-        gameScene.events.emit('unitselected', gameObject);
+    return function (pointer: Phaser.Input.Pointer) {
+        if(pointer.leftButtonDown()) {
+            gameScene.events.emit(MainCameraEvents.UNIT_SELECTED, gameObject);
+        }
+        
     }
 }
 
 const deselectUnitEmitEvent = function (gameScene: MainCamera, gameObject: CustomSprite) {
 
-    return function () {
-        if (gameScene.cursorFollow == null) {
-            gameScene.events.emit('deselect', gameObject);
+    return function (pointer: Phaser.Input.Pointer) {
+        if(pointer.leftButtonDown()) {
+            if (gameScene.cursorFollow == null) {
+                gameScene.events.emit(MainCameraEvents.DESELECT, gameObject);
+            }
         }
     }
 }
