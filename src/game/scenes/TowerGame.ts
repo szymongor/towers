@@ -136,7 +136,7 @@ class TowerGame extends Phaser.Scene {
 
     createTimer(scene: TowerGame) {
         scene.timedEvent = scene.time.addEvent({ 
-            delay: 500, 
+            delay: 250, 
             callback: this.updateEvent, 
             callbackScope: this,
             loop: true

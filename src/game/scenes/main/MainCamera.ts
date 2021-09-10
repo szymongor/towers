@@ -7,8 +7,9 @@ import { GameEngine } from '../../engine/GameEngine';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
 import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
-import { registerNewBuildingOrderEvents, registerOuterUIEvents } from './orders/NewBuildingOrder';
+import { registerNewBuildingOrderEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
+import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -32,11 +33,6 @@ interface CursorFollow extends Phaser.GameObjects.Sprite {
     unitPrototype?: Unit;
     action?: UiMode;
     actionOnClick?: () => void;
-}
-
-interface TileSprite extends Phaser.GameObjects.Sprite {
-    x: number;
-    y: number;
 }
 
 interface CameraManager extends Phaser.Cameras.Scene2D.CameraManager {
@@ -323,7 +319,6 @@ class MainCamera extends Phaser.Scene {
         animations.forEach((ta) => {
             ta.sprite.x += ta.dX;
             ta.sprite.y += ta.dY;
-            ta.sprite.angle += 0.5;
             ta.progress += 1;
             if(ta.progress == ta.steps) {
                 finished.add(ta);
@@ -332,7 +327,6 @@ class MainCamera extends Phaser.Scene {
 
         finished.forEach( (ta: TransitionAnimation) => {
             animations.delete(ta);
-            ta.sprite.destroy();
         });
     }
 }

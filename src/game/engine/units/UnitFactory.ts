@@ -191,7 +191,7 @@ class UnitFactory {
                 actions: [],
                 uiActions: [changePositionProvider],
                 actionRange: 50,
-                constructionTime: 3,
+                constructionTime: 6,
                 maxHP: 200
             }
 

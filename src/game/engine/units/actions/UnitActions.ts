@@ -104,7 +104,7 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
 
     } else {
         let unitFilter: UnitFilter = {
-            types: [UnitTypes.BUILDING, UnitTypes.CREATURE],
+            types: [UnitTypes.BUILDING, UnitTypes.CREATURE ],
             range: {
                 unit: unit,
                 range: unit.actionRange,

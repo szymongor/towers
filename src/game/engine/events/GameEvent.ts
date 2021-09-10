@@ -1,4 +1,6 @@
+import { Tile } from '../map/PlayerVision';
 import { Player } from '../Player';
+import { Unit } from '../units/Unit';
 import { EventChannels } from './EventsRegistry';
 
 interface PlayerLostEventData {
@@ -7,6 +9,11 @@ interface PlayerLostEventData {
 
 interface GameFinishedEventData {
     winner: Player;
+}
+
+interface ChangePositionEventData {
+    unit: Unit,
+    target: Tile
 }
 
 class GameEvent {
@@ -21,4 +28,4 @@ class GameEvent {
     }
 }
 
-export { GameEvent, PlayerLostEventData, GameFinishedEventData };
+export { GameEvent, PlayerLostEventData, GameFinishedEventData, ChangePositionEventData };

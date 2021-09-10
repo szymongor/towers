@@ -1,6 +1,7 @@
 import { CustomSprite, Unit } from "../../engine/units/Unit";
 import { MainCamera, MainCameraEvents, UiMode } from "./MainCamera";
-import { updateBuildingOrderCursor, updateTargetingAction } from "./orders/NewBuildingOrder";
+import { updateTargetingAction } from "./orders/MoveUnitOrder";
+import { updateBuildingOrderCursor } from "./orders/NewBuildingOrder";
 
 const buildingObjectOver = function (gameScene: MainCamera) {
     return (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {

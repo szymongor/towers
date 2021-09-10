@@ -1,6 +1,6 @@
 import { GameDimensions } from "../../../GameDimensions";
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
-import { GameEvent } from "../../events/GameEvent";
+import { ChangePositionEventData, GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
 import { Tile } from "../../map/PlayerVision";
 import { Unit } from "../Unit";
@@ -73,7 +73,7 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
 }
 
 const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Tile ) => {
-    let duration = 2;
+    let duration = 4;
     let dX = (target.x - unit.x);
     let dY = (target.y - unit.y);
     let direction = choseDirection(dX, dY);
@@ -92,6 +92,16 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
     }
 
     let name = UnitTaskNames.CHANGE_POSITION + Unit.name + unit.x + ":"+ unit.y;
+
+    if(direction) {
+        let changePositionEventData : ChangePositionEventData = {
+            unit: unit,
+            target: {x: unit.x + direction.x, y: unit.y + direction.y}
+        }
+        let changePositionEvent = new GameEvent(EventChannels.CHANGE_POSITION, changePositionEventData);
+        eventRegistry.emit(changePositionEvent);
+    }
+    
 
     return new UnitTask(name, UnitTaskNames.CHANGE_POSITION, duration, done, callBack);
 }

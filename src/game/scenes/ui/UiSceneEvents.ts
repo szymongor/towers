@@ -1,3 +1,4 @@
+import { Tile } from "../../engine/map/PlayerVision";
 import { UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
 import { Unit } from "../../engine/units/Unit";
 import { UnitName } from "../../engine/units/UnitFactory";
