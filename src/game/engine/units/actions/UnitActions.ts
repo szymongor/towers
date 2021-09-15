@@ -35,67 +35,99 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
             range: unit.actionRange
         }
     };
+
+    if(unit.currentTasks.has(UnitTaskNames.PRODUCTION)) {
+
+    } else {
+        let nearestTree = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
+        let resourceCollect: [ResourceName, number][] = [[ResourceName.WOOD, 25]];
+        //TODO && unit.isUnitInRange(nearestTree) replace with Optional<nearestTreeInRange> in line 42
+        if(nearestTree && unit.isUnitInRange(nearestTree)) {
+            let callback = () => {
+                if(nearestTree.resources.checkEnoughResources(resourceCollect)) {
+                    nearestTree.resources.chargeResources(resourceCollect);
+                    unit.player.addResources(resourceCollect);
+                    let resourceCollectedEventData : ResourceCollectedEventData = {
+                        collector: unit,
+                        source: nearestTree,
+                        resource: ResourceName.WOOD
+                    }
+                    let resourceCollectedEvent = new GameEvent(EventChannels.RESOURCE_COLLECTED, resourceCollectedEventData);
+                    eventRegistry.emit(resourceCollectedEvent);
+                }
     
-    let nearestTree = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
-    
-    let resourceCollect: [ResourceName, number][] = [[ResourceName.WOOD, 1]];
-    if(nearestTree && unit.isUnitInRange(nearestTree)) {
-        
-        if(nearestTree.resources.checkEnoughResources(resourceCollect)) {
-            nearestTree.resources.chargeResources(resourceCollect);
-            unit.player.addResources(resourceCollect);
-            let resourceCollectedEventData : ResourceCollectedEventData = {
-                collector: unit,
-                source: nearestTree,
-                resource: ResourceName.WOOD
+                if(!nearestTree.resources.checkEnoughResources(resourceCollect)) {
+                    let unitDestroyedEventData: UnitDestroyedEventData = {
+                        unit: nearestTree
+                    }
+                    let unitDestroyedEvent = new GameEvent(EventChannels.UNIT_DESTROYED, unitDestroyedEventData);
+                    eventRegistry.emit(unitDestroyedEvent);
+                }
             }
-            let resourceCollectedEvent = new GameEvent(EventChannels.RESOURCE_COLLECTED, resourceCollectedEventData);
-            eventRegistry.emit(resourceCollectedEvent);
+
+            let taskId = UnitTaskNames.PRODUCTION;
+
+            let action: UnitTask = new UnitTask(taskId, UnitTaskNames.PRODUCTION, unit.actionInterval, callback);
+            unit.currentTasks.set(action.name, action);
+            
+            
         }
 
-        if(!nearestTree.resources.checkEnoughResources(resourceCollect)) {
-            let unitDestroyedEventData: UnitDestroyedEventData = {
-                unit: nearestTree
-            }
-            let unitDestroyedEvent = new GameEvent(EventChannels.UNIT_DESTROYED, unitDestroyedEventData);
-            eventRegistry.emit(unitDestroyedEvent);
-        }
     }
+
+    
+    
 }
 
 const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
-    let unitFilter: UnitFilter = {
-        types: [UnitTypes.RESOURCE],
-        unitName: UnitName.STONES,
-        range: {
-            unit: unit,
-            range: unit.actionRange
-        }
-    };
-    let nearestStones = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
-    let resourceCollect: [ResourceName, number][] = [[ResourceName.STONE, 1]];
-    if(nearestStones && unit.isUnitInRange(nearestStones)) {
-        
-        if(nearestStones.resources.checkEnoughResources(resourceCollect)) {
-            nearestStones.resources.chargeResources(resourceCollect);
-            unit.player.addResources(resourceCollect);
-            let resourceCollectedEventData : ResourceCollectedEventData = {
-                collector: unit,
-                source: nearestStones,
-                resource: ResourceName.STONE
+    if(unit.currentTasks.has(UnitTaskNames.PRODUCTION)) {
+
+    } else {
+        let unitFilter: UnitFilter = {
+            types: [UnitTypes.RESOURCE],
+            unitName: UnitName.STONES,
+            range: {
+                unit: unit,
+                range: unit.actionRange
             }
-            let resourceCollectedEvent = new GameEvent(EventChannels.RESOURCE_COLLECTED, resourceCollectedEventData);
-            eventRegistry.emit(resourceCollectedEvent);
+        };
+        let nearestStones = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
+        let resourceCollect: [ResourceName, number][] = [[ResourceName.STONE, 10]];
+        //TODO refucktor && unit.isUnitInRange(nearestStones)
+        if(nearestStones && unit.isUnitInRange(nearestStones)) {
+
+            let callback = () => {
+                if(nearestStones.resources.checkEnoughResources(resourceCollect)) {
+                    nearestStones.resources.chargeResources(resourceCollect);
+                    unit.player.addResources(resourceCollect);
+                    let resourceCollectedEventData : ResourceCollectedEventData = {
+                        collector: unit,
+                        source: nearestStones,
+                        resource: ResourceName.STONE
+                    }
+                    let resourceCollectedEvent = new GameEvent(EventChannels.RESOURCE_COLLECTED, resourceCollectedEventData);
+                    eventRegistry.emit(resourceCollectedEvent);
+                }
+        
+                if(!nearestStones.resources.checkEnoughResources(resourceCollect)) {
+                    let unitDestroyedEventData: UnitDestroyedEventData = {
+                        unit: nearestStones
+                    }
+                    let unitDestroyedEvent = new GameEvent(EventChannels.UNIT_DESTROYED, unitDestroyedEventData);
+                    eventRegistry.emit(unitDestroyedEvent);
+                }
+            }
+
+            let taskId = UnitTaskNames.PRODUCTION;
+
+            let action: UnitTask = new UnitTask(taskId, UnitTaskNames.PRODUCTION, unit.actionInterval, callback);
+            unit.currentTasks.set(action.name, action);
+            
+
         }
 
-        if(!nearestStones.resources.checkEnoughResources(resourceCollect)) {
-            let unitDestroyedEventData: UnitDestroyedEventData = {
-                unit: nearestStones
-            }
-            let unitDestroyedEvent = new GameEvent(EventChannels.UNIT_DESTROYED, unitDestroyedEventData);
-            eventRegistry.emit(unitDestroyedEvent);
-        }
     }
+    
 }
 
 const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {

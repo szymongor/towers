@@ -10,6 +10,7 @@ import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { UnitAction } from './units/actions/UnitActions';
+import { UnitTask } from './units/UnitTask';
 
 class GameEngine {
     unitFactory: UnitFactory;

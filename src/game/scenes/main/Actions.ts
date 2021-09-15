@@ -37,19 +37,23 @@ const animateResourceCollected = (scene: MainCamera) => {
         let sourceCentre = data.source.getCentre();
         let targetCentre = data.collector.getCentre();
 
-        let logSprite = scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
-        logSprite.setScale(0.25);
+        let collectedResourceSprite = scene.spriteCache.get(respurceSprite, scene);
+        
+        collectedResourceSprite.setPosition(sourceCentre.x, sourceCentre.y);
+        //scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
+        collectedResourceSprite.setScale(0.25);
 
         let steps = 50;
 
         let transitionAnimation : TransitionAnimation = {
-            sprite: logSprite,
+            sprite: collectedResourceSprite,
             sourceX: sourceCentre.x,
             sourceY: sourceCentre.y,
             dX: (targetCentre.x - sourceCentre.x)/steps,
             dY: (targetCentre.y - sourceCentre.y)/steps,
             steps: steps,
-            progress: 0
+            progress: 0,
+            transient: true
         }
         scene.addTransitionAnimation(transitionAnimation);
     }
@@ -76,7 +80,8 @@ const animateDamageDealt = (scene: MainCamera) => {
             dX: (targetCentre.x - sourceCentre.x)/steps,
             dY: (targetCentre.y - sourceCentre.y)/steps,
             steps: steps,
-            progress: 0
+            progress: 0,
+            transient: true
         }
 
         transitionAnimation.angle = 

@@ -10,6 +10,7 @@ import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
 import { registerNewBuildingOrderEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
 import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
+import { SpriteCache } from '../SpriteCache';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -27,6 +28,7 @@ interface TransitionAnimation {
     angle?: number;
     steps: number;
     progress: number;
+    transient: boolean;
 }
 
 interface CursorFollow extends Phaser.GameObjects.Sprite {
@@ -48,7 +50,7 @@ interface ViewCamera extends Phaser.Cameras.Scene2D.Camera {
 }
 
 interface VisibleSprites {
-    tiles: Set<Phaser.GameObjects.Sprite>;
+    tiles: Map<string, CustomSprite>;
     units: Set<CustomSprite>;
 }
 
@@ -66,6 +68,7 @@ interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
 
 class MainCamera extends Phaser.Scene {
     gameEngine: GameEngine;
+    spriteCache: SpriteCache;
     active: boolean;
     cursorFollow: CursorFollow;
     selectedUnit?: CustomSprite;
@@ -75,14 +78,16 @@ class MainCamera extends Phaser.Scene {
     latestVisibleSprites: VisibleSprites;
 
 
-    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
+
+    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine, spriteCache: SpriteCache) {
         super(handle);
-        this.gameEngine;
+        // this.gameEngine =
+        this.spriteCache = spriteCache;
         this.active = false;
         this.cursorFollow;
         this.transitionAnimations = new Set();
         this.gameEngine = gameEngine;
-        this.latestVisibleSprites = {tiles: new Set(), units: new Set() }
+        this.latestVisibleSprites = {tiles: new Map(), units: new Set() };
     }
 
     //load assets
@@ -239,7 +244,7 @@ class MainCamera extends Phaser.Scene {
         this.latestVisibleSprites.units.forEach(u => {
             if(!units.has(u.unit)) {
                 u.unit.sprite = undefined;
-                u.destroy();
+                u.dispose();
             }
         })
         
@@ -257,23 +262,38 @@ class MainCamera extends Phaser.Scene {
         })        
     }
 
-    drawBackground(tiles: Map<String, Tile>) {
-
-        this.latestVisibleSprites.tiles.forEach(t => {
-            t.destroy()});
-            this.latestVisibleSprites.tiles = new Set();
+    drawBackground(tiles: Map<string, Tile>) {
         let scene = this;
 
+        let tilesToDispose: string[] = Array.of();
+        scene.latestVisibleSprites.tiles.forEach((tile,id) => {  
+            if(!tiles.has(id)) {  
+                tilesToDispose.push(id);
+            }
+        });
+
+        tilesToDispose.forEach(id => {
+            scene.latestVisibleSprites.tiles.get(id).dispose();
+            scene.latestVisibleSprites.tiles.delete(id);
+        })
+
+        
         tiles.forEach(t => {
-            scene.latestVisibleSprites.tiles.add(scene.add.sprite(t.x, t.y, 'grass')
+            if(!scene.latestVisibleSprites.tiles.has(t.id)) {
+                let sprite = scene.spriteCache.get('grass', scene);
+                sprite.setPosition(t.x,t.y)
                 .setDepth(-2)
                 .setOrigin(0)
-                .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01));
-        })
+                .setScale(GameDimensions.grid.tileSize/GameDimensions.grid.grassTileSize -0.01)
+                scene.latestVisibleSprites.tiles.set(t.id, sprite);
+            }
+            
+        });
     }
 
     createCustomSprite(game: MainCamera, unit: Unit): CustomSprite {
-        var gameUnit:CustomSprite = game.add.sprite(unit.x, unit.y, unit.getTexture());
+        var gameUnit: CustomSprite = game.spriteCache.get(unit.getTexture(), game);
+        gameUnit.setPosition(unit.x, unit.y);
         gameUnit.unit = unit;
         unit.sprite = gameUnit;
         gameUnit.setScale(unit.getScale());
@@ -317,8 +337,10 @@ class MainCamera extends Phaser.Scene {
         let finished = new Set();
         let animations = this.transitionAnimations;
         animations.forEach((ta) => {
-            ta.sprite.x += ta.dX;
-            ta.sprite.y += ta.dY;
+            if(ta.sprite){
+                ta.sprite.x += ta.dX;
+                ta.sprite.y += ta.dY;
+            }
             ta.progress += 1;
             if(ta.progress == ta.steps) {
                 finished.add(ta);
@@ -326,6 +348,11 @@ class MainCamera extends Phaser.Scene {
         });
 
         finished.forEach( (ta: TransitionAnimation) => {
+            if(ta.transient) {
+                this.spriteCache.dispose(ta.sprite);
+                // ta.sprite.setActive(false).setVisible(false);
+                // ta.sprite.destroy();
+            }
             animations.delete(ta);
         });
     }

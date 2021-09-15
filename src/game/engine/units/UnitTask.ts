@@ -26,7 +26,7 @@ class UnitTask {
     done: () => void;
     callback?: () => void;
 
-    constructor(name: string, type: UnitTaskNames , limit: number, done: () => void, callback?: () => void) {
+    constructor(name: string, type: UnitTaskNames, limit: number, done: () => void, callback?: () => void) {
         this.name = name;
         this.type = type;
         this.progress = new TaskProgress(limit);

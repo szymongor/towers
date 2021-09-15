@@ -5,18 +5,35 @@ import { UnitFilter } from "../units/UnitsStorage";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
-interface Tile {
-    x: number,
-    y: number
+interface Vector {
+    x: number;
+    y: number;
+}
+
+class Tile implements Vector {
+    x: number;
+    y: number;
+    id: string;
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+        this.id = Tile.getTileId(x,y);
+    }
+
+    static getTileId(x: number, y: number): string {
+        return x+':'+y;
+    }
+    
 }
 
 interface PlayersVision {
-    tiles: Map<String, Tile>,
+    tiles: Map<string, Tile>,
     units: Set<Unit>
 }
 
 const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
-    let tilesInRange = new Map<String, Tile>();
+    let tilesInRange = new Map<string, Tile>();
     
     let visibleUnits = new Set<Unit>();
 
@@ -40,11 +57,8 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
                 let distX = (ux - i-TILE_SIZE/2)*(ux - i-TILE_SIZE/2);
                 let distY = (uy - j-TILE_SIZE/2)*(uy - j-TILE_SIZE/2);
                 if(Math.sqrt(distX+distY) < uRange) {
-                    let tile: Tile = {
-                        x: i,
-                        y: j
-                    }
-                    tilesInRange.set(i+':'+j, tile);
+                    let tile = new Tile(i,j);
+                    tilesInRange.set(tile.id, tile);
                 }
                     
             }
@@ -79,4 +93,4 @@ const isUnitInVision = function(gameEngine: GameEngine, unit: Unit) : boolean {
 
 
 
-export { getPlayerVision, Tile, PlayersVision, isUnitInVision }
+export { getPlayerVision, Vector, Tile, PlayersVision, isUnitInVision }

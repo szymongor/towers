@@ -20,6 +20,7 @@ import { StartScene } from './meta/StartScene';
 import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
 import { GameEvent, GameFinishedEventData } from '../engine/events/GameEvent';
 import { FinishScene, GameResult } from './meta/FinishScene';
+import { SpriteCache } from './SpriteCache';
 
 
 class TowerGame extends Phaser.Scene {
@@ -28,10 +29,12 @@ class TowerGame extends Phaser.Scene {
     gameEngine: GameEngine;
     timedEvent: Phaser.Time.TimerEvent;
     gameIsRunning: boolean;
+    spriteCache: SpriteCache;
 
     constructor() {
         super('');
         this.gameIsRunning = false;
+        this.spriteCache = new SpriteCache(this);
     }
 
     preload() {
@@ -117,7 +120,7 @@ class TowerGame extends Phaser.Scene {
     }
 
     addMainCamera(gameEngine: GameEngine) {
-        var mainCamera = new MainCamera(Scenes.MainCamera, this, gameEngine);
+        var mainCamera = new MainCamera(Scenes.MainCamera, this, gameEngine, this.spriteCache);
         this.scene.add(Scenes.MainCamera, mainCamera, true);
         return mainCamera;
     }

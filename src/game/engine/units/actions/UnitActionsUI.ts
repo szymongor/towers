@@ -2,7 +2,7 @@ import { GameDimensions } from "../../../GameDimensions";
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { ChangePositionEventData, GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
-import { Tile } from "../../map/PlayerVision";
+import { Tile, Vector } from "../../map/PlayerVision";
 import { Unit } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitTask, UnitTaskNames } from "../UnitTask";
@@ -14,7 +14,7 @@ interface UnitActionUIProvider {
 }
 
 interface UnitActionParams {
-    target: Tile
+    target: Vector
 }
 
 enum UiActionType {
@@ -72,7 +72,7 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
     }
 }
 
-const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Tile ) => {
+const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Vector ) => {
     let duration = 4;
     let dX = (target.x - unit.x);
     let dY = (target.y - unit.y);
@@ -96,7 +96,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
     if(direction) {
         let changePositionEventData : ChangePositionEventData = {
             unit: unit,
-            target: {x: unit.x + direction.x, y: unit.y + direction.y}
+            target: new Tile(unit.x + direction.x,unit.y + direction.y)
         }
         let changePositionEvent = new GameEvent(EventChannels.CHANGE_POSITION, changePositionEventData);
         eventRegistry.emit(changePositionEvent);
@@ -106,7 +106,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
     return new UnitTask(name, UnitTaskNames.CHANGE_POSITION, duration, done, callBack);
 }
 
-const choseDirection = function(dX: number, dY: number): Tile {
+const choseDirection = function(dX: number, dY: number): Vector {
     if(Math.abs(dX) <= TILE_SIZE && Math.abs(dY) <= TILE_SIZE) {
         
         return null;

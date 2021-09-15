@@ -30,6 +30,7 @@ interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
     progressBar?: Bar;
     unit?: Unit;
     highlight?: Phaser.GameObjects.Sprite;
+    dispose?: () => void;
 }
 
 interface UnitInfo {
@@ -172,7 +173,10 @@ class Unit {
     }
 
     destroy() {
-        this.sprite.destroy();
+        if(this.sprite) {
+            this.sprite.dispose();
+        }
+        
     }
 
     distanceToUnit(unit: Unit): number {
@@ -246,7 +250,7 @@ class Unit {
         let tiles : Tile[] = [];
         for(let i = this.x; i < this.x + this.size*TILE_SIZE ; i += TILE_SIZE ) {
             for(let j = this.y; j < this.y +  this.size*TILE_SIZE ; j += TILE_SIZE ) {
-                tiles.push({ x : i, y : j});
+                tiles.push(new Tile(i,j));
             }
         }
         return tiles;

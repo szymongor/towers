@@ -94,6 +94,7 @@ class UnitFactory {
                 actions: [
                     SawmillWoodCollect
                 ],
+                actionInterval: 5,
                 uiActions: [],
                 actionRange: 200,
                 maxHP: 200
@@ -121,6 +122,7 @@ class UnitFactory {
                 ],
                 uiActions: [],
                 actionRange: 0,
+                actionInterval: 5,
                 maxHP: 200
             },
             castle: {

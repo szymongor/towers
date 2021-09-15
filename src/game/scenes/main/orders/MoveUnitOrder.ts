@@ -1,4 +1,5 @@
 import { ChangePositionEventData, GameEvent } from "../../../engine/events/GameEvent";
+import { Tile } from "../../../engine/map/PlayerVision";
 import { GameDimensions } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { TargetingActionEvent } from "../../ui/UiSceneEvents";
@@ -18,7 +19,7 @@ const onTargetingActionProvider = (scene: MainCamera) => {
         scene.cursorFollow.setTintFill(0x00ff00);
         scene.cursorFollow.action = UiMode.TARGETING_ACTION;
         scene.cursorFollow.actionOnClick = () => {
-            let target = {x: scene.cursorFollow.x, y: scene.cursorFollow.y}
+            let target = new Tile(scene.cursorFollow.x,scene.cursorFollow.y);
             e.action.execute({target});
             scene.cursorFollow.destroy();
             scene.cursorFollow = null;
@@ -53,7 +54,8 @@ const onChangePositionAnimation = function(scene: MainCamera) {
             dX: (target.x-unit.x)/steps,
             dY: (target.y-unit.y)/steps,
             steps: steps,
-            progress: 0
+            progress: 0,
+            transient: false
         }
         scene.addTransitionAnimation(transitionAnimation);
     }
