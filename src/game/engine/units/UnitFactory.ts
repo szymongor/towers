@@ -1,7 +1,7 @@
 import { Unit, UnitTypes } from "./Unit";
 import { Player } from "../Player";
 import { ResourceName, Resources, ResourcesStorage } from '../Resources';
-import { UnitAction, SawmillWoodCollect, MineStoneCollect, TowerAttack } from './actions/UnitActions';
+import { UnitAction, SawmillWoodCollect, MineStoneCollect, ArrowAttack } from './actions/UnitActions';
 import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
 import { changePositionProvider, soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
@@ -66,7 +66,7 @@ class UnitFactory {
                     ]
                 ],
                 canPlace: canPlaceStandard,
-                actions: [TowerAttack],
+                actions: [ArrowAttack],
                 uiActions: [],
                 actionInterval: 5,
                 actionRange: 300,
@@ -190,9 +190,10 @@ class UnitFactory {
                         10
                     ]
                 ],
-                actions: [],
+                actions: [ArrowAttack],
                 uiActions: [changePositionProvider],
-                actionRange: 50,
+                actionInterval: 5,
+                actionRange: 500,
                 constructionTime: 6,
                 maxHP: 200
             }

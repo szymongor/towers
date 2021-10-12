@@ -130,7 +130,7 @@ const MineStoneCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: 
     
 }
 
-const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
+const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
     
     if(unit.currentTasks.has(UnitTaskNames.TOWER_ATTACK)) {
 
@@ -168,4 +168,4 @@ const TowerAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
 
 }
 
-export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect, TowerAttack, DamageDealtEventData}
+export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect, ArrowAttack, DamageDealtEventData}
