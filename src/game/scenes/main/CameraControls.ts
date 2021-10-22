@@ -47,12 +47,35 @@ const scrollAction = function(gameScene: MainCamera, camera: ViewCamera) {
         let kl = gameScene.keyboardListener;
 
         if(kl.isKeyPressed(Phaser.Input.Keyboard.KeyCodes.CTRL)) {
-            //TODO MultiSelect
+            multiSelectBox(gameScene, camera)(p)
         } else {
             mapScroll(camera)(p);
         }
     }
-    
+}
+
+const multiSelectBox = function(gameScene: MainCamera, camera: ViewCamera) {
+    return (p: Phaser.Input.Pointer) => {
+        if(p.isDown) {
+            gameScene.boxSelectMove(p);
+        } else {
+            gameScene.boxSelect();
+        }
+    }
+}
+
+const createBoxSelect = function(gameScene: MainCamera, p: Phaser.Input.Pointer) {
+    let cam = gameScene.cameras.getCamera('main');
+    let x = p.x + cam.scrollX;
+    let y = p.y + cam.scrollY;
+    let box = gameScene.add.rectangle(x,y,0,0)
+        .setOrigin(0);
+    box.setStrokeStyle(2, GameDimensions.selectColor);
+    let key = gameScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
+    key.on('up', () => gameScene.boxSelect());
+    gameScene.input.on('pointerup', () => gameScene.boxSelect());
+
+    return box;
 }
 
 const mapScroll = function(camera: ViewCamera) {
@@ -99,4 +122,4 @@ const miniMapScroll = function(camera: ViewCamera) {
     };
 }
 
-export { createMainCamera, createMiniMapCamera }
+export { createMainCamera, createMiniMapCamera, createBoxSelect }

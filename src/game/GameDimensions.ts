@@ -25,7 +25,8 @@ var GameDimensions = {
         grassTileSize: 100,
         imgSize: 200
     },
-    backgroundColor: 0x3a8210
+    backgroundColor: 0x3a8210,
+    selectColor: 0xefc53f
 };
 
 GameDimensions.minimapWidth = GameDimensions.uiSceneWidth;

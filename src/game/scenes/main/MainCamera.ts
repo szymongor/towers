@@ -1,6 +1,6 @@
 import { CustomSprite, Unit, UnitTypes } from '../../engine/units/Unit';
 import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit, updateCursorFollow } from './UnitsControls';
-import { createMainCamera, createMiniMapCamera } from './CameraControls';
+import { createBoxSelect, createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions } from  '../../GameDimensions';
 import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
@@ -74,6 +74,7 @@ class MainCamera extends Phaser.Scene {
     keyboardListener: KeyboardListener;
     active: boolean;
     cursorFollow: CursorFollow;
+    cursorSelect: Phaser.GameObjects.Rectangle;
     selectedUnit?: CustomSprite;
     cameras: CameraManager;
     transitionAnimations: Set<TransitionAnimation>;
@@ -359,11 +360,40 @@ class MainCamera extends Phaser.Scene {
             animations.delete(ta);
         });
     }
+
+    boxSelectMove(p: Phaser.Input.Pointer) {
+        if(this.cursorFollow != undefined) {
+            if(this.cursorFollow.action != UiMode.BOX_MULTISELECT) { 
+                this.cursorFollow.destroy();
+                this.cursorFollow = null;
+            }
+        }
+
+        
+
+        if(this.cursorSelect != undefined) {
+            let cam = this.cameras.getCamera('main');
+            let x = p.x - this.cursorSelect.x + cam.scrollX;
+            let y = p.y - this.cursorSelect.y + cam.scrollY;
+            this.cursorSelect.setSize(x, y);
+            
+        } else {
+            this.cursorSelect = createBoxSelect(this, p);
+        }
+    }
+
+    boxSelect() {
+        if(this.cursorSelect) {
+            this.cursorSelect.destroy();
+            this.cursorSelect = null;
+        }
+    }
 }
 
 enum UiMode {
     BUILD_BUILDING = "BUILD_BUILDING",
-    TARGETING_ACTION = "TARGETING_ACTION"
+    TARGETING_ACTION = "TARGETING_ACTION",
+    BOX_MULTISELECT = "BOX_MULTISELECT"
 }
 
 export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation, MainCameraEvents };
