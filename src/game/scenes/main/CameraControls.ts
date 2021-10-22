@@ -36,15 +36,28 @@ const createMainCameraZone = function(gameScene: MainCamera, camera: ViewCamera)
     cameraZone.gameObjectOut = (a,b) => {};
     cameraZone.gameObjectOver = (a,b) => {};
 
-    
-    cameraZone.on('pointermove', mapScroll(camera));
+    cameraZone.on('pointermove', scrollAction(gameScene, camera));
     cameraZone.on('pointerdown', deselectUnitEmitEvent(gameScene, null));
     return cameraZone;
 
 }
 
+const scrollAction = function(gameScene: MainCamera, camera: ViewCamera) {
+    return (p: Phaser.Input.Pointer) => {
+        let kl = gameScene.keyboardListener;
+
+        if(kl.isKeyPressed(Phaser.Input.Keyboard.KeyCodes.CTRL)) {
+            //TODO MultiSelect
+        } else {
+            mapScroll(camera)(p);
+        }
+    }
+    
+}
+
 const mapScroll = function(camera: ViewCamera) {
     return (p: Phaser.Input.Pointer) => {
+        
     if (!p.isDown) return;
         camera.scrollX -= (p.x - p.prevPosition.x) / camera.zoom;
         camera.scrollY -= (p.y - p.prevPosition.y) / camera.zoom;

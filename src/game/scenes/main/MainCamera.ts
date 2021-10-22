@@ -11,6 +11,8 @@ import { registerNewBuildingOrderEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
 import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
 import { SpriteCache } from '../SpriteCache';
+import { TowerGame } from '../TowerGame';
+import { KeyboardListener } from '../KeyboardListener';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -69,6 +71,7 @@ interface CameraZone extends Phaser.GameObjects.Zone, Selectable {
 class MainCamera extends Phaser.Scene {
     gameEngine: GameEngine;
     spriteCache: SpriteCache;
+    keyboardListener: KeyboardListener;
     active: boolean;
     cursorFollow: CursorFollow;
     selectedUnit?: CustomSprite;
@@ -79,10 +82,10 @@ class MainCamera extends Phaser.Scene {
 
 
 
-    constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine, spriteCache: SpriteCache) {
+    constructor(handle: string, parent: TowerGame, gameEngine: GameEngine, spriteCache: SpriteCache) {
         super(handle);
-        // this.gameEngine =
         this.spriteCache = spriteCache;
+        this.keyboardListener = parent.keyboardListener;
         this.active = false;
         this.cursorFollow;
         this.transitionAnimations = new Set();

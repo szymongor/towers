@@ -21,6 +21,7 @@ import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
 import { GameEvent, GameFinishedEventData } from '../engine/events/GameEvent';
 import { FinishScene, GameResult } from './meta/FinishScene';
 import { SpriteCache } from './SpriteCache';
+import { KeyboardListener } from './KeyboardListener';
 
 
 class TowerGame extends Phaser.Scene {
@@ -30,6 +31,7 @@ class TowerGame extends Phaser.Scene {
     timedEvent: Phaser.Time.TimerEvent;
     gameIsRunning: boolean;
     spriteCache: SpriteCache;
+    keyboardListener: KeyboardListener;
 
     constructor() {
         super('');
@@ -61,6 +63,7 @@ class TowerGame extends Phaser.Scene {
     create() {
         this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
         this.setStartScene();
+        this.keyboardListener = new KeyboardListener(this);
     }
 
     startNewGame() {
