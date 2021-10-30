@@ -9,6 +9,14 @@ interface UnitFilter {
     types?: UnitTypes[];
     unitName?: UnitName;
     range?: RangeFilter;
+    boxSelect?: BoxSelect;
+}
+
+interface BoxSelect {
+    leftX: number,
+    leftY: number,
+    rightX: number,
+    rightY: number
 }
 
 interface RangeFilter {
@@ -66,6 +74,14 @@ class UnitStorage {
             let range = unitFilter.range.range;
             units = units.filter((u) => unit.distanceToUnit(u) <= range)
         }
+
+        if(unitFilter.boxSelect) {
+            units = units.filter((u) => 
+            u.x >= unitFilter.boxSelect.leftX && 
+            u.x <= unitFilter.boxSelect.rightX &&
+            u.y >= unitFilter.boxSelect.leftY &&
+            u.y <= unitFilter.boxSelect.rightY)
+        }
         
         return units;
     }
@@ -84,8 +100,6 @@ class UnitStorage {
             return unit.containsCoord(tile.x, tile.y);
         })
     }
-
-
 
     getUnitsInRange(unitFilter: UnitFilter, unit: Unit, range: Number): Unit[] {
         let units = this.getUnits(unitFilter);
@@ -113,4 +127,4 @@ class UnitStorage {
 
 }
 
-export { UnitStorage, UnitFilter }
+export { UnitStorage, UnitFilter, BoxSelect }

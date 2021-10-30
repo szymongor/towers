@@ -384,8 +384,18 @@ class MainCamera extends Phaser.Scene {
 
     boxSelect() {
         if(this.cursorSelect) {
+            let x = this.cursorSelect.x;
+            let y = this.cursorSelect.y;
+            let dx = this.cursorSelect.width;
+            let dy = this.cursorSelect.height;
+
+            let units = this.gameEngine.boxSelect(x, y, dx, dy);
+            console.log("Selected units: ",units);
+            
+            
             this.cursorSelect.destroy();
             this.cursorSelect = null;
+
         }
     }
 }
