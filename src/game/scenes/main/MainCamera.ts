@@ -1,5 +1,5 @@
 import { CustomSprite, Unit, UnitTypes } from '../../engine/units/Unit';
-import { buildingObjectOver, buildingObjectOut, selectUnitEmitEvent, selectUnit, deselectUnit, updateCursorFollow } from './UnitsControls';
+import { unitObjectOver, unitObjectOut, selectUnitEmitEvent, selectUnitEmitEventOnClickProvider, selectUnit, deselectUnit, updateCursorFollow } from './UnitsControls';
 import { createBoxSelect, createMainCamera, createMiniMapCamera } from './CameraControls';
 import { GameDimensions } from  '../../GameDimensions';
 import { EventChannels } from '../../engine/events/EventsRegistry';
@@ -75,7 +75,7 @@ class MainCamera extends Phaser.Scene {
     active: boolean;
     cursorFollow: CursorFollow;
     cursorSelect: Phaser.GameObjects.Rectangle;
-    selectedUnit?: CustomSprite;
+    selectedUnits?: CustomSprite[];
     cameras: CameraManager;
     transitionAnimations: Set<TransitionAnimation>;
     latestVision: PlayersVision;
@@ -125,13 +125,14 @@ class MainCamera extends Phaser.Scene {
         });
 
         //highlight selected unit
-        this.events.on(MainCameraEvents.UNIT_SELECTED,(gameUnit: CustomSprite) => {
-            if(this.selectedUnit != null) {
-                this.selectedUnit.deselectUnit(this.selectedUnit);
+        this.events.on(MainCameraEvents.UNIT_SELECTED,(gameUnits: CustomSprite[]) => {
+            if(this.selectedUnits != null) {
+                this.selectedUnits.forEach(u=> u.deselectUnit(u));
+                this.selectedUnits = [];
             }
-            if(gameUnit) {
-                this.selectedUnit = gameUnit;
-                gameUnit.selectUnit(gameUnit);
+            if(gameUnits) {
+                this.selectedUnits = gameUnits;
+                gameUnits.forEach(u=>u.selectUnit(u));
             } else {
                 if(this.cursorFollow) {
                     this.cursorFollow.destroy();
@@ -141,8 +142,11 @@ class MainCamera extends Phaser.Scene {
         });
 
         this.events.on(MainCameraEvents.DESELECT, () => {
-            if(this.selectedUnit) {
-                this.selectedUnit.deselectUnit(this.selectedUnit);
+            if(this.selectedUnits) {
+                this.selectedUnits.forEach(u=> {
+                    u.deselectUnit(u);
+                });
+                this.selectedUnits = [];
             }
         });
 
@@ -159,8 +163,8 @@ class MainCamera extends Phaser.Scene {
 
             //on right click
             if(pointer.rightButtonDown()) {
-                if(scene.selectedUnit && scene.selectedUnit.unit) {
-                    let unit = scene.selectedUnit.unit;
+                if(scene.selectedUnits && scene.selectedUnits.length ==1 && scene.selectedUnits[0].unit) {
+                    let unit = scene.selectedUnits[0].unit;
 
                     //choose default action on right click
                     if(unit.actionUI[0]) {
@@ -305,26 +309,26 @@ class MainCamera extends Phaser.Scene {
 
         switch (unit.type) {
             case UnitTypes.BUILDING:
-                gameUnit.gameObjectOver = buildingObjectOver(this);
-                gameUnit.gameObjectOut = buildingObjectOut(this);
-                gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
+                gameUnit.gameObjectOver = unitObjectOver(this);
+                gameUnit.gameObjectOut = unitObjectOut(this);
+                gameUnit.on('pointerdown', selectUnitEmitEventOnClickProvider(this, [gameUnit]) );
                 gameUnit.selectUnit = selectUnit(this, unit);
-                gameUnit.deselectUnit = deselectUnit();
+                gameUnit.deselectUnit = deselectUnit(this);
                 
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.CREATURE:
-                gameUnit.gameObjectOver = buildingObjectOver(this);
-                gameUnit.gameObjectOut = buildingObjectOut(this);
-                gameUnit.on('pointerdown', selectUnitEmitEvent(this, gameUnit) );
+                gameUnit.gameObjectOver = unitObjectOver(this);
+                gameUnit.gameObjectOut = unitObjectOut(this);
+                gameUnit.on('pointerdown', selectUnitEmitEventOnClickProvider(this, [gameUnit]) );
                 gameUnit.selectUnit = selectUnit(this, unit);
-                gameUnit.deselectUnit = deselectUnit();
+                gameUnit.deselectUnit = deselectUnit(this);
                 unit.sprite.setDepth(2);
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.RESOURCE:
                 gameUnit.selectUnit = selectUnit(this, unit);
-                gameUnit.deselectUnit = deselectUnit();
+                gameUnit.deselectUnit = deselectUnit(this);
                 break;
             default:
                 gameUnit.gameObjectOver = (pointer, gameObject) => { };
@@ -390,12 +394,10 @@ class MainCamera extends Phaser.Scene {
             let dy = this.cursorSelect.height;
 
             let units = this.gameEngine.boxSelect(x, y, dx, dy);
-            console.log("Selected units: ",units);
-            
+            selectUnitEmitEvent(this, units.map(u => u.sprite));
             
             this.cursorSelect.destroy();
             this.cursorSelect = null;
-
         }
     }
 }

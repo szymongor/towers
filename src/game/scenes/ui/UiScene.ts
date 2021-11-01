@@ -50,28 +50,36 @@ class UiScene extends Phaser.Scene {
 
     registerOuterEvents() {
         this.scene.get(Scenes.MainCamera)
-        .events.on(MainCameraEvents.UNIT_SELECTED, this.unitSelected(this));
+        .events.on(MainCameraEvents.UNIT_SELECTED, this.unitsSelected(this));
 
         this.scene.get(Scenes.MainCamera)
-        .events.on(MainCameraEvents.DESELECT, this.unitSelected(this));
+        .events.on(MainCameraEvents.DESELECT, this.unitsSelected(this));
     }
 
-    unitSelected(uiScene: UiScene) {
-        return (gameUnit: CustomSprite) => {
-            uiScene.clearButtonsTint(uiScene);
-            uiScene.uiButtons.forEach(btn => {
-                btn.destroy();
-            });
-            if(gameUnit) {
-                uiScene.uiButtons = [];
-                showSelectedUnitUI(this, gameUnit.unit);
+    unitsSelected(uiScene: UiScene) {
+        return (gameUnits: CustomSprite[]) => {
+            // uiScene.clearButtonsTint(uiScene);
+            uiScene.clearButtons(uiScene);
+            if(gameUnits && gameUnits.length == 1) {
+                let unit = gameUnits[0].unit;
+                    if(gameUnits[0]) {
+                        uiScene.uiButtons = [];
+                        showSelectedUnitUI(this, unit);
+                    }
             } else {
                 if(this.selectedUnitUI){
                     this.selectedUnitUI.hide();
                 }
                 createBaseUIButtons(this);
             }
+
         }
+    }
+
+    clearButtons(uiScene: UiScene) {
+        uiScene.uiButtons.forEach(btn => {
+            btn.destroy();
+        });
     }
 
     clearButtonsTint(uiScene: UiScene) {

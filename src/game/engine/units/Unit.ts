@@ -30,6 +30,7 @@ interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
     progressBar?: Bar;
     unit?: Unit;
     highlight?: Phaser.GameObjects.Sprite;
+    rangeHighlight?: Phaser.GameObjects.Arc;
     dispose?: () => void;
 }
 

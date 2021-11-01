@@ -193,7 +193,7 @@ class GameEngine {
 
         let unitFilter = {
             boxSelect: boxSelect,
-            types: [UnitTypes.CREATURE]
+            types: [UnitTypes.CREATURE, UnitTypes.BUILDING]
         }
         return this.unitStorage.getUnits(unitFilter);
     }

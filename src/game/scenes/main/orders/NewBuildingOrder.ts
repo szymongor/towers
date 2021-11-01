@@ -4,7 +4,7 @@ import { GameDimensions, Scenes } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { UiSceneEvents, UiSetBuildingModeEvent } from "../../ui/UiSceneEvents";
 import { MainCamera, UiMode } from "../MainCamera";
-import { selectUnitEmitEvent } from "../UnitsControls";
+import { selectUnitEmitEventOnClickProvider } from "../UnitsControls";
 
 
 const registerNewBuildingOrderEvents = function(scene: MainCamera): void {
@@ -50,7 +50,7 @@ const updateBuildingOrderCursor = function(scene: MainCamera): void {
         }
         scene.cursorFollow.actionOnClick = () => {
             scene.gameEngine.orderBuilding(scene.cursorFollow.unitPrototype);
-            selectUnitEmitEvent(scene, null)(scene.input.mousePointer); //TODO - deselectUnit
+            selectUnitEmitEventOnClickProvider(scene, null)(scene.input.mousePointer); //TODO - deselectUnit
         }
     }
 }

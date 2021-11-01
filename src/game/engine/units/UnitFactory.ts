@@ -193,7 +193,7 @@ class UnitFactory {
                 actions: [ArrowAttack],
                 uiActions: [changePositionProvider],
                 actionInterval: 5,
-                actionRange: 500,
+                actionRange: 60,
                 constructionTime: 6,
                 maxHP: 200
             }
