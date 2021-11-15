@@ -24,6 +24,7 @@ enum UiActionType {
 }
 
 interface UnitActionUI {
+    actionName: string;
     type: UiActionType;
     actionIcon: string;
     canExecute: () => boolean;
@@ -32,6 +33,7 @@ interface UnitActionUI {
 
 const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
     return {
+        actionName: 'soldierProduction',
         type: UiActionType.ORDERING,
         actionIcon: "soldier_production_icon",
         canExecute: () => true,
@@ -59,10 +61,9 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry
     return new UnitTask(UnitTaskNames.PRODUCTION, UnitTaskNames.PRODUCTION, constructionTime, done);
 }
 
-
-
 const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
     return {
+        actionName: 'changePosition',
         type: UiActionType.TARGETING,
         actionIcon: "change_position_icon",
         canExecute: () => true,
@@ -101,7 +102,6 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
         let changePositionEvent = new GameEvent(EventChannels.CHANGE_POSITION, changePositionEventData);
         eventRegistry.emit(changePositionEvent);
     }
-    
 
     return new UnitTask(name, UnitTaskNames.CHANGE_POSITION, duration, done, callBack);
 }

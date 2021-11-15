@@ -6,6 +6,7 @@ import { GameDimensions, Scenes } from  '../GameDimensions';
 import grass1Png from '../../images/grass1.png';
 import tree1Png from '../../images/tree1.png';
 import towerPng from '../../images/tower.png';
+import castlePng from '../../images/castle.png';
 import sawmillPng from '../../images/sawmill.png';
 import minePng from '../../images/mine.png';
 import constructionPng from '../../images/construction.png';
@@ -51,7 +52,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('stones', stonesPng);
         this.loader.image('arrow', arrowPng);
         this.loader.image('mine', minePng);
-        this.loader.image('castle', towerPng);
+        this.loader.image('castle', castlePng);
         this.loader.image('soldier_production_icon', soldierProductionIcon);
         this.loader.image('change_position_icon', soldierProductionIcon);
         this.loader.image('soldier', soldierPng);
