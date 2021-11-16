@@ -13,6 +13,7 @@ import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
 import { SpriteCache } from '../SpriteCache';
 import { TowerGame } from '../TowerGame';
 import { KeyboardListener } from '../KeyboardListener';
+import { getActionsForUnits } from '../ui/SelectedUnitUI';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -163,16 +164,17 @@ class MainCamera extends Phaser.Scene {
 
             //on right click
             if(pointer.rightButtonDown()) {
-                if(scene.selectedUnits && scene.selectedUnits.length ==1 && scene.selectedUnits[0].unit) {
-                    let unit = scene.selectedUnits[0].unit;
-
+                if(scene.selectedUnits) {
+                    let actions = getActionsForUnits(scene.selectedUnits.map(cs => cs.unit));
                     //choose default action on right click
-                    if(unit.actionUI[0]) {
+                    if(actions[0]) {
                         //TODO utils
                         var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/TILE_SIZE)*TILE_SIZE;
                         var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/TILE_SIZE)*TILE_SIZE;
                         let target = { x: x, y: y};
-                        unit.actionUI[0].execute({target: target});
+                        let action = actions[0][0];
+                        let units = actions[0][1];
+                        action.execute({target: target, units: units});
                         return;
                     }
                 }

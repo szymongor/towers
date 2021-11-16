@@ -58,14 +58,11 @@ class UiScene extends Phaser.Scene {
 
     unitsSelected(uiScene: UiScene) {
         return (gameUnits: CustomSprite[]) => {
-            // uiScene.clearButtonsTint(uiScene);
             uiScene.clearButtons(uiScene);
-            if(gameUnits && gameUnits.length == 1) {
-                let unit = gameUnits[0].unit;
-                    if(gameUnits[0]) {
-                        uiScene.uiButtons = [];
-                        showSelectedUnitUI(this, unit);
-                    }
+            if(gameUnits) {
+                uiScene.uiButtons = [];
+                let units = gameUnits.map(customSprite => customSprite.unit);
+                showSelectedUnitUI(this, units);
             } else {
                 if(this.selectedUnitUI){
                     this.selectedUnitUI.hide();

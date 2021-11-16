@@ -7,47 +7,57 @@ import { UiScene } from "./UiScene";
 import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
 
 class SelectedUnitUI {
-    unit: Unit;
+    units: Unit[];
     selectedUnitInfo: Phaser.GameObjects.Text;
     hpBar?: Bar;
 
-    constructor(unit: Unit) {
-        this.unit = unit;
+    constructor(units: Unit[]) {
+        this.units = units;
     }
 
     hide() {
-        this.selectedUnitInfo.visible = false;
-        this.hpBar.destroy();
+        if(this.selectedUnitInfo) {
+            this.selectedUnitInfo.visible = false;
+        }
+        if(this.hpBar) {
+            this.hpBar.destroy();
+        }
+        this.units = [];
     }
 
     update() {
-        if(this.unit) {
-            this.selectedUnitInfo.text = getUnitInfoText(this.unit);
-            let progress = this.unit.hp.value/ this.unit.hp.max;
+        if(this.units.length == 1) {
+            this.selectedUnitInfo.text = getUnitInfoText(this.units[0]);
+            let progress = this.units[0].hp.value/ this.units[0].hp.max;
             this.hpBar.updateProgress(progress);
+        } else if(this.units.length > 0) {
+            //UPDATE MANY SELECTED UNITS UI
         }
     }
 
 }
 
-const showSelectedUnitUI = (scene: UiScene, selectedUnit: Unit) => {
+const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
     if(scene.selectedUnitUI) {
         scene.selectedUnitUI.hide()
     }
-    let selectedUnitUI = new SelectedUnitUI(selectedUnit);
+    let selectedUnitUI = new SelectedUnitUI(selectedUnits);
     scene.selectedUnitUI = selectedUnitUI;
 
-
-    let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
-        '', { font: '30px Arial', color: '#FFFFFF' });
-
-    selectedUnitUI.selectedUnitInfo = infoTxt;
-
-    selectedUnitUI.hpBar = createHPBar(scene, selectedUnit, selectedUnitUI);
-
-    infoTxt.text = getUnitInfoText(selectedUnit);
-    drawUnitActionUI(scene, selectedUnit);
-
+    if(selectedUnits.length == 1) {
+        let selectedUnit = selectedUnits[0];
+        let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
+            '', { font: '30px Arial', color: '#FFFFFF' });
+        selectedUnitUI.selectedUnitInfo = infoTxt;
+        selectedUnitUI.hpBar = createHPBar(scene, selectedUnit, selectedUnitUI);
+        infoTxt.text = getUnitInfoText(selectedUnit);
+    } else {
+        let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
+            '', { font: '30px Arial', color: '#FFFFFF' });
+        selectedUnitUI.selectedUnitInfo = infoTxt;
+        infoTxt.text = getUnitsInfoText(selectedUnits);
+    }
+    drawUnitActionUI(scene, selectedUnits);
 }
 
 const getUnitInfoText = (unit: Unit): string => {
@@ -59,23 +69,59 @@ const getUnitInfoText = (unit: Unit): string => {
     return info;
 }
 
-const drawUnitActionUI = (scene: UiScene, unit: Unit): void => {
-    for(let i = 0 ; i < unit.actionUI.length ; i++) {
-        let actionUI = unit.actionUI[i];
-        switch(actionUI.type) {
-            case UiActionType.ORDERING:
-                orderingButton(scene, actionUI);
-                break;
-            case UiActionType.TARGETING: 
-                let selectedUnits = Array.of(unit);
-                targetingButton(scene, actionUI, selectedUnits);
-                break;
-                
-        }
+const getUnitsInfoText = (units: Unit[]): string => {
+    let info = 'Units: '+units.length;
+    return info;
+}
+
+//TODO Default Action for multiple Units
+const drawUnitActionUI = (scene: UiScene, units: Unit[]): void => {
+    let actionsToDraw = getActionsForUnits(units);
+
+    actionsToDraw.forEach((tuple) => {
+            drawActionUI(scene, tuple[0], tuple[1]);
+    });
+}
+
+const drawActionUI = (scene: UiScene, actionUI: UnitActionUI, selectedUnits: Unit[]): void => {
+    switch(actionUI.type) {
+        case UiActionType.ORDERING:
+            createCrderingButton(scene, actionUI);
+            break;
+        case UiActionType.TARGETING: 
+            createTargetingButton(scene, actionUI, selectedUnits);
+            break;       
     }
 }
 
-const orderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
+const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[]][] => {
+    let actions = new Map<string, Unit[]>();
+    
+    units.forEach(unit => {
+        unit.actionUI.forEach(unitAction => {
+            if(actions.has(unitAction.actionName)) {
+                let unitsWithAction = actions.get(unitAction.actionName);
+                unitsWithAction.push(unit);
+                actions.set(unitAction.actionName, unitsWithAction);
+            } else {
+                actions.set(unitAction.actionName, [unit]);
+            }
+        })
+    });
+
+    let actionTuples: [UnitActionUI, Unit[]][] = [];
+
+    actions.forEach((selectedUnitsWithAction: Unit[], actionName: string) => {
+        if(selectedUnitsWithAction.length == units.length) {
+            let action =  selectedUnitsWithAction[0].actionUI.find((action => action.actionName == actionName));
+            actionTuples.push([action, units]);
+        }
+    });
+
+    return actionTuples;
+}
+
+const createCrderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
     let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
@@ -84,7 +130,7 @@ const orderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
         scene.uiButtons.push(icon);
 }
 
-const targetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] ) => {
+const createTargetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] )=> {
     let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
@@ -108,4 +154,4 @@ const createHPBar = (scene: UiScene, selectedUnit: Unit, selectedUnitUI: Selecte
     return hpBar;
 }
 
-export { showSelectedUnitUI, SelectedUnitUI }
+export { showSelectedUnitUI, SelectedUnitUI, getActionsForUnits }
