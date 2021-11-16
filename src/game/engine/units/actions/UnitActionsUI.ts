@@ -14,7 +14,8 @@ interface UnitActionUIProvider {
 }
 
 interface UnitActionParams {
-    target: Vector
+    target: Vector,
+    units?: Unit[]
 }
 
 enum UiActionType {
@@ -68,7 +69,11 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
         actionIcon: "change_position_icon",
         canExecute: () => true,
         execute: (props) => {
-            unit.addUnitTask(changePositionTask(unit, gameEngine,eventRegistry, props.target))
+            if(props.units) {
+                props.units.forEach(unit => {
+                    unit.addUnitTask(changePositionTask(unit, gameEngine,eventRegistry, props.target))
+                })  
+            }
         }
     }
 }

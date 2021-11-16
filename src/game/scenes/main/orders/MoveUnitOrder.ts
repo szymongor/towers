@@ -20,7 +20,9 @@ const onTargetingActionProvider = (scene: MainCamera) => {
         scene.cursorFollow.action = UiMode.TARGETING_ACTION;
         scene.cursorFollow.actionOnClick = () => {
             let target = new Tile(scene.cursorFollow.x,scene.cursorFollow.y);
-            e.action.execute({target});
+            console.log(e.unitsSource);
+            
+            e.action.execute({target, units: e.unitsSource});
             scene.cursorFollow.destroy();
             scene.cursorFollow = null;
         };

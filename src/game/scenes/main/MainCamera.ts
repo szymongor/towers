@@ -167,12 +167,13 @@ class MainCamera extends Phaser.Scene {
                     let unit = scene.selectedUnits[0].unit;
 
                     //choose default action on right click
+                    //TODO Default Action for multiple Units
                     if(unit.actionUI[0]) {
                         //TODO utils
                         var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/TILE_SIZE)*TILE_SIZE;
                         var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/TILE_SIZE)*TILE_SIZE;
                         let target = { x: x, y: y};
-                        unit.actionUI[0].execute({target: target});
+                        unit.actionUI[0].execute({target: target, units: [unit]});
                         return;
                     }
                 }
