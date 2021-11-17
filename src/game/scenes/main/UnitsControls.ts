@@ -20,7 +20,7 @@ const unitObjectOver = function (gameScene: MainCamera) {
 const unitObjectOut = function (gameScene: MainCamera) {
     return (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
         gameObject.clearTint();
-        if(gameObject.highlight && !gameScene.selectedUnits.includes(gameObject)) {
+        if(gameObject.highlight && gameScene.selectedUnits && !gameScene.selectedUnits.includes(gameObject)) {
             gameObject.highlight.destroy();
         }
         
