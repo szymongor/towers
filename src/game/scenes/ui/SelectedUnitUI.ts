@@ -21,6 +21,7 @@ class SelectedUnitUI {
         }
         if(this.hpBar) {
             this.hpBar.destroy();
+            this.hpBar = undefined;
         }
         this.units = [];
     }
@@ -28,14 +29,14 @@ class SelectedUnitUI {
     update() {
         if(this.units.length == 1) {
             this.selectedUnitInfo.text = getUnitInfoText(this.units[0]);
-            let progress = this.units[0].hp.value/ this.units[0].hp.max;
-            this.hpBar.updateProgress(progress);
-        } else if(this.units.length > 0) {
-            //UPDATE MANY SELECTED UNITS UI
         }
+
+        updateHpBar(this.hpBar, this.units);
     }
 
 }
+
+
 
 const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
     if(scene.selectedUnitUI) {
@@ -49,7 +50,6 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
         let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
             '', { font: '30px Arial', color: '#FFFFFF' });
         selectedUnitUI.selectedUnitInfo = infoTxt;
-        selectedUnitUI.hpBar = createHPBar(scene, selectedUnit, selectedUnitUI);
         infoTxt.text = getUnitInfoText(selectedUnit);
     } else {
         let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
@@ -57,6 +57,7 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
         selectedUnitUI.selectedUnitInfo = infoTxt;
         infoTxt.text = getUnitsInfoText(selectedUnits);
     }
+    selectedUnitUI.hpBar = createHPBar(scene, selectedUnits, selectedUnitUI);
     drawUnitActionUI(scene, selectedUnits);
 }
 
@@ -146,9 +147,31 @@ const createTargetingCursorFollow = (scene: UiScene, actionUI: UnitActionUI, uni
     }
 }
 
-const createHPBar = (scene: UiScene, selectedUnit: Unit, selectedUnitUI: SelectedUnitUI ): Bar => {
+const getUnitsHpRatio = (units: Unit[]): number => {
+    let hpValue = 0;
+        let hpMax = 0;
+        units.forEach(u => {
+            hpValue += u.hp.value;
+            hpMax += u.hp.max
+        })
+
+        if(hpMax) {
+            return hpValue/ hpMax;
+        } else {
+            return 0;
+        }
+}
+
+const updateHpBar = (hpBar: Bar, selectedUnits: Unit[]): void => {
+    if(hpBar) {
+        
+        hpBar.updateProgress(getUnitsHpRatio(selectedUnits));
+    }
+}
+
+const createHPBar = (scene: UiScene, selectedUnits: Unit[], selectedUnitUI: SelectedUnitUI ): Bar => {
     let space = 50;
-    let progress = selectedUnit.hp.value/ selectedUnit.hp.max;
+    let progress = getUnitsHpRatio(selectedUnits);
     let hpBar = new Bar(scene, scene.originX+space/2, scene.originY+50, progress,
           GameDimensions.uiSceneWidth-space, 10, 0xff0000);
     return hpBar;
