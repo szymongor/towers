@@ -14,24 +14,13 @@ import { SpriteCache } from '../SpriteCache';
 import { TowerGame } from '../TowerGame';
 import { KeyboardListener } from '../KeyboardListener';
 import { getActionsForUnits } from '../ui/SelectedUnitUI';
+import { TransitionAnimation } from './animation/Animation';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
 enum MainCameraEvents {
     UNIT_SELECTED = 'UNIT_SELECTED',
     DESELECT = 'DESELECT'
-}
-
-interface TransitionAnimation {
-    sprite: Phaser.GameObjects.Sprite;
-    sourceX: number;
-    sourceY: number;
-    dX: number;
-    dY: number;
-    angle?: number;
-    steps: number;
-    progress: number;
-    transient: boolean;
 }
 
 interface CursorFollow extends Phaser.GameObjects.Sprite {
@@ -348,8 +337,7 @@ class MainCamera extends Phaser.Scene {
         let animations = this.transitionAnimations;
         animations.forEach((ta) => {
             if(ta.sprite){
-                ta.sprite.x += ta.dX;
-                ta.sprite.y += ta.dY;
+                ta.sprite.move(ta.dX, ta.dY);
             }
             ta.progress += 1;
             if(ta.progress == ta.steps) {
@@ -359,9 +347,7 @@ class MainCamera extends Phaser.Scene {
 
         finished.forEach( (ta: TransitionAnimation) => {
             if(ta.transient) {
-                this.spriteCache.dispose(ta.sprite);
-                // ta.sprite.setActive(false).setVisible(false);
-                // ta.sprite.destroy();
+                ta.sprite.dispose();
             }
             animations.delete(ta);
         });
@@ -410,4 +396,4 @@ enum UiMode {
     BOX_MULTISELECT = "BOX_MULTISELECT"
 }
 
-export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, TransitionAnimation, MainCameraEvents };
+export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, MainCameraEvents };

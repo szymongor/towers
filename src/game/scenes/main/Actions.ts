@@ -2,9 +2,9 @@ import { GameEvent } from "../../engine/events/GameEvent"
 import { GameEngine } from "../../engine/GameEngine"
 import { MainCamera } from "./MainCamera"
 import { Subscriber, EventChannels } from '../../engine/events/EventsRegistry'
-import { ResourceCollectedEventData, DamageDealtEventData } from '../../engine/units/actions/UnitActions'
-import { TransitionAnimation } from '../main/MainCamera'
+import { ResourceCollectedEventData, DamageDealtEventData } from '../../engine/units/actions/UnitActions';
 import { ResourceName } from "../../engine/Resources"
+import { CustomAnimation, customAnimationFromSprite, TransitionAnimation } from "./animation/Animation";
 
 const registerOnResourceCollect = (scene: MainCamera, engine: GameEngine) => {
     let subscriber: Subscriber = {
@@ -40,13 +40,14 @@ const animateResourceCollected = (scene: MainCamera) => {
         let collectedResourceSprite = scene.spriteCache.get(respurceSprite, scene);
         
         collectedResourceSprite.setPosition(sourceCentre.x, sourceCentre.y);
-        //scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
         collectedResourceSprite.setScale(0.25);
 
         let steps = 50;
 
+        let customAnimation = customAnimationFromSprite(collectedResourceSprite, scene);
+
         let transitionAnimation : TransitionAnimation = {
-            sprite: collectedResourceSprite,
+            sprite: customAnimation,
             sourceX: sourceCentre.x,
             sourceY: sourceCentre.y,
             dX: (targetCentre.x - sourceCentre.x)/steps,
@@ -72,9 +73,11 @@ const animateDamageDealt = (scene: MainCamera) => {
         arrowSprite.setScale(0.25);
 
         let steps = 50;
+
+        let customAnimation = customAnimationFromSprite(arrowSprite, scene);
         
         let transitionAnimation : TransitionAnimation = {
-            sprite: arrowSprite,
+            sprite: customAnimation,
             sourceX: sourceCentre.x,
             sourceY: sourceCentre.y,
             dX: (targetCentre.x - sourceCentre.x)/steps,

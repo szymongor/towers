@@ -3,7 +3,8 @@ import { Tile } from "../../../engine/map/PlayerVision";
 import { GameDimensions } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { TargetingActionEvent } from "../../ui/UiSceneEvents";
-import { MainCamera, TransitionAnimation, UiMode } from "../MainCamera";
+import { customAnimationFromCustomSprite, TransitionAnimation } from "../animation/Animation";
+import { MainCamera, UiMode } from "../MainCamera";
 
 const onTargetingActionProvider = (scene: MainCamera) => {
     return (e: TargetingActionEvent) => {
@@ -49,8 +50,10 @@ const onChangePositionAnimation = function(scene: MainCamera) {
         //todo calculate steps from unit speed
         let steps = 25;
 
-        let transitionAnimation: TransitionAnimation = {
-            sprite: unit.sprite,
+        let customAnimation = customAnimationFromCustomSprite(data.unit.sprite);
+
+        let unitTransitionAnimation: TransitionAnimation = {
+            sprite: customAnimation,
             sourceX: unit.x,
             sourceY: unit.y,
             dX: (target.x-unit.x)/steps,
@@ -59,7 +62,7 @@ const onChangePositionAnimation = function(scene: MainCamera) {
             progress: 0,
             transient: false
         }
-        scene.addTransitionAnimation(transitionAnimation);
+        scene.addTransitionAnimation(unitTransitionAnimation);
     }
 }
 
