@@ -145,7 +145,7 @@ class UnitFactory {
                 constructionTime: 30,
                 actions: [],
                 uiActions: [soldierProductionProvider],
-                actionRange: 1000,
+                actionRange: 250,
                 maxHP: 2000
             },
             tree: {
@@ -193,7 +193,7 @@ class UnitFactory {
                 actions: [ArrowAttack],
                 uiActions: [changePositionProvider],
                 actionInterval: 5,
-                actionRange: 60,
+                actionRange: 200,
                 constructionTime: 6,
                 maxHP: 200
             }

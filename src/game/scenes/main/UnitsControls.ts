@@ -23,17 +23,15 @@ const unitObjectOut = function (gameScene: MainCamera) {
         if(gameObject.highlight && gameScene.selectedUnits && !gameScene.selectedUnits.includes(gameObject)) {
             gameObject.highlight.destroy();
         }
-        
     }
 };
 
 const selectUnit = function (gameScene: MainCamera, unit: Unit) {
     return function (customSprite: CustomSprite) {
-        //TODO refactor gameScene.add.sprite to SpriteCache
         if(customSprite.highlight) {
-            customSprite.highlight.destroy();
+            gameScene.spriteCache.dispose(customSprite.highlight);
         }
-        var highlightSprite = gameScene.add.sprite(unit.x, unit.y, customSprite.texture);
+        var highlightSprite = gameScene.spriteCache.createSprite(customSprite.name, gameScene);
         highlightSprite.setTintFill(0x00ffdd);
         highlightSprite.setDepth(-1);
         highlightSprite.setOrigin(0);
