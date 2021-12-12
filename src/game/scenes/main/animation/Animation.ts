@@ -1,6 +1,7 @@
 import { CustomSprite } from "../../../engine/units/Unit"
 import { MainCamera } from "../MainCamera";
 
+const ANIMATION_RATE = 15;
 
 interface TransitionAnimation {
     sprite: CustomAnimation;
@@ -51,4 +52,4 @@ const customAnimationFromSprite = (sprite: Phaser.GameObjects.Sprite, scene: Mai
     return customAnimation;
 }
 
-export {TransitionAnimation, CustomAnimation, customAnimationFromCustomSprite, customAnimationFromSprite }
+export {TransitionAnimation, CustomAnimation, customAnimationFromCustomSprite, customAnimationFromSprite, ANIMATION_RATE }

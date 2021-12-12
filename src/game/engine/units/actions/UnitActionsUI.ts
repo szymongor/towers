@@ -79,7 +79,7 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
 }
 
 const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Vector ) => {
-    let duration = 4;
+    let duration = 3; //TODO - get from unit props
     let dX = (target.x - unit.x);
     let dY = (target.y - unit.y);
     let direction = choseDirection(dX, dY);

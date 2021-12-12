@@ -7,6 +7,8 @@ import { UnitName } from "../UnitFactory";
 import { UnitFilter } from "../UnitsStorage";
 import { UnitTask, UnitTaskNames } from "../UnitTask";
 
+const ARROW_SPEED = 50; //TODO create config file
+
 interface ResourceCollectedEventData {
     collector: Unit;
     source: Unit;
@@ -16,6 +18,7 @@ interface ResourceCollectedEventData {
 interface DamageDealtEventData {
     target: Unit;
     source: Unit;
+    time: number;
 }
 
 interface UnitDestroyedEventData {
@@ -145,27 +148,46 @@ const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
         }
         let nearestEnemy = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
         if(nearestEnemy) {
-            let callback = () => {
-                let dmg: Damage = {
-                    value: 50,
-                    source: unit
-                }
-                nearestEnemy.dealDamage(dmg);
-                unit.currentTasks.delete(UnitTaskNames.TOWER_ATTACK);
+            let done = () => {
+                let distance = unit.distanceToUnit(nearestEnemy);
+                let flighTime = distance/ARROW_SPEED;
+                
                 let damageDealtEventData : DamageDealtEventData = {
                     target: nearestEnemy,
-                    source: unit
+                    source: unit,
+                    time: flighTime
                 }
                 let damageDealtEvent = new GameEvent(EventChannels.DAMAGE_DEALT, damageDealtEventData);
                 eventRegistry.emit(damageDealtEvent);
+                
+                let arrowFlightTask = new UnitTask(UnitTaskNames.ARROW_FLIGHT, UnitTaskNames.ARROW_FLIGHT,
+                    flighTime,
+                    () => arrowFlightDone(unit, nearestEnemy, eventRegistry),
+                    () => {}
+                    )
+                unit.currentTasks.set(UnitTaskNames.ARROW_FLIGHT, arrowFlightTask);
             }
 
-            let action: UnitTask = new UnitTask(UnitTaskNames.TOWER_ATTACK, UnitTaskNames.TOWER_ATTACK, unit.actionInterval, callback);
+            let callback = () => {};
+
+            let action: UnitTask = new UnitTask(UnitTaskNames.TOWER_ATTACK, 
+                UnitTaskNames.TOWER_ATTACK, 
+                unit.actionInterval, 
+                done,
+                callback
+                );
             unit.currentTasks.set(UnitTaskNames.TOWER_ATTACK, action);
         }
-
     }
+}
 
+const arrowFlightDone = (unit: Unit, nearestEnemy: Unit, eventRegistry: EventRegistry) => {
+    let dmg: Damage = {
+        value: 50,
+        source: unit
+    }
+    nearestEnemy.dealDamage(dmg);
+    unit.currentTasks.delete(UnitTaskNames.TOWER_ATTACK);
 }
 
 export { UnitAction, SawmillWoodCollect , ResourceCollectedEventData, MineStoneCollect, ArrowAttack, DamageDealtEventData}

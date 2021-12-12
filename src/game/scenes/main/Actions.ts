@@ -4,7 +4,7 @@ import { MainCamera } from "./MainCamera"
 import { Subscriber, EventChannels } from '../../engine/events/EventsRegistry'
 import { ResourceCollectedEventData, DamageDealtEventData } from '../../engine/units/actions/UnitActions';
 import { ResourceName } from "../../engine/Resources"
-import { CustomAnimation, customAnimationFromSprite, TransitionAnimation } from "./animation/Animation";
+import { ANIMATION_RATE, CustomAnimation, customAnimationFromSprite, TransitionAnimation } from "./animation/Animation";
 
 const registerOnResourceCollect = (scene: MainCamera, engine: GameEngine) => {
     let subscriber: Subscriber = {
@@ -64,17 +64,17 @@ const animateDamageDealt = (scene: MainCamera) => {
     return (event: GameEvent) => {
         
         let data: DamageDealtEventData = event.data;
-        let respurceSprite = 'arrow';
         let sourceCentre = data.source.getCentre();
         let targetCentre = data.target.getCentre();
 
-        
-        let arrowSprite = scene.add.sprite(sourceCentre.x, sourceCentre.y, respurceSprite);
-        arrowSprite.setScale(0.25);
+        let weaponSprite = scene.spriteCache.createSprite('arrow', scene);
+        weaponSprite.setPosition(sourceCentre.x, sourceCentre.y);
+        weaponSprite.setScale(0.25);
 
-        let steps = 50;
+        let steps = data.time * ANIMATION_RATE;
+    
 
-        let customAnimation = customAnimationFromSprite(arrowSprite, scene);
+        let customAnimation = customAnimationFromSprite(weaponSprite, scene);
         
         let transitionAnimation : TransitionAnimation = {
             sprite: customAnimation,
@@ -89,7 +89,7 @@ const animateDamageDealt = (scene: MainCamera) => {
 
         transitionAnimation.angle = 
         360*Math.atan2(targetCentre.y - sourceCentre.y, targetCentre.x - sourceCentre.x)/(2*Math.PI);
-        arrowSprite.angle = transitionAnimation.angle;
+        weaponSprite.angle = transitionAnimation.angle;
         
         scene.addTransitionAnimation(transitionAnimation);
     }

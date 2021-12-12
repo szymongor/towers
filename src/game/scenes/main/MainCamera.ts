@@ -341,7 +341,7 @@ class MainCamera extends Phaser.Scene {
                 ta.sprite.move(ta.dX, ta.dY);
             }
             ta.progress += 1;
-            if(ta.progress == ta.steps) {
+            if(ta.progress >= ta.steps) {
                 finished.add(ta);
             }
         });

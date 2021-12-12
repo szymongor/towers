@@ -68,7 +68,7 @@ class UnitFactory {
                 canPlace: canPlaceStandard,
                 actions: [ArrowAttack],
                 uiActions: [],
-                actionInterval: 5,
+                actionInterval: 10,
                 actionRange: 300,
                 constructionTime: 20,
                 maxHP: 800

@@ -1,16 +1,12 @@
 import { MapBoard } from './map/MapBoard';
-import { GameDimensions } from '../GameDimensions';
 import { UnitFactory, UnitName } from './units/UnitFactory';
 import { Player } from './Player';
 import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
-import { ResourceName } from "./Resources";
 import { Unit, UnitTypes } from './units/Unit';
-import { BoxSelect, UnitStorage } from './units/UnitsStorage';
+import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
-import { UnitAction } from './units/actions/UnitActions';
-import { UnitTask } from './units/UnitTask';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -44,7 +40,7 @@ class GameEngine {
         var units = buildingsPositions.map(p => 
             this.unitFactory.of(UnitName.CASTLE,900, 950, this.events, this.players[1]));
 
-        units.push(this.unitFactory.of(UnitName.TOWER,800, 1000, this.events, this.players[1]));
+        units.push(this.unitFactory.of(UnitName.TOWER,690, 200, this.events, this.players[1]));
         units.push(this.unitFactory.of(UnitName.TOWER,950, 850, this.events, this.players[1]));
 
         units.push(this.unitFactory.of(UnitName.CASTLE,150, 200, this.events, this.players[0]));
