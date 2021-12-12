@@ -179,6 +179,7 @@ class MainCamera extends Phaser.Scene {
         this.updateProgress(this);
         updateCursorFollow(this);
         this.updateTransitionAnimation();
+        this.drawMap(this.gameEngine);
     }
 
     updateProgress(scene: MainCamera) {

@@ -22,12 +22,12 @@ interface CustomAnimation {
 const customAnimationFromCustomSprite = (customSprite: CustomSprite): CustomAnimation => {
     let customAnimation: CustomAnimation = {
         move: (x:number, y:number) => {
-            customSprite.rangeHighlight.x += x;
-            customSprite.rangeHighlight.y += y;
-
-
-            customSprite.x += x;
-            customSprite.y += y;
+            if(customSprite) {
+                customSprite.rangeHighlight.x += x;
+                customSprite.rangeHighlight.y += y;
+                customSprite.x += x;
+                customSprite.y += y;
+            }
         },
         dispose: () => {
             customSprite.dispose();

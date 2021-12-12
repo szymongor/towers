@@ -34,13 +34,11 @@ interface PlayersVision {
 
 const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
     let tilesInRange = new Map<string, Tile>();
-    
     let visibleUnits = new Set<Unit>();
-
     let ownersUnitFilter : UnitFilter = {
         owner: gameEngine.getPlayer()
     }
-
+    
     gameEngine.unitStorage.getUnits(ownersUnitFilter).forEach( u => {
         visibleUnits.add(u);
         let ux = u.getCentre().x;
