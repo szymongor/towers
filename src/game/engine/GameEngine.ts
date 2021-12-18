@@ -7,6 +7,7 @@ import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
+import { MapFactory } from './map/MapFactory';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -14,10 +15,12 @@ class GameEngine {
     mapBoard: MapBoard;
     players: Player[];
     events: EventRegistry;
+    mapFactory: MapFactory;
 
     constructor() {
         this.unitFactory = new UnitFactory(this);
         this.unitStorage = new UnitStorage();
+        this.mapFactory = new MapFactory();
         this.mapBoard = this.createMapBoard();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
@@ -132,7 +135,8 @@ class GameEngine {
     }
 
     createMapBoard() {
-        return new MapBoard(2000, 2000, this.unitStorage, this.unitFactory);
+        // return new MapBoard(2000, 2000, this.unitStorage, this.unitFactory);
+        return this.mapFactory.initBasicMap(this.unitStorage, this.unitFactory);
     }
 
     getMap() {
