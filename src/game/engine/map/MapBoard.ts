@@ -1,4 +1,5 @@
 import { GameDimensions } from  '../../GameDimensions';
+import { GameEngine } from '../GameEngine';
 import { Unit } from '../units/Unit';
 import { UnitFactory, UnitName } from '../units/UnitFactory';
 import { UnitStorage } from '../units/UnitsStorage';
@@ -12,12 +13,12 @@ class MapBoard {
     unitFactory: UnitFactory;
     unitStorage: UnitStorage;
 
-    constructor(height: number, width: number, unitStorage: UnitStorage, unitFactory: UnitFactory) {
+    constructor(height: number, width: number, gameEngine: GameEngine) {
         this.height = height;
         this.width = width;
-        this.unitFactory = unitFactory;
-        this.unitStorage = unitStorage;
-        this.unitStorage.addUnits(this.createUnits());
+        this.unitFactory = gameEngine.unitFactory;
+        this.unitStorage = gameEngine.unitStorage;
+        // this.unitStorage.addUnits(this.createUnits());
     }
     
     createUnits() {

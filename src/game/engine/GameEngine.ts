@@ -21,33 +21,15 @@ class GameEngine {
         this.unitFactory = new UnitFactory(this);
         this.unitStorage = new UnitStorage();
         this.mapFactory = new MapFactory();
-        this.mapBoard = this.createMapBoard();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
+        this.mapBoard = this.createMapBoard();
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();
-
-        this.addStartBuildings();
 
         registerPlayerLostFlow(this);
         registerGameFinishedCheckFlow(this);
         registerGameFinishedFlow(this);
-    }
-
-    //DEV method
-    private addStartBuildings() {
-        var buildingsPositions = [
-            {x: 150, y: 200}
-          ];
-          
-        var units = buildingsPositions.map(p => 
-            this.unitFactory.of(UnitName.CASTLE,900, 950, this.events, this.players[1]));
-
-        units.push(this.unitFactory.of(UnitName.TOWER,690, 200, this.events, this.players[1]));
-        units.push(this.unitFactory.of(UnitName.TOWER,950, 850, this.events, this.players[1]));
-
-        units.push(this.unitFactory.of(UnitName.CASTLE,150, 200, this.events, this.players[0]));
-        this.unitStorage.addUnits(units);
     }
 
     private placeBuilding(unitPrototype: Unit, player: Player) {
@@ -135,8 +117,7 @@ class GameEngine {
     }
 
     createMapBoard() {
-        // return new MapBoard(2000, 2000, this.unitStorage, this.unitFactory);
-        return this.mapFactory.initBasicMap(this.unitStorage, this.unitFactory);
+        return this.mapFactory.basicMapInit(this);
     }
 
     getMap() {
