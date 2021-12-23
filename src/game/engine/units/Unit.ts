@@ -122,7 +122,7 @@ class Unit {
             construction: false
         };
         this.actions = config.actions;
-        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry));
+        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry, player));
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
         this.currentTasks = new Map();

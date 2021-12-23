@@ -18,7 +18,7 @@ class AiProcessor {
             let botPlayer = ge.players[1];
             let castle = ge.unitStorage.getUnits({owner: botPlayer, unitName: UnitName.CASTLE});
             if(castle.length == 1) {
-                let gameActionProvider = soldierProductionProvider(castle[0], ge, ge.events);
+                let gameActionProvider = soldierProductionProvider(castle[0], ge, ge.events, botPlayer);
                 gameActionProvider.execute();
             }
             
