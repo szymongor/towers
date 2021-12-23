@@ -21,12 +21,6 @@ class MapFactory {
 
         return basicMap;
     }
-
-    
-
-
-
-    
     
 }
 

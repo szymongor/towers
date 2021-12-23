@@ -8,6 +8,7 @@ import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { MapFactory } from './map/MapFactory';
+import { AiProcessor } from './Ai/AIProcessor';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -16,6 +17,8 @@ class GameEngine {
     players: Player[];
     events: EventRegistry;
     mapFactory: MapFactory;
+    aiProcessor: AiProcessor;
+    round: number;
 
     constructor() {
         this.unitFactory = new UnitFactory(this);
@@ -23,13 +26,18 @@ class GameEngine {
         this.mapFactory = new MapFactory();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
+
+        //Campaign
+        this.aiProcessor = new AiProcessor(this);
         this.mapBoard = this.createMapBoard();
+
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();
 
         registerPlayerLostFlow(this);
         registerGameFinishedCheckFlow(this);
         registerGameFinishedFlow(this);
+        this.round = 0;
     }
 
     private placeBuilding(unitPrototype: Unit, player: Player) {
@@ -109,7 +117,10 @@ class GameEngine {
     }
 
     update() {
+        this.round += 1;
+        
         this.runUnitActionsAndTasks();
+        this.aiProcessor.run(this.round);
     }
 
     getPlayer() {

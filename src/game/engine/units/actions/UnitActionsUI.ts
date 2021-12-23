@@ -32,6 +32,8 @@ interface UnitActionUI {
     execute: (params?: UnitActionParams) => void;
 }
 
+//TODO extract eventRegistry from gameEngine
+//TODO unit owner param
 const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
     return {
         actionName: 'soldierProduction',
@@ -46,6 +48,8 @@ const soldierProductionProvider : UnitActionUIProvider = function(unit: Unit, ga
 
 const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry ) => {
     let done = () => {
+        console.log("Soldier Ready");
+        
         let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, eventRegistry, gameEngine.getPlayer());
         gameEngine.unitStorage.addUnit(soldier);
 
