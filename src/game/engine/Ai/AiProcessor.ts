@@ -1,7 +1,6 @@
 import { GameEngine } from "../GameEngine";
-import { soldierProductionProvider } from "../units/actions/UnitActionsUI";
-import { UnitName } from "../units/UnitFactory";
-import { AiAction } from "./AiAction";
+import { AiAction } from "./actions/AiAction";
+import { moveAllSoldiersUnitAction, orderUnitAction } from "./actions/AiActionFactory";
 
 
 
@@ -12,20 +11,9 @@ class AiProcessor {
     constructor(gameEnginge: GameEngine) {
         this.gameEnginge = gameEnginge;
         this.actionsToRun = [];
-
-        //TODO AiActionsFactory - orderUnit, etc.
-        let orderUnitaction = (ge: GameEngine) => {
-            let botPlayer = ge.players[1];
-            let castle = ge.unitStorage.getUnits({owner: botPlayer, unitName: UnitName.CASTLE});
-            if(castle.length == 1) {
-                let gameActionProvider = soldierProductionProvider(castle[0], ge, ge.events, botPlayer);
-                gameActionProvider.execute();
-            }
-            
-        }
-
-        //TODO AiFactory - basicAi, etc.
-        this.addAction(new AiAction(this.gameEnginge, orderUnitaction));
+        
+        this.addAction(orderUnitAction);
+        this.addAction(moveAllSoldiersUnitAction);
 
     }
 
@@ -33,8 +21,7 @@ class AiProcessor {
         
         if(round%15 == 0) { //TODO Scheduler
             console.log('AiProcessor run round: '+round);
-            
-            this.actionsToRun.forEach(a => a.execute());
+            this.actionsToRun.forEach(action => action.execute(this.gameEnginge));
         }
     }
 

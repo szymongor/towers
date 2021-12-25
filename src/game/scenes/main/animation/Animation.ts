@@ -24,8 +24,10 @@ const customAnimationFromCustomSprite = (customSprite: CustomSprite): CustomAnim
     let customAnimation: CustomAnimation = {
         move: (x:number, y:number) => {
             if(customSprite) {
-                customSprite.rangeHighlight.x += x;
-                customSprite.rangeHighlight.y += y;
+                if(customSprite.rangeHighlight) {
+                    customSprite.rangeHighlight.x += x;
+                    customSprite.rangeHighlight.y += y;
+                }
                 customSprite.x += x;
                 customSprite.y += y;
             }
