@@ -8,7 +8,8 @@ import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { MapFactory } from './map/MapFactory';
-import { AiProcessor } from './Ai/AIProcessor';
+import { AiProcessor } from './Ai/processor/AiProcessor';
+import { basicAiProcessorProvider } from './Ai/processor/AiProcessorFactory';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -28,7 +29,7 @@ class GameEngine {
         this.events = new EventRegistry();
 
         //Campaign
-        this.aiProcessor = new AiProcessor(this);
+        this.aiProcessor = basicAiProcessorProvider(this);
         this.mapBoard = this.createMapBoard();
 
         this.registerOrderBuildingFlow();
