@@ -116,13 +116,13 @@ class MainCamera extends Phaser.Scene {
 
         //highlight selected unit
         this.events.on(MainCameraEvents.UNIT_SELECTED,(gameUnits: CustomSprite[]) => {
-            if(this.selectedUnits != null) {
-                this.selectedUnits.forEach(u=> u.deselectUnit(u));
+            if(this.selectedUnits) {
+                this.selectedUnits.filter(u => u).forEach(u=> u.deselectUnit(u));
                 this.selectedUnits = [];
             }
             if(gameUnits) {
                 this.selectedUnits = gameUnits;
-                gameUnits.forEach(u=>u.selectUnit(u));
+                gameUnits.filter(u => u).forEach(u=> u.selectUnit(u));
             } else {
                 if(this.cursorFollow) {
                     this.cursorFollow.destroy();
@@ -154,7 +154,7 @@ class MainCamera extends Phaser.Scene {
             //on right click
             if(pointer.rightButtonDown()) {
                 if(scene.selectedUnits) {
-                    let actions = getActionsForUnits(scene.selectedUnits.map(cs => cs.unit));
+                    let actions = getActionsForUnits(scene.selectedUnits.filter(u => u).map(cs => cs.unit));
                     //choose default action on right click
                     if(actions[0]) {
                         //TODO utils
