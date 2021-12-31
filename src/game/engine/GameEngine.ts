@@ -7,9 +7,8 @@ import { Unit, UnitTypes } from './units/Unit';
 import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
-import { MapFactory } from './map/MapFactory';
 import { AiProcessor } from './Ai/processor/AiProcessor';
-import { basicAiProcessorProvider } from './Ai/processor/AiProcessorFactory';
+import { basicCampaign } from './campaign/CampaignFactory';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -17,20 +16,19 @@ class GameEngine {
     mapBoard: MapBoard;
     players: Player[];
     events: EventRegistry;
-    mapFactory: MapFactory;
     aiProcessor: AiProcessor;
     round: number;
 
     constructor() {
         this.unitFactory = new UnitFactory(this);
         this.unitStorage = new UnitStorage();
-        this.mapFactory = new MapFactory();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
 
         //Campaign
-        this.aiProcessor = basicAiProcessorProvider(this);
-        this.mapBoard = this.createMapBoard();
+        let campaign = basicCampaign(this);
+        this.aiProcessor = campaign.aiProcessor;
+        this.mapBoard = campaign.map;
 
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();
@@ -126,10 +124,6 @@ class GameEngine {
 
     getPlayer() {
         return this.players[0];
-    }
-
-    createMapBoard() {
-        return this.mapFactory.basicMapInit(this);
     }
 
     getMap() {
