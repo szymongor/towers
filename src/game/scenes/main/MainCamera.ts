@@ -133,7 +133,7 @@ class MainCamera extends Phaser.Scene {
 
         this.events.on(MainCameraEvents.DESELECT, () => {
             if(this.selectedUnits) {
-                this.selectedUnits.forEach(u=> {
+                this.selectedUnits.filter(u => u).forEach(u=> {
                     u.deselectUnit(u);
                 });
                 this.selectedUnits = [];
