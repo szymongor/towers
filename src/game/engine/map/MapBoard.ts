@@ -18,7 +18,6 @@ class MapBoard {
         this.width = width;
         this.unitFactory = gameEngine.unitFactory;
         this.unitStorage = gameEngine.unitStorage;
-        // this.unitStorage.addUnits(this.createUnits());
     }
     
     createUnits() {

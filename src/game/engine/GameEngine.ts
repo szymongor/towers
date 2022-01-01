@@ -8,7 +8,7 @@ import { UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
-import { basicCampaign } from './campaign/CampaignFactory';
+import { CampaignFactory, CampaignName } from './campaign/CampaignFactory';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -18,6 +18,7 @@ class GameEngine {
     events: EventRegistry;
     aiProcessor: AiProcessor;
     round: number;
+    campaignFactory: CampaignFactory;
 
     constructor() {
         this.unitFactory = new UnitFactory(this);
@@ -26,7 +27,8 @@ class GameEngine {
         this.events = new EventRegistry();
 
         //Campaign
-        let campaign = basicCampaign(this);
+        this.campaignFactory = new CampaignFactory();
+        let campaign = this.campaignFactory.get(CampaignName.BASIC_CAMPAIGN)(this);
         this.aiProcessor = campaign.aiProcessor;
         this.mapBoard = campaign.map;
 
