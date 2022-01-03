@@ -1,4 +1,6 @@
 import * as Phaser from 'phaser';
+import { CampaignName } from '../../engine/campaign/CampaignFactory';
+import { UnitName } from '../../engine/units/UnitFactory';
 import { GameDimensions } from '../../GameDimensions';
 import { TowerGame } from '../TowerGame';
 
@@ -19,15 +21,34 @@ class StartScene extends Phaser.Scene {
             GameDimensions.backgroundColor);
         mainBackground.setOrigin(0,0);
 
-        let startText = this.add.text(this.renderer.width/2-150, this.renderer.height/2-50, 
-            'Click to start new game', { font: '30px Arial', color: '#FFFFFF' });
+        this.addCampaignButton();
 
     
-        startText.setInteractive();
-
-        startText.on('pointerdown', () => { this.parent.startNewGame();
-        }, this);
         
+        
+    }
+
+    addCampaignButton() {
+        let scene = this;
+        let campaignName = CampaignName.BASIC_CAMPAIGN;
+
+        let xPos = this.renderer.width/2-100;
+        let yPos = this.renderer.height/2-150;
+        var buttonCastle = scene.add.image(xPos, yPos, UnitName.CASTLE)
+        .setScale(0.5)
+        .setOrigin(0)
+        .setInteractive();
+
+        let startText = this.add.text(xPos, yPos+100, 
+            '1 vs 1 AI', { font: '30px Arial', color: '#FFFFFF' });
+
+        startText.setInteractive();
+        buttonCastle.setInteractive();
+
+        startText.on('pointerdown', () => { this.parent.startNewGame(campaignName);
+        }, this);
+        buttonCastle.on('pointerdown', () => { this.parent.startNewGame(campaignName);
+        }, this);
     }
 
 

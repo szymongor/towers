@@ -20,7 +20,7 @@ class GameEngine {
     round: number;
     campaignFactory: CampaignFactory;
 
-    constructor() {
+    constructor(campaignName: CampaignName) {
         this.unitFactory = new UnitFactory(this);
         this.unitStorage = new UnitStorage();
         this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
@@ -28,7 +28,7 @@ class GameEngine {
 
         //Campaign
         this.campaignFactory = new CampaignFactory();
-        let campaign = this.campaignFactory.get(CampaignName.BASIC_CAMPAIGN)(this);
+        let campaign = this.campaignFactory.get(campaignName)(this);
         this.aiProcessor = campaign.aiProcessor;
         this.mapBoard = campaign.map;
 

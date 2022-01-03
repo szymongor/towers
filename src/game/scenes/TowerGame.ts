@@ -23,6 +23,7 @@ import { GameEvent, GameFinishedEventData } from '../engine/events/GameEvent';
 import { FinishScene, GameResult } from './meta/FinishScene';
 import { SpriteCache } from './SpriteCache';
 import { KeyboardListener } from './KeyboardListener';
+import { CampaignName } from '../engine/campaign/CampaignFactory';
 
 
 class TowerGame extends Phaser.Scene {
@@ -63,13 +64,14 @@ class TowerGame extends Phaser.Scene {
 
     create() {
         this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-        this.setStartScene();
+        let scene = this;
+        this.loader.on(Phaser.Loader.Events.POST_PROCESS, () => scene.setStartScene());
         this.keyboardListener = new KeyboardListener(this);
     }
 
-    startNewGame() {
+    startNewGame(campaignName: CampaignName) {
         this.scene.remove(Scenes.StartScene);
-        let gameEngine = new GameEngine();
+        let gameEngine = new GameEngine(campaignName);
         this.gameEngine = gameEngine
         this.registerOnGameFinished(gameEngine);
         var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.backgroundColor);
