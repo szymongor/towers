@@ -37,7 +37,11 @@ class SpriteCache {
 
     createSprite(key: string, scene: Phaser.Scene): CustomSprite {
         let sprite: CustomSprite = scene.add.sprite(-100, -100, key); 
-        sprite.dispose = () => { 
+        sprite.dispose = () => {
+            if(sprite.progressBar) {
+                sprite.progressBar.destroy();
+            }
+            
             this.dispose(sprite);
         }
         return sprite;

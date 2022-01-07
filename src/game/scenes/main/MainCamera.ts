@@ -306,7 +306,6 @@ class MainCamera extends Phaser.Scene {
                 gameUnit.on('pointerdown', selectUnitEmitEventOnClickProvider(this, [gameUnit]) );
                 gameUnit.selectUnit = selectUnit(this, unit);
                 gameUnit.deselectUnit = deselectUnit(this);
-                
                 gameUnit.setInteractive();
                 break;
             case UnitTypes.CREATURE:

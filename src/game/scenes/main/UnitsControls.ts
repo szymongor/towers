@@ -40,6 +40,7 @@ const selectUnit = function (gameScene: MainCamera, unit: Unit) {
         customSprite.rangeHighlight = createRangeHighlight(gameScene, unit);
     }
 }
+
 const createRangeHighlight = function (gameScene: MainCamera, unit: Unit) {
     let centre = unit.getCentre();
     let highlight = gameScene.add.circle(centre.x, centre.y, unit.getActionRange());
@@ -48,7 +49,6 @@ const createRangeHighlight = function (gameScene: MainCamera, unit: Unit) {
 
     return highlight;
 }
-
 
 const deselectUnit = function (gameScene: MainCamera) {
     return function (gameUnit: CustomSprite) {
@@ -61,7 +61,6 @@ const deselectUnit = function (gameScene: MainCamera) {
     }
 }
 
-//TODO MULTI-SELECT REFACTOR
 const selectUnitEmitEventOnClickProvider = function (gameScene: MainCamera, gameObjects: CustomSprite[]) {
     return function (pointer: Phaser.Input.Pointer) {
         if(pointer.leftButtonDown()) {
