@@ -41,6 +41,14 @@ class SpriteCache {
             if(sprite.progressBar) {
                 sprite.progressBar.destroy();
             }
+
+            if(sprite.rangeHighlight) {
+                sprite.rangeHighlight.destroy();
+            }
+
+            if(sprite.highlight) {
+                sprite.highlight.destroy();
+            }
             
             this.dispose(sprite);
         }
