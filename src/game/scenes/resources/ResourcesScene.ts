@@ -7,7 +7,7 @@ class ResourcesScene extends Phaser.Scene {
     gameEngine: GameEngine;
     originX: number;
     originY: number;
-    resources: Phaser.GameObjects.Text;
+    resources: Phaser.GameObjects.BitmapText;
 
     constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
@@ -23,7 +23,7 @@ class ResourcesScene extends Phaser.Scene {
         this.originX = 0;
         this.originY = 0;
 
-        this.resources = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', color: '#FFFFFF' });
+        this.resources = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 35);
     }
 
     update() {

@@ -26,7 +26,8 @@ var GameDimensions = {
         imgSize: 200
     },
     backgroundColor: 0x3a8210,
-    selectColor: 0xefc53f
+    selectColor: 0xefc53f,
+    font: 'atari'
 };
 
 GameDimensions.minimapWidth = GameDimensions.uiSceneWidth;

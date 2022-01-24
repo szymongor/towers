@@ -43,7 +43,7 @@ class UiScene extends Phaser.Scene {
         viewRectangle.setDepth(1);
         viewRectangle.setStrokeStyle(5, 0xFFFFFF);
 
-        var info = this.add.text(this.originX, this.originY, 'UI', { font: '48px Arial', color: '#FFFFFF' });
+        var info = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 30);
 
         createBaseUIButtons(this);
     }

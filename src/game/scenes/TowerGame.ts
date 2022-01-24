@@ -16,6 +16,8 @@ import stonesPng from '../../images/stones.png';
 import arrowPng from '../../images/arrow.png';
 import soldierProductionIcon from '../../images/soldier_production_icon.png';
 import soldierPng from '../../images/soldier.png';
+import atariFontPng from '../../images/atari-smooth.png';
+import atariFontXml from '../../images/atari-smooth.xml';
 import { GameEngine } from '../engine/GameEngine';
 import { StartScene } from './meta/StartScene';
 import { EventChannels, Subscriber } from '../engine/events/EventsRegistry';
@@ -57,6 +59,8 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('soldier_production_icon', soldierProductionIcon);
         this.loader.image('change_position_icon', soldierProductionIcon);
         this.loader.image('soldier', soldierPng);
+
+        this.load.bitmapFont(GameDimensions.font, atariFontPng, atariFontXml);
         
 
         this.loader.start();

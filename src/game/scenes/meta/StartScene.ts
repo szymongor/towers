@@ -32,17 +32,21 @@ class StartScene extends Phaser.Scene {
         let scene = this;
         let campaignName = CampaignName.BASIC_CAMPAIGN;
 
-        let xPos = this.renderer.width/2-100;
-        let yPos = this.renderer.height/2-150;
+        let xPos = this.renderer.width/2;
+        let yPos = this.renderer.height/2;
         var buttonCastle = scene.add.image(xPos, yPos, UnitName.CASTLE)
         .setScale(0.5)
-        .setOrigin(0)
+        .setOrigin(0.5, 0.5)
         .setInteractive();
 
-        let startText = this.add.text(xPos, yPos+100, 
-            '1 vs 1 AI', { font: '30px Arial', color: '#FFFFFF' });
+        let towersLogo = this.add.bitmapText(xPos, yPos/3, GameDimensions.font,
+            'Towers 2.0', 40).setOrigin(0.5,0.5);
+
+        let startText = this.add.bitmapText(xPos, yPos, GameDimensions.font,
+            'Play', 30);
 
         startText.setInteractive();
+        startText.setOrigin(0.5,0.5);
         buttonCastle.setInteractive();
 
         startText.on('pointerdown', () => { this.parent.startNewGame(campaignName);

@@ -26,13 +26,13 @@ class FinishScene extends Phaser.Scene {
             GameDimensions.backgroundColor);
         mainBackground.setOrigin(0,0);
 
-        let gameResultText = "Winner: "+ this.gameResult.winner.name;
+        let gameResultText = this.gameResult.winner.name+" won!";
 
-        let startText = this.add.text(this.renderer.width/2-150, this.renderer.height/2-50, 
-            gameResultText, { font: '30px Arial', color: '#FFFFFF' });
+        let startText = this.add.bitmapText(this.renderer.width/2-150, this.renderer.height/2-50, GameDimensions.font,
+            gameResultText, 25);
 
-        let restartText = this.add.text(this.renderer.width/2-150, this.renderer.height/2, 
-            'Click here to restart', { font: '30px Arial', color: '#FFFFFF' });
+        let restartText = this.add.bitmapText(this.renderer.width/2-150, this.renderer.height/2, GameDimensions.font,
+            'Restart', 25);
     
         restartText.setInteractive();
         restartText.on('pointerdown', () => {

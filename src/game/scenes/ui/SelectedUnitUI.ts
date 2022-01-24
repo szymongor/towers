@@ -1,14 +1,13 @@
 import { UiActionType, UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
 import { Unit } from "../../engine/units/Unit";
 import { GameDimensions } from "../../GameDimensions";
-import { selectUnit } from "../main/UnitsControls";
 import { Bar } from "../utils/bars";
 import { UiScene } from "./UiScene";
 import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
 
 class SelectedUnitUI {
     units: Unit[];
-    selectedUnitInfo: Phaser.GameObjects.Text;
+    selectedUnitInfo: Phaser.GameObjects.BitmapText;
     hpBar?: Bar;
 
     constructor(units: Unit[]) {
@@ -47,13 +46,14 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
 
     if(selectedUnits.length == 1) {
         let selectedUnit = selectedUnits[0];
-        let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
-            '', { font: '30px Arial', color: '#FFFFFF' });
+
+        let infoTxt = scene.add.bitmapText(scene.originX+2, scene.originY+80,  GameDimensions.font,
+            '', 12);
         selectedUnitUI.selectedUnitInfo = infoTxt;
         infoTxt.text = getUnitInfoText(selectedUnit);
     } else {
-        let infoTxt = scene.add.text(scene.originX+2, scene.originY+80, 
-            '', { font: '30px Arial', color: '#FFFFFF' });
+        let infoTxt = scene.add.bitmapText(scene.originX+2, scene.originY+80, GameDimensions.font,
+            '', 12);
         selectedUnitUI.selectedUnitInfo = infoTxt;
         infoTxt.text = getUnitsInfoText(selectedUnits);
     }
