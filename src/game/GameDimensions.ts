@@ -27,6 +27,7 @@ var GameDimensions = {
     },
     backgroundColor: 0x3a8210,
     selectColor: 0xefc53f,
+    windowColor: 0xfc9003,
     font: 'atari'
 };
 

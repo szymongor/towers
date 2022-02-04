@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { CampaignName } from '../../engine/campaign/CampaignFactory';
 import { UnitName } from '../../engine/units/UnitFactory';
 import { GameDimensions } from '../../GameDimensions';
+import { drawWindow } from '../elements/Window';
 import { TowerGame } from '../TowerGame';
 
 
@@ -23,6 +24,8 @@ class StartScene extends Phaser.Scene {
 
         this.addCampaignButton();
 
+        
+
     
         
         
@@ -39,6 +42,7 @@ class StartScene extends Phaser.Scene {
         .setOrigin(0.5, 0.5)
         .setInteractive();
 
+        drawWindow(this, xPos, yPos/3, 450, 100);
         let towersLogo = this.add.bitmapText(xPos, yPos/3, GameDimensions.font,
             'Towers 2.0', 40).setOrigin(0.5,0.5);
 
