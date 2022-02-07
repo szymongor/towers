@@ -17,8 +17,8 @@ import arrowPng from '../../images/arrow.png';
 import soldierProductionIcon from '../../images/soldier_production_icon.png';
 import soldierPng from '../../images/soldier.png';
 
-import borderCornerPng from '../../images/elements/window/BorderCorner.png';
-import borderPng from '../../images/elements/window/Border.png';
+import borderCornerPng from '../../images/elements/window/BorderCornerB.png';
+import borderPng from '../../images/elements/window/BorderB.png';
 
 
 import atariFontPng from '../../images/atari-smooth.png';

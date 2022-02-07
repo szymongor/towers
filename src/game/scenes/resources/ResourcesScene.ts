@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { GameEngine } from '../../engine/GameEngine';
 import { GameDimensions, Scenes } from  '../../GameDimensions';
+import { drawWindow } from '../elements/Window';
 
 class ResourcesScene extends Phaser.Scene {
 
@@ -23,7 +24,11 @@ class ResourcesScene extends Phaser.Scene {
         this.originX = 0;
         this.originY = 0;
 
-        this.resources = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 35);
+        drawWindow(this, GameDimensions.resourcesScene.width/2, GameDimensions.resourcesScene.height/2, GameDimensions.resourcesScene.width, GameDimensions.resourcesScene.height);
+
+        let textX = this.originX + GameDimensions.resourcesScene.width/2;
+        let textY = this.originY + GameDimensions.resourcesScene.height/2;
+        this.resources = this.add.bitmapText(textX, textY, GameDimensions.font, 'UI', 30).setOrigin(0.5,0.5)
     }
 
     update() {
