@@ -71,7 +71,7 @@ class TowerGame extends Phaser.Scene {
         this.loader.image('border', borderPng);
         
 
-        this.load.bitmapFont(GameDimensions.font, atariFontPng, atariFontXml);
+        this.loader.bitmapFont(GameDimensions.font, atariFontPng, atariFontXml);
         
 
         this.loader.start();
