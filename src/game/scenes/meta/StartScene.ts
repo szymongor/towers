@@ -23,12 +23,6 @@ class StartScene extends Phaser.Scene {
         mainBackground.setOrigin(0,0);
 
         this.addCampaignButton();
-
-        
-
-    
-        
-        
     }
 
     addCampaignButton() {

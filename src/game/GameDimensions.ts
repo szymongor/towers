@@ -1,7 +1,10 @@
+let gameWidth = 1000;
+let uiSceneWidth = 200;
+
 var GameDimensions = {
-    gameWidth: 1000,
+    gameWidth: gameWidth,
     gameHeight: 600,
-    uiSceneWidth: 200,
+    uiSceneWidth: uiSceneWidth,
     uiSceneHeight: 400,
     ui: {
         uiButtonsY: 420
@@ -11,8 +14,8 @@ var GameDimensions = {
     mainCameraWidth: 0,
     mainCameraHeight: 0,
     finishScene: {
-        x: 1000/3,
-        y: 600/3,
+        x: (gameWidth-uiSceneWidth)/2,
+        y: 600/2,
         width: 1000/3,
         height: 600/3
     },
