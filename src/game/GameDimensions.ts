@@ -7,7 +7,9 @@ var GameDimensions = {
     uiSceneWidth: uiSceneWidth,
     uiSceneHeight: 400,
     ui: {
-        uiButtonsY: 420
+        windowColor: 0xfc9003,
+        wellColor: 0xd76e00,
+        uiButtonsY: 420 //todo wtf
     },
     minimapWidth: 0,
     minimapHeight: 0,

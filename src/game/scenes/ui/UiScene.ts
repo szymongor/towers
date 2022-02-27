@@ -5,6 +5,7 @@ import { createBaseUIButtons } from './BaseUIControls';
 import { CustomSprite } from '../../engine/units/Unit';
 import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
 import { MainCameraEvents } from '../main/MainCamera';
+import { drawWindow } from '../elements/Window';
 
 interface UIButton {
     clearTint: () => void;
@@ -38,10 +39,10 @@ class UiScene extends Phaser.Scene {
     create() {
         this.originX = GameDimensions.gameWidth-GameDimensions.uiSceneWidth;
         this.originY = GameDimensions.gameHeight-GameDimensions.uiSceneHeight;
-        var viewRectangle = this.add.rectangle(this.originX, this.originY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
-        viewRectangle.setOrigin(0,0);
-        viewRectangle.setDepth(1);
-        viewRectangle.setStrokeStyle(5, 0xFFFFFF);
+
+        let windowX = this.originX+GameDimensions.uiSceneWidth/2;
+        let windowY = this.originY +GameDimensions.uiSceneHeight/2;
+        drawWindow(this, windowX, windowY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
 
         var info = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 30);
 

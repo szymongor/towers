@@ -4,6 +4,9 @@ import { UiSceneEvents } from './UiSceneEvents';
 import { UiScene, UIButton } from './UiScene';
 
 const createBaseUIButtons = function(scene: UiScene) {
+
+    //TODO Refactor button positioning
+
     var buttonTower = scene.add.image(scene.originX, scene.originY+50, UnitName.TOWER)
         .setOrigin(0)
         .setScale(0.25) //TODO - set from dims

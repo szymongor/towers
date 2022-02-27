@@ -1,6 +1,7 @@
 import { UiActionType, UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
 import { Unit } from "../../engine/units/Unit";
 import { GameDimensions } from "../../GameDimensions";
+import { drawWell } from "../elements/Well";
 import { Bar } from "../utils/bars";
 import { UiScene } from "./UiScene";
 import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
@@ -76,6 +77,7 @@ const getUnitsInfoText = (units: Unit[]): string => {
 }
 
 //TODO Default Action for multiple Units
+//TODO New File?
 const drawUnitActionUI = (scene: UiScene, units: Unit[]): void => {
     let actionsToDraw = getActionsForUnits(units);
 
@@ -123,6 +125,7 @@ const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[]][] => {
 }
 
 const createCrderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
+    drawWell(scene, scene.originX, scene.originActionUIY, 50, 50);
     let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
