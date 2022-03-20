@@ -1,3 +1,5 @@
+import { getUiGridCoords } from "./scenes/ui/utils/UIGrid";
+
 let gameWidth = 1000;
 let uiSceneWidth = 200;
 
@@ -9,7 +11,8 @@ var GameDimensions = {
     ui: {
         windowColor: 0xfc9003,
         wellColor: 0xd76e00,
-        uiButtonsY: 420 //todo wtf
+        uiButtonsY: 420, //todo wtf
+        buttonGrid: [[0,0]],
     },
     minimapWidth: 0,
     minimapHeight: 0,
@@ -43,6 +46,13 @@ GameDimensions.mainCameraWidth = GameDimensions.gameWidth - GameDimensions.uiSce
 GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
 
 GameDimensions.resourcesScene.width = GameDimensions.mainCameraWidth;
+
+GameDimensions.ui.buttonGrid = getUiGridCoords(
+    GameDimensions.uiSceneWidth, 
+    GameDimensions.uiSceneHeight, 
+    4, 
+    GameDimensions.grid.tileSize, 
+    10);;
 
 enum Scenes {
     UIScene = "UIScene",
