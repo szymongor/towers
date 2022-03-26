@@ -45,7 +45,7 @@ class UiScene extends Phaser.Scene {
         drawWindow(this, windowX, windowY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
 
         var info = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 30);
-
+        
         createBaseUIButtons(this);
     }
 

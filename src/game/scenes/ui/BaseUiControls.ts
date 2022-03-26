@@ -2,38 +2,30 @@ import * as Phaser from 'phaser';
 import { UnitName } from '../../engine/units/UnitFactory';
 import { UiSceneEvents } from './UiSceneEvents';
 import { UiScene, UIButton } from './UiScene';
+import { GameDimensions } from '../../GameDimensions';
 
 const createBaseUIButtons = function(scene: UiScene) {
 
     //TODO Refactor button positioning
 
-    var buttonTower = scene.add.image(scene.originX, scene.originY+50, UnitName.TOWER)
+    var buttonPosition = GameDimensions.ui.buttonGrid;
+
+    var baseButons = [
+        {name: UnitName.TOWER, func: towerButtonClick, coords: buttonPosition[0]},
+        {name: UnitName.SAWMILL, func: sawmillButtonClick, coords: buttonPosition[1]},
+        {name: UnitName.MINE, func: mineButtonClick, coords: buttonPosition[2]},
+        {name: UnitName.CASTLE, func: castleButtonClick, coords: buttonPosition[3]},
+        {name: UnitName.CASTLE, func: castleButtonClick, coords: buttonPosition[4]},
+    ];
+
+    baseButons.forEach(btn => {
+        let btnImg = scene.add.image(btn.coords[0], btn.coords[1], btn.name)
         .setOrigin(0)
         .setScale(0.25) //TODO - set from dims
         .setInteractive();
-
-    var buttonSawmill = scene.add.image(scene.originX+50, scene.originY+50, UnitName.SAWMILL)
-        .setOrigin(0)
-        .setScale(0.25) //TODO - set from dims
-        .setInteractive();
-
-    var buttonMine = scene.add.image(scene.originX+100, scene.originY+50, UnitName.MINE)
-        .setOrigin(0)
-        .setScale(0.25) //TODO - set from dims
-        .setInteractive();
-
-    var buttonCastle = scene.add.image(scene.originX+150, scene.originY+50, UnitName.CASTLE)
-        .setOrigin(0)
-        .setScale(0.25) //TODO - set from dims
-        .setInteractive();
-
-    buttonTower.on(Phaser.Input.Events.POINTER_DOWN, towerButtonClick(buttonTower, scene));
-    buttonSawmill.on(Phaser.Input.Events.POINTER_DOWN, sawmillButtonClick(buttonSawmill, scene));
-    buttonMine.on(Phaser.Input.Events.POINTER_DOWN, mineButtonClick(buttonMine, scene));
-    buttonCastle.on(Phaser.Input.Events.POINTER_DOWN, castleButtonClick(buttonCastle, scene));
-
-
-    scene.uiButtons.push(buttonTower, buttonSawmill, buttonMine, buttonCastle);
+        btnImg.on(Phaser.Input.Events.POINTER_DOWN, btn.func(btnImg, scene));
+        scene.uiButtons.push(btnImg);
+    })
 }
 
 const towerButtonClick = function(button: UIButton, scene: UiScene) {

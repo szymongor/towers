@@ -1,19 +1,23 @@
 import { GameDimensions } from "../../../GameDimensions";
 
 
-const getUiGridCoords = (width: number, heigth: number, columns: number, span: number, elementsNumber: number) => {
+const getUiGridCoords = (x0: number, y0: number, width: number, span: number, elementsNumber: number) => {
     let gridCoords = [];
-    let x = 0;
-    let y = 0;
+    let columns = (width - width%span)/span;
+    console.log(columns);
+
+    let x = x0;
+    let y = y0;
+    
     for(let i = 0 ; i < elementsNumber ; i ++) {
-        if(x%columns == 0) {
-            x = 0;
-            y++;
+        if(i%columns == 0) {
+            x = x0;
+            y+= span
+        } else {
+            x+=span;
         }
         gridCoords.push([x,y]);
-        x++;
     }
-    console.log(gridCoords);
     return gridCoords
 }
     

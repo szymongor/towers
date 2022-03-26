@@ -48,10 +48,10 @@ GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
 GameDimensions.resourcesScene.width = GameDimensions.mainCameraWidth;
 
 GameDimensions.ui.buttonGrid = getUiGridCoords(
-    GameDimensions.uiSceneWidth, 
-    GameDimensions.uiSceneHeight, 
-    4, 
-    GameDimensions.grid.tileSize, 
+    GameDimensions.mainCameraWidth, 
+    GameDimensions.minimapHeight,
+    uiSceneWidth, 
+    50, 
     10);;
 
 enum Scenes {
