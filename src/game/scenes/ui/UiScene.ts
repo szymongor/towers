@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { GameEngine } from '../../engine/GameEngine';
-import { GameDimensions, Scenes } from  '../../GameDimensions';
+import { GameDimensions, Scenes, UIDimensions } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
 import { CustomSprite } from '../../engine/units/Unit';
 import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
@@ -30,7 +30,7 @@ class UiScene extends Phaser.Scene {
         Phaser.Scene.call(this, { key: handle, active: true });
         this.uiButtons = [];
         this.gameEngine = gameEngine;
-        this.originActionUIY = GameDimensions.ui.uiButtonsY;
+        this.originActionUIY =420; //UIDimensions.uiButtonsY;
     }
 
     preload() {

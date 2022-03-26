@@ -1,10 +1,11 @@
 import { UiActionType, UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
 import { Unit } from "../../engine/units/Unit";
-import { GameDimensions } from "../../GameDimensions";
+import { GameDimensions, UIDimensions } from "../../GameDimensions";
 import { drawWell } from "../elements/Well";
 import { Bar } from "../utils/bars";
 import { UiScene } from "./UiScene";
 import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
+import { Coord } from "./utils/UIGrid";
 
 class SelectedUnitUI {
     units: Unit[];
@@ -81,24 +82,27 @@ const getUnitsInfoText = (units: Unit[]): string => {
 const drawUnitActionUI = (scene: UiScene, units: Unit[]): void => {
     let actionsToDraw = getActionsForUnits(units);
 
-    actionsToDraw.forEach((tuple) => {
-            drawActionUI(scene, tuple[0], tuple[1]);
+    actionsToDraw.forEach((actionParams) => {
+            drawActionUI(scene, actionParams[0], actionParams[1], actionParams[2]);
     });
 }
 
-const drawActionUI = (scene: UiScene, actionUI: UnitActionUI, selectedUnits: Unit[]): void => {
+const drawActionUI = (scene: UiScene, actionUI: UnitActionUI, selectedUnits: Unit[], coord: Coord): void => {
     switch(actionUI.type) {
         case UiActionType.ORDERING:
-            createCrderingButton(scene, actionUI);
+            createOrderingButton(scene, actionUI, coord);
             break;
         case UiActionType.TARGETING: 
-            createTargetingButton(scene, actionUI, selectedUnits);
+            createTargetingButton(scene, actionUI, selectedUnits, coord);
             break;       
     }
 }
 
-const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[]][] => {
+const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[], Coord][] => {
     let actions = new Map<string, Unit[]>();
+
+    let buttonGrid: Coord[] = UIDimensions.buttonGrid;
+    let btnIndex = 0;
     
     units.forEach(unit => {
         unit.actionUI.forEach(unitAction => {
@@ -112,21 +116,20 @@ const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[]][] => {
         })
     });
 
-    let actionTuples: [UnitActionUI, Unit[]][] = [];
+    let actionTuples: [UnitActionUI, Unit[], Coord][] = [];
 
     actions.forEach((selectedUnitsWithAction: Unit[], actionName: string) => {
         if(selectedUnitsWithAction.length == units.length) {
             let action =  selectedUnitsWithAction[0].actionUI.find((action => action.actionName == actionName));
-            actionTuples.push([action, units]);
+            actionTuples.push([action, units, buttonGrid[btnIndex++]]);
         }
     });
 
     return actionTuples;
 }
 
-const createCrderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
-    drawWell(scene, scene.originX, scene.originActionUIY, 50, 50);
-    let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
+const createOrderingButton = (scene: UiScene, actionUI: UnitActionUI, coord: Coord ) => {
+    let icon = scene.add.image(coord[0], coord[1], actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
         icon.setInteractive();
@@ -134,8 +137,8 @@ const createCrderingButton = (scene: UiScene, actionUI: UnitActionUI ) => {
         scene.uiButtons.push(icon);
 }
 
-const createTargetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] )=> {
-    let icon = scene.add.image(scene.originX, scene.originActionUIY, actionUI.actionIcon);
+const createTargetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[], coord: Coord )=> {
+    let icon = scene.add.image(coord[0], coord[1], actionUI.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
         icon.setInteractive();

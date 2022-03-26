@@ -2,13 +2,13 @@ import * as Phaser from 'phaser';
 import { UnitName } from '../../engine/units/UnitFactory';
 import { UiSceneEvents } from './UiSceneEvents';
 import { UiScene, UIButton } from './UiScene';
-import { GameDimensions } from '../../GameDimensions';
+import { UIDimensions } from '../../GameDimensions';
 
 const createBaseUIButtons = function(scene: UiScene) {
 
     //TODO Refactor button positioning
 
-    var buttonPosition = GameDimensions.ui.buttonGrid;
+    var buttonPosition = UIDimensions.buttonGrid;
 
     var baseButons = [
         {name: UnitName.TOWER, func: towerButtonClick, coords: buttonPosition[0]},

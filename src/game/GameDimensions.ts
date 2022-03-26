@@ -1,19 +1,19 @@
-import { getUiGridCoords } from "./scenes/ui/utils/UIGrid";
+import { Coord, getUiGridCoords } from "./scenes/ui/utils/UIGrid";
 
 let gameWidth = 1000;
 let uiSceneWidth = 200;
+
+type UIDimensionsType = {
+    windowColor: number,
+    wellColor: number,
+    buttonGrid: Coord[],
+}
 
 var GameDimensions = {
     gameWidth: gameWidth,
     gameHeight: 600,
     uiSceneWidth: uiSceneWidth,
     uiSceneHeight: 400,
-    ui: {
-        windowColor: 0xfc9003,
-        wellColor: 0xd76e00,
-        uiButtonsY: 420, //todo wtf
-        buttonGrid: [[0,0]],
-    },
     minimapWidth: 0,
     minimapHeight: 0,
     mainCameraWidth: 0,
@@ -47,12 +47,17 @@ GameDimensions.mainCameraHeight = GameDimensions.gameHeight;
 
 GameDimensions.resourcesScene.width = GameDimensions.mainCameraWidth;
 
-GameDimensions.ui.buttonGrid = getUiGridCoords(
-    GameDimensions.mainCameraWidth, 
-    GameDimensions.minimapHeight,
-    uiSceneWidth, 
-    50, 
-    10);;
+
+const UIDimensions: UIDimensionsType =  {
+    windowColor: 0xfc9003,
+    wellColor: 0xd76e00,
+    buttonGrid: getUiGridCoords(
+        GameDimensions.mainCameraWidth, 
+        GameDimensions.minimapHeight,
+        uiSceneWidth, 
+        50, 
+        10)
+}
 
 enum Scenes {
     UIScene = "UIScene",
@@ -62,4 +67,4 @@ enum Scenes {
     FinishScene = "FinishScene"
 }
 
-export { GameDimensions, Scenes };
+export { GameDimensions, Scenes, UIDimensions };
