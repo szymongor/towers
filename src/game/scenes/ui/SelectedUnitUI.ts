@@ -7,6 +7,14 @@ import { UiScene } from "./UiScene";
 import { TargetingActionEvent, UiSceneEvents } from "./UiSceneEvents";
 import { Coord } from "./utils/UIGrid";
 
+type UIElement = {
+    width: number;
+    heigth: number;
+    show: () => void;
+    hide: () => void;
+    update: () => void;
+}
+
 class SelectedUnitUI {
     units: Unit[];
     selectedUnitInfo: Phaser.GameObjects.BitmapText;
@@ -46,15 +54,19 @@ const showSelectedUnitUI = (scene: UiScene, selectedUnits: Unit[]) => {
     let selectedUnitUI = new SelectedUnitUI(selectedUnits);
     scene.selectedUnitUI = selectedUnitUI;
 
+    let infoTxtposition = {
+        x: scene.originX+2,
+        y: scene.originY+80,
+    }
+
     if(selectedUnits.length == 1) {
         let selectedUnit = selectedUnits[0];
-
-        let infoTxt = scene.add.bitmapText(scene.originX+2, scene.originY+80,  GameDimensions.font,
+        let infoTxt = scene.add.bitmapText(infoTxtposition.x, infoTxtposition.y,  GameDimensions.font,
             '', 12);
         selectedUnitUI.selectedUnitInfo = infoTxt;
         infoTxt.text = getUnitInfoText(selectedUnit);
     } else {
-        let infoTxt = scene.add.bitmapText(scene.originX+2, scene.originY+80, GameDimensions.font,
+        let infoTxt = scene.add.bitmapText(infoTxtposition.x, infoTxtposition.y, GameDimensions.font,
             '', 12);
         selectedUnitUI.selectedUnitInfo = infoTxt;
         infoTxt.text = getUnitsInfoText(selectedUnits);
