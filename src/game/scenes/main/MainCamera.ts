@@ -13,8 +13,8 @@ import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
 import { SpriteCache } from '../SpriteCache';
 import { TowerGame } from '../TowerGame';
 import { KeyboardListener } from '../KeyboardListener';
-import { getActionsForUnits } from '../ui/SelectedUnitUI';
 import { TransitionAnimation } from './animation/Animation';
+import { getActionsForUnits } from '../ui/elements/SelectedUnitsActions';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 

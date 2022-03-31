@@ -5,6 +5,8 @@ class Bar {
     valueBar: Phaser.GameObjects.Rectangle;
     height: number;
     widthMax: number;
+    show: () => void;
+    hide: () => void;
 
     constructor(scene: Scene, x: number, y: number, progress: number, widthMax: number, height: number, color: number) {
        
@@ -16,15 +18,21 @@ class Bar {
         this.valueBar.setOrigin(0);
         this.height = height;
         this.widthMax = widthMax;
-    }
 
-    destroy() {
-        this.border.visible = false;
-        this.valueBar.visible = false;
-    }
+        this.show = () => {
+            this.border.visible = true;
+            this.valueBar.visible = true;
+        }
 
-    updateProgress(progress: number) {
+        this.hide = () => {
+            this.border.visible = false;
+            this.valueBar.visible = false;
+        }
+    
         
+    }
+    
+    updateProgress(progress: number) {
         this.valueBar.setSize(progress*this.widthMax, this.height);
     }
 }

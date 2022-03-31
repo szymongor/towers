@@ -1,17 +1,25 @@
 import * as Phaser from 'phaser';
 import { GameEngine } from '../../engine/GameEngine';
-import { GameDimensions, Scenes, UIDimensions } from  '../../GameDimensions';
+import { GameDimensions, Scenes } from  '../../GameDimensions';
 import { createBaseUIButtons } from './BaseUIControls';
 import { CustomSprite } from '../../engine/units/Unit';
-import { SelectedUnitUI, showSelectedUnitUI } from './SelectedUnitUI';
+import { getSelectedUnitsUIElements } from './elements/SelectedUnitUI';
 import { MainCameraEvents } from '../main/MainCamera';
 import { drawWindow } from '../elements/Window';
 
-interface UIButton {
+type UIButton = {
     clearTint: () => void;
     setVisible: (prop: boolean) => void;
     setTintFill: (prop: number) => void;
     destroy: () => void;
+}
+
+type UIElement = {
+    width: number;
+    heigth: number;
+    show: () => void;
+    hide: () => void;
+    update: () => void;
 }
 
 class UiScene extends Phaser.Scene {
@@ -21,13 +29,15 @@ class UiScene extends Phaser.Scene {
     originY: number;            //    
     originActionUIX: number;    //
     originActionUIY: number;    //TODO - UI Dimensions
-    selectedUnitUI?: SelectedUnitUI;
+    // selectedUnitUI?: SelectedUnitUI;
 
+    uiElements: UIElement[];
     uiButtons: UIButton[];
 
     constructor(handle: string, parent: Phaser.Scene, gameEngine: GameEngine) {
         super(handle);
         Phaser.Scene.call(this, { key: handle, active: true });
+        this.uiElements = [];
         this.uiButtons = [];
         this.gameEngine = gameEngine;
         this.originActionUIY =420; //UIDimensions.uiButtonsY;
@@ -43,8 +53,6 @@ class UiScene extends Phaser.Scene {
         let windowX = this.originX+GameDimensions.uiSceneWidth/2;
         let windowY = this.originY +GameDimensions.uiSceneHeight/2;
         drawWindow(this, windowX, windowY, GameDimensions.uiSceneWidth, GameDimensions.uiSceneHeight);
-
-        var info = this.add.bitmapText(this.originX, this.originY, GameDimensions.font, 'UI', 30);
         
         createBaseUIButtons(this);
     }
@@ -59,15 +67,14 @@ class UiScene extends Phaser.Scene {
 
     unitsSelected(uiScene: UiScene) {
         return (gameUnits: CustomSprite[]) => {
+            this.uiElements.forEach(elem => elem.hide());
             uiScene.clearButtons(uiScene);
             if(gameUnits) {
                 uiScene.uiButtons = [];
                 let units = gameUnits.filter(u => u).map(customSprite => customSprite.unit);
-                showSelectedUnitUI(this, units);
+                this.uiElements = getSelectedUnitsUIElements(this, units);
+                this.uiElements.forEach(elem => elem.show())
             } else {
-                if(this.selectedUnitUI){
-                    this.selectedUnitUI.hide();
-                }
                 createBaseUIButtons(this);
             }
 
@@ -87,12 +94,10 @@ class UiScene extends Phaser.Scene {
     }
 
     update() {
-        if(this.selectedUnitUI) {
-            this.selectedUnitUI.update();
-        }
+        this.uiElements.forEach(elem => elem.update());
     }
 }
 
 
 
-export { UiScene, UIButton };
+export { UiScene, UIButton, UIElement };

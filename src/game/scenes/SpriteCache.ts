@@ -39,7 +39,7 @@ class SpriteCache {
         let sprite: CustomSprite = scene.add.sprite(-100, -100, key); 
         sprite.dispose = () => {
             if(sprite.progressBar) {
-                sprite.progressBar.destroy();
+                sprite.progressBar.hide();
             }
 
             if(sprite.rangeHighlight) {

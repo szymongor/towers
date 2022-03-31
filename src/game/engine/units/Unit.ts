@@ -80,11 +80,6 @@ class HP {
     }
 }
 
-// interface ActionProgress extends TaskProgress {
-//     target?: Unit;
-//     callback?: () => void;
-// }
-
 class Unit {
     x: number;
     y: number;
@@ -236,7 +231,7 @@ class Unit {
     clearUnitTask(unitTaskName: string) {
         this.currentTasks.delete(unitTaskName);
         if(this.sprite && this.sprite.progressBar) {
-            this.sprite.progressBar.destroy();
+            this.sprite.progressBar.hide();
             this.sprite.progressBar = null;
         }
     }
