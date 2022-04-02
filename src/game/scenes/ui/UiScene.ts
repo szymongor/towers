@@ -17,6 +17,8 @@ type UIButton = {
 type UIElement = {
     width: number;
     heigth: number;
+    setX: (x: number) => void;
+    setY: (y: number) => void;
     show: () => void;
     hide: () => void;
     update: () => void;
@@ -26,7 +28,8 @@ class UiScene extends Phaser.Scene {
 
     gameEngine: GameEngine;
     originX: number;            //
-    originY: number;            //    
+    originY: number;  
+    width: number;          //    
     originActionUIX: number;    //
     originActionUIY: number;    //TODO - UI Dimensions
     // selectedUnitUI?: SelectedUnitUI;
@@ -41,6 +44,7 @@ class UiScene extends Phaser.Scene {
         this.uiButtons = [];
         this.gameEngine = gameEngine;
         this.originActionUIY =420; //UIDimensions.uiButtonsY;
+        this.width = 200;
     }
 
     preload() {
@@ -73,7 +77,13 @@ class UiScene extends Phaser.Scene {
                 uiScene.uiButtons = [];
                 let units = gameUnits.filter(u => u).map(customSprite => customSprite.unit);
                 this.uiElements = getSelectedUnitsUIElements(this, units);
-                this.uiElements.forEach(elem => elem.show())
+                let y = this.originY +10;
+                this.uiElements.forEach(elem => {
+                    elem.setY(y);
+                    elem.setX(this.originX);
+                    elem.show()
+                    y+=elem.heigth;
+                })
             } else {
                 createBaseUIButtons(this);
             }

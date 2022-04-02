@@ -7,6 +7,8 @@ class Bar {
     widthMax: number;
     show: () => void;
     hide: () => void;
+    setX: (x: number) => void;
+    setY: (y: number) => void;
 
     constructor(scene: Scene, x: number, y: number, progress: number, widthMax: number, height: number, color: number) {
        
@@ -28,7 +30,15 @@ class Bar {
             this.border.visible = false;
             this.valueBar.visible = false;
         }
-    
+
+        this.setX = (x: number) => {
+            this.border.setX(x);
+            this.valueBar.setX(x);
+        }
+        this.setY = (y: number) => {
+            this.border.setY(y);
+            this.valueBar.setY(y);
+        }
         
     }
     

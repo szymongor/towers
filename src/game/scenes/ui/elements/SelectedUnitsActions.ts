@@ -21,6 +21,16 @@ const getSelectedUnitsActionsUIElement = (scene: UiScene, selectedUnits: Unit[])
         hide: () => {
             icons.forEach(i => i.setVisible(false));
         },
+        setX: (x: number) => {
+            icons.forEach(icon => {
+                icon.setX(x);
+            })
+        },
+        setY: (y: number) => {
+            icons.forEach(icon => {
+                icon.setY(y);
+            })
+        },
         update: () => {}
     }
 

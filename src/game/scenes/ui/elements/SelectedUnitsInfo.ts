@@ -35,6 +35,12 @@ const getUnitInfoUiElement = (scene: UiScene, units: Unit[]): UIElement => {
         hide: () => {
             infoTxt.setVisible(false);
         },
+        setX: (x: number) => {
+            infoTxt.setX(x);
+        },
+        setY: (y: number) => {
+            infoTxt.setY(y);
+        },
         update: () => {
             infoTxt.setText(infoTextFunc());
         }
