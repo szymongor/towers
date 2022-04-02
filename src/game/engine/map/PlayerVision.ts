@@ -2,23 +2,35 @@ import { GameDimensions } from "../../GameDimensions";
 import { GameEngine } from "../GameEngine";
 import { Unit } from "../units/Unit";
 import { UnitFilter } from "../units/UnitsStorage";
+import { Terrain, TerrainType } from "./MapBoard";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
-interface Vector {
+//TODO move to another package
+class Vector {
     x: number;
     y: number;
-}
-
-class Tile implements Vector {
-    x: number;
-    y: number;
-    id: string;
 
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
+    }
+
+
+}
+
+class Tile extends Vector {
+    terrain: TerrainType;
+    id: string;
+
+    constructor(x: number, y: number, terrain: TerrainType) {
+        super(x, y);
         this.id = Tile.getTileId(x,y);
+        this.terrain = terrain;
+    }
+
+    static fromVector(vector: Vector, terrain: Terrain) {
+        return new Tile(vector.x, vector.y, terrain.type(vector.x, vector.y));
     }
 
     static getTileId(x: number, y: number): string {
@@ -35,6 +47,7 @@ interface PlayersVision {
 const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
     let tilesInRange = new Map<string, Tile>();
     let visibleUnits = new Set<Unit>();
+    let terrain = gameEngine.getMap().terrain;
     let ownersUnitFilter : UnitFilter = {
         owner: gameEngine.getPlayer()
     }
@@ -55,7 +68,7 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
                 let distX = (ux - i-TILE_SIZE/2)*(ux - i-TILE_SIZE/2);
                 let distY = (uy - j-TILE_SIZE/2)*(uy - j-TILE_SIZE/2);
                 if(Math.sqrt(distX+distY) < uRange) {
-                    let tile = new Tile(i,j);
+                    let tile = new Tile(i,j, gameEngine.getMap().terrain.type(i,j));
                     tilesInRange.set(tile.id, tile);
                 }
                     
@@ -71,7 +84,7 @@ const getPlayerVision = function(gameEngine: GameEngine): PlayersVision {
     unitsInVison.forEach(vu => { 
         visibleUnits.add(vu);
         vu.getUnitTiles().forEach(unitTile => {
-            tilesInRange.set(unitTile.x+':'+unitTile.y, unitTile);
+            tilesInRange.set(unitTile.x+':'+unitTile.y, Tile.fromVector(unitTile, terrain));
         })
     });
 

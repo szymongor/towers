@@ -8,7 +8,7 @@ import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
-import { Tile } from '../map/PlayerVision';
+import { Tile, Vector } from '../map/PlayerVision';
 import { UnitActionUI } from './actions/UnitActionsUI';
 import { GameEngine } from '../GameEngine';
 import { TaskProgress, UnitTask } from './UnitTask';
@@ -242,11 +242,11 @@ class Unit {
         Math.abs(y - this.y) < this.size * GameDimensions.grid.tileSize/2;
     }
 
-    getUnitTiles(): Tile[] {
-        let tiles : Tile[] = [];
+    getUnitTiles(): Vector[] {
+        let tiles : Vector[] = [];
         for(let i = this.x; i < this.x + this.size*TILE_SIZE ; i += TILE_SIZE ) {
             for(let j = this.y; j < this.y +  this.size*TILE_SIZE ; j += TILE_SIZE ) {
-                tiles.push(new Tile(i,j));
+                tiles.push(new Vector(i,j));
             }
         }
         return tiles;

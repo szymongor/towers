@@ -1,4 +1,4 @@
-import { Tile } from '../map/PlayerVision';
+import { Tile, Vector } from '../map/PlayerVision';
 import { Player } from '../Player';
 import { Unit } from '../units/Unit';
 import { EventChannels } from './EventsRegistry';
@@ -13,7 +13,7 @@ interface GameFinishedEventData {
 
 interface ChangePositionEventData {
     unit: Unit,
-    target: Tile
+    target: Vector
 }
 
 class GameEvent {

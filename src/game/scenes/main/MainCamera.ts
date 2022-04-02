@@ -15,6 +15,7 @@ import { TowerGame } from '../TowerGame';
 import { KeyboardListener } from '../KeyboardListener';
 import { TransitionAnimation } from './animation/Animation';
 import { getActionsForUnits } from '../ui/elements/SelectedUnitsActions';
+import { TerrainType } from '../../engine/map/MapBoard';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -280,7 +281,8 @@ class MainCamera extends Phaser.Scene {
         
         tiles.forEach(t => {
             if(!scene.latestVisibleSprites.tiles.has(t.id)) {
-                let sprite = scene.spriteCache.get('grass', scene);
+                let spriteName = terrainTypeToSprite(t.terrain);
+                let sprite = scene.spriteCache.get(spriteName, scene);
                 sprite.setPosition(t.x,t.y)
                 .setDepth(-2)
                 .setOrigin(0)
@@ -394,6 +396,15 @@ enum UiMode {
     BUILD_BUILDING = "BUILD_BUILDING",
     TARGETING_ACTION = "TARGETING_ACTION",
     BOX_MULTISELECT = "BOX_MULTISELECT"
+}
+
+const terrainTypeToSprite = (terrainType: TerrainType) => {
+    switch(terrainType) {
+        case TerrainType.GRASS: 
+            return 'grass';
+        case TerrainType.WATER: 
+            return 'water';
+    }
 }
 
 export { MainCamera, UiMode, ViewCamera, CameraZone, Selectable, MainCameraEvents };

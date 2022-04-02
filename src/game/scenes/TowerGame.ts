@@ -4,6 +4,7 @@ import { UiScene } from './ui/UiScene';
 import { ResourcesScene } from './resources/ResourcesScene';
 import { GameDimensions, Scenes } from  '../GameDimensions';
 import grass1Png from '../../images/grass1.png';
+import waterPng from '../../images/water.png';
 import tree1Png from '../../images/tree1.png';
 import towerPng from '../../images/tower.png';
 import castlePng from '../../images/castle.png';
@@ -51,6 +52,7 @@ class TowerGame extends Phaser.Scene {
     preload() {
         this.loader = new Phaser.Loader.LoaderPlugin(this);
         this.loader.image('grass', grass1Png);
+        this.loader.image('water', waterPng);
         this.loader.image('tree', tree1Png);
         this.loader.image('sawmill', sawmillPng);
         this.loader.image('tower', towerPng);

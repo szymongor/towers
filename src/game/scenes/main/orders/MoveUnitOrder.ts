@@ -1,5 +1,5 @@
 import { ChangePositionEventData, GameEvent } from "../../../engine/events/GameEvent";
-import { Tile } from "../../../engine/map/PlayerVision";
+import { Tile, Vector } from "../../../engine/map/PlayerVision";
 import { GameDimensions } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { TargetingActionEvent } from "../../ui/UiSceneEvents";
@@ -20,7 +20,7 @@ const onTargetingActionProvider = (scene: MainCamera) => {
         scene.cursorFollow.setTintFill(0x00ff00);
         scene.cursorFollow.action = UiMode.TARGETING_ACTION;
         scene.cursorFollow.actionOnClick = () => {
-            let target = new Tile(scene.cursorFollow.x,scene.cursorFollow.y);
+            let target = new Vector(scene.cursorFollow.x,scene.cursorFollow.y);
             e.action.execute({target, units: e.unitsSource});
             scene.cursorFollow.destroy();
             scene.cursorFollow = null;

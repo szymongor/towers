@@ -111,7 +111,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
     if(direction) {
         let changePositionEventData : ChangePositionEventData = {
             unit: unit,
-            target: new Tile(unit.x + direction.x,unit.y + direction.y)
+            target: new Vector(unit.x + direction.x,unit.y + direction.y)
         }
         let changePositionEvent = new GameEvent(EventChannels.CHANGE_POSITION, changePositionEventData);
         eventRegistry.emit(changePositionEvent);

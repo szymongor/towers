@@ -1,9 +1,10 @@
 import { GameEngine } from "../../../GameEngine";
 import { UnitName } from "../../../units/UnitFactory";
-import { MapBoard } from "../../MapBoard";
+import { MapBoard, Terrain, TerrainType } from "../../MapBoard";
 
 const initBasicMap  = (gameEngine: GameEngine) => {
-    var basicMap = new MapBoard(1000 ,1000, gameEngine);
+    let terrain: Terrain = basicTerrain;
+    var basicMap = new MapBoard(1000 ,1000, gameEngine, terrain);
     basicMapInitAddStartBuildings(gameEngine);
 
     return basicMap;
@@ -42,6 +43,17 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
     })
 
     unitStorage.addUnits(units);
+}
+
+const basicTerrain = {
+    type: (x:number, y: number) => {
+        if(x> 50 && x<400) {
+            if(y > 0 && y < 300) {
+                return TerrainType.WATER;
+            }
+        }
+        return TerrainType.GRASS;
+    }
 }
 
 export { initBasicMap }
