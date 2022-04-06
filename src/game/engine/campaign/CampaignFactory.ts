@@ -1,6 +1,7 @@
-import { basicAiProcessorProvider } from "../Ai/processor/AiProcessorFactory";
+import { basicCampaign } from "../../rules/campaign/basic/basicCampaign";
+import { basicAiProcessorProvider } from "../../rules/campaign/basic/basicAiProcessor";
 import { GameEngine } from "../GameEngine";
-import { initBasicMap } from "../map/maps/basic/basicMap";
+import { initBasicMap } from "../../rules/campaign/basic/basicMap";
 import { Campaign } from "./Campaign";
 
 type CampaignProvider = (ge: GameEngine) => Campaign;
@@ -20,15 +21,6 @@ class CampaignFactory {
     get(campaignName: CampaignName): CampaignProvider {
         return this.campaigns.get(campaignName);
     }
-}
-
-const basicCampaign = (gameEngine: GameEngine): Campaign => {
-    let map = initBasicMap(gameEngine);
-    let aiProcessor = basicAiProcessorProvider(gameEngine);
-    let campaign = new Campaign(map, aiProcessor);
-
-    return campaign;
-
 }
 
 export { CampaignFactory, CampaignName }

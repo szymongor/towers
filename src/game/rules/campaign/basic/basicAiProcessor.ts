@@ -1,7 +1,7 @@
-import { GameEngine } from "../../GameEngine";
-import { moveAllSoldiersUnitAction, orderUnitAction } from "../actions/AiActionFactory";
-import { ActionSchedule } from "./ActionSchedule";
-import { AiProcessor } from "./AiProcessor";
+import { GameEngine } from "../../../engine/GameEngine";
+import { moveAllSoldiersUnitAction, orderUnitAction } from "../../../engine/Ai/actions/AiActionFactory";
+import { ActionSchedule } from "../../../engine/Ai/processor/ActionSchedule";
+import { AiProcessor } from "../../../engine/Ai/processor/AiProcessor";
 
 const basicAiProcessorProvider = (gameEnginge: GameEngine) => {
     let basicAiProcessor = new AiProcessor(gameEnginge);

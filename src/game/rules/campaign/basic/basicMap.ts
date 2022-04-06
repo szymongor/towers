@@ -1,6 +1,6 @@
-import { GameEngine } from "../../../GameEngine";
-import { UnitName } from "../../../units/UnitFactory";
-import { MapBoard, Terrain, TerrainType } from "../../MapBoard";
+import { GameEngine } from "../../../engine/GameEngine";
+import { UnitName } from "../../../engine/units/UnitFactory";
+import { MapBoard, Terrain, TerrainType } from "../../../engine/map/MapBoard";
 
 const initBasicMap  = (gameEngine: GameEngine) => {
     let terrain: Terrain = basicTerrain;
