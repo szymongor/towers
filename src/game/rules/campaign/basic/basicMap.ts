@@ -1,6 +1,7 @@
 import { GameEngine } from "../../../engine/GameEngine";
 import { UnitName } from "../../../engine/units/UnitFactory";
 import { MapBoard, Terrain, TerrainType } from "../../../engine/map/MapBoard";
+import { circleOfTerrain } from "../../../editor/map/terrainElements";
 
 const initBasicMap  = (gameEngine: GameEngine) => {
     let terrain: Terrain = basicTerrain;
@@ -47,12 +48,13 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
 
 const basicTerrain = {
     type: (x:number, y: number) => {
-        if(x> 50 && x<400) {
-            if(y > 0 && y < 300) {
-                return TerrainType.WATER;
-            }
+        let waterCircle = circleOfTerrain(400, 400, 100, TerrainType.WATER )
+        let terrainType = waterCircle(x, y);
+        if(terrainType == TerrainType.DEFAULT) {
+            return TerrainType.GRASS;
+        } else {
+            return terrainType;
         }
-        return TerrainType.GRASS;
     }
 }
 

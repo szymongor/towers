@@ -29,6 +29,7 @@ type Terrain = {
 }
 
 enum TerrainType {
+    DEFAULT = "DEFAULT",
     GRASS = "GRASS",
     WATER = "WATER"
 }
