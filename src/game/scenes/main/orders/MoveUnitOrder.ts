@@ -1,6 +1,6 @@
 import { ChangePositionEventData, GameEvent } from "../../../engine/events/GameEvent";
 import { Tile, Vector } from "../../../engine/map/PlayerVision";
-import { GameDimensions } from "../../../GameDimensions";
+import { GameClockMilisInterval, GameDimensions } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { TargetingActionEvent } from "../../ui/UiSceneEvents";
 import { customAnimationFromCustomSprite, TransitionAnimation } from "../animation/Animation";
@@ -45,8 +45,7 @@ const onChangePositionAnimation = function(scene: MainCamera) {
         let data: ChangePositionEventData = e.data;
         let unit = data.unit;
         let target = data.target;
-        //todo calculate steps from unit speed
-        let steps = 25;
+        let interval = data.interval * GameClockMilisInterval;
 
         let customAnimation = customAnimationFromCustomSprite(data.unit.sprite);
 
@@ -54,9 +53,9 @@ const onChangePositionAnimation = function(scene: MainCamera) {
             sprite: customAnimation,
             sourceX: unit.x,
             sourceY: unit.y,
-            dX: (target.x-unit.x)/steps,
-            dY: (target.y-unit.y)/steps,
-            steps: steps,
+            targetX: target.x,
+            targetY: target.y,
+            time: interval,
             progress: 0,
             transient: false
         }

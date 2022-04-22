@@ -13,7 +13,8 @@ interface GameFinishedEventData {
 
 interface ChangePositionEventData {
     unit: Unit,
-    target: Vector
+    target: Vector,
+    interval: number
 }
 
 class GameEvent {

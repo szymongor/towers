@@ -176,10 +176,11 @@ class MainCamera extends Phaser.Scene {
         }
     }
 
-    update() {
+    update(time: number, delta: number) {
+        
         this.updateProgress(this);
         updateCursorFollow(this);
-        this.updateTransitionAnimation();
+        this.updateTransitionAnimation(delta);
         this.drawMap(this.gameEngine);
     }
 
@@ -334,15 +335,18 @@ class MainCamera extends Phaser.Scene {
         this.transitionAnimations.add(ta);
     }
 
-    updateTransitionAnimation() {
+    updateTransitionAnimation(delta: number) {
         let finished = new Set();
         let animations = this.transitionAnimations;
         animations.forEach((ta) => {
-            if(ta.sprite){
-                ta.sprite.move(ta.dX, ta.dY);
+            if(ta.sprite) {
+                let progress = ta.progress/ta.time;
+                let x = ta.sourceX + (ta.targetX-ta.sourceX) * progress;
+                let y = ta.sourceY + (ta.targetY-ta.sourceY) * progress;
+                ta.sprite.setPosition(x, y);
             }
-            ta.progress += 1;
-            if(ta.progress >= ta.steps) {
+            ta.progress += delta
+            if(ta.progress >= ta.time) {
                 finished.add(ta);
             }
         });

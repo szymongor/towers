@@ -50,10 +50,13 @@ const animateResourceCollected = (scene: MainCamera) => {
             sprite: customAnimation,
             sourceX: sourceCentre.x,
             sourceY: sourceCentre.y,
-            dX: (targetCentre.x - sourceCentre.x)/steps,
-            dY: (targetCentre.y - sourceCentre.y)/steps,
-            steps: steps,
+            targetX: targetCentre.x,
+            targetY: targetCentre.y,
+            // dX: (targetCentre.x - sourceCentre.x)/steps,
+            // dY: (targetCentre.y - sourceCentre.y)/steps,
+            // steps: steps,
             progress: 0,
+            time: 500, //TODO calculate from dist?
             transient: true
         }
         scene.addTransitionAnimation(transitionAnimation);
@@ -80,9 +83,12 @@ const animateDamageDealt = (scene: MainCamera) => {
             sprite: customAnimation,
             sourceX: sourceCentre.x,
             sourceY: sourceCentre.y,
-            dX: (targetCentre.x - sourceCentre.x)/steps,
-            dY: (targetCentre.y - sourceCentre.y)/steps,
-            steps: steps,
+            targetX: targetCentre.x,
+            targetY: targetCentre.y,
+            time: 500, //TODO - set time from event
+            // dX: (targetCentre.x - sourceCentre.x)/steps,
+            // dY: (targetCentre.y - sourceCentre.y)/steps,
+            // steps: steps,
             progress: 0,
             transient: true
         }

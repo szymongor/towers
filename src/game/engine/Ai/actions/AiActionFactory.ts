@@ -1,5 +1,6 @@
 import { GameEngine } from "../../GameEngine";
-import { changePositionProvider, soldierProductionProvider } from "../../units/actions/UnitActionsUI";
+import { changePositionProvider } from "../../units/actions/change_position/ChangePositionAction";
+import { soldierProductionProvider } from "../../units/actions/UnitActionsUI";
 import { UnitName } from "../../units/UnitFactory";
 
 const orderUnitAction = {

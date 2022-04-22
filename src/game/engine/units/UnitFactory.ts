@@ -4,9 +4,10 @@ import { ResourceName, Resources, ResourcesStorage } from '../Resources';
 import { UnitAction, SawmillWoodCollect, MineStoneCollect, ArrowAttack } from './actions/UnitActions';
 import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
-import { changePositionProvider, soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
+import { soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
 import { GameEngine } from "../GameEngine";
 import { UnitTask, UnitTaskNames } from "./UnitTask";
+import { changePositionProvider } from "./actions/change_position/ChangePositionAction";
 
 enum UnitName {
     TOWER = "tower",
@@ -90,11 +91,11 @@ class UnitFactory {
                     ]
                 ],
                 canPlace: canPlaceStandard,
-                constructionTime: 15,
+                constructionTime: 30,
                 actions: [
                     SawmillWoodCollect
                 ],
-                actionInterval: 5,
+                actionInterval: 15,
                 uiActions: [],
                 actionRange: 200,
                 maxHP: 200
@@ -116,13 +117,13 @@ class UnitFactory {
                     ]
                 ],
                 canPlace: canPlaceMine,
-                constructionTime: 15,
+                constructionTime: 30,
                 actions: [
                     MineStoneCollect
                 ],
                 uiActions: [],
                 actionRange: 0,
-                actionInterval: 5,
+                actionInterval: 15,
                 maxHP: 200
             },
             castle: {
@@ -194,7 +195,7 @@ class UnitFactory {
                 uiActions: [changePositionProvider],
                 actionInterval: 5,
                 actionRange: 200,
-                constructionTime: 6,
+                constructionTime: 10,
                 maxHP: 200
             }
 

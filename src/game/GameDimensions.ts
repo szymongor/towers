@@ -3,6 +3,8 @@ import { Coord, getUiGridCoords } from "./scenes/ui/utils/UIGrid";
 let gameWidth = 1000;
 let uiSceneWidth = 200;
 
+const GameClockMilisInterval = 50;
+
 type UIDimensionsType = {
     windowColor: number,
     wellColor: number,
@@ -67,4 +69,4 @@ enum Scenes {
     FinishScene = "FinishScene"
 }
 
-export { GameDimensions, Scenes, UIDimensions };
+export { GameDimensions, Scenes, UIDimensions, GameClockMilisInterval };

@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { MainCamera } from './main/MainCamera';
 import { UiScene } from './ui/UiScene';
 import { ResourcesScene } from './resources/ResourcesScene';
-import { GameDimensions, Scenes } from  '../GameDimensions';
+import { GameClockMilisInterval, GameDimensions, Scenes } from  '../GameDimensions';
 import grass1Png from '../../images/grass1.png';
 import waterPng from '../../images/water.png';
 import tree1Png from '../../images/tree1.png';
@@ -162,7 +162,7 @@ class TowerGame extends Phaser.Scene {
 
     createTimer(scene: TowerGame) {
         scene.timedEvent = scene.time.addEvent({ 
-            delay: 250, 
+            delay: GameClockMilisInterval, 
             callback: this.updateEvent, 
             callbackScope: this,
             loop: true

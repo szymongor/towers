@@ -8,12 +8,12 @@ const basicAiProcessorProvider = (gameEnginge: GameEngine) => {
 
     let orderUnitSchedule = new ActionSchedule();
     orderUnitSchedule.addCondition((round, ge) => {
-        return round%15 == 0;
+        return round%45 == 0;
     });
 
     let moveAllSoldiersSchedule = new ActionSchedule();
     moveAllSoldiersSchedule.addCondition((round, ge) => {
-        return round%15 == 0;
+        return round%45 == 0;
     });
 
     basicAiProcessor.addAction(orderUnitAction, orderUnitSchedule);
