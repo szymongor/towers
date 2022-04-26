@@ -29,6 +29,9 @@ const customAnimationFromCustomSprite = (customSprite: CustomSprite): CustomAnim
                     customSprite.rangeHighlight.x += x;
                     customSprite.rangeHighlight.y += y;
                 }
+                if(customSprite.highlight) {
+                    customSprite.highlight.update();
+                }
                 customSprite.x += x;
                 customSprite.y += y;
             }
@@ -38,6 +41,9 @@ const customAnimationFromCustomSprite = (customSprite: CustomSprite): CustomAnim
                 if(customSprite.rangeHighlight) {
                     customSprite.rangeHighlight.x = x;
                     customSprite.rangeHighlight.y = y;
+                }
+                if(customSprite.highlight) {
+                    customSprite.highlight.update();
                 }
                 customSprite.x = x;
                 customSprite.y = y;

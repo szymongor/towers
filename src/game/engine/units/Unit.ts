@@ -12,6 +12,7 @@ import { Tile, Vector } from '../map/PlayerVision';
 import { UnitActionUI } from './actions/UnitActionsUI';
 import { GameEngine } from '../GameEngine';
 import { TaskProgress, UnitTask } from './UnitTask';
+import { UIElement } from '../../scenes/ui/UiScene';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -29,7 +30,7 @@ interface UnitState {
 interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
     progressBar?: Bar;
     unit?: Unit;
-    highlight?: Phaser.GameObjects.Sprite;
+    highlight?: UIElement;
     rangeHighlight?: Phaser.GameObjects.Arc;
     dispose?: () => void;
 }

@@ -46,7 +46,7 @@ const onChangePositionAnimation = function(scene: MainCamera) {
         let unit = data.unit;
         let target = data.target;
         let interval = data.interval * GameClockMilisInterval;
-
+        
         let customAnimation = customAnimationFromCustomSprite(data.unit.sprite);
 
         let unitTransitionAnimation: TransitionAnimation = {

@@ -1,4 +1,6 @@
 import { CustomSprite, Unit } from "../../engine/units/Unit";
+import { GameDimensions } from "../../GameDimensions";
+import { UIElement } from "../ui/UiScene";
 import { MainCamera, MainCameraEvents, UiMode } from "./MainCamera";
 import { updateTargetingAction } from "./orders/MoveUnitOrder";
 import { updateBuildingOrderCursor } from "./orders/NewBuildingOrder";
@@ -10,8 +12,23 @@ const unitObjectOver = function (gameScene: MainCamera) {
             highlightSprite.setTintFill(0xffffff);
             highlightSprite.setDepth(-2);
             highlightSprite.setOrigin(0);
-            highlightSprite.setScale(gameObject.unit.getScale())
-            gameObject.highlight = highlightSprite;
+            highlightSprite.setScale(gameObject.unit.getScale());
+
+            let uiElem: UIElement= {
+                width: 0,
+                heigth: 0,
+                hide: () => {
+                    highlightSprite.setVisible(false);
+                },
+                update: () => {
+
+                },
+                setX: (x: number) => {},
+                setY: (y: number) => {},
+                show: () => {}
+                
+            }
+            gameObject.highlight = uiElem;
         }
         
     }
@@ -21,7 +38,7 @@ const unitObjectOut = function (gameScene: MainCamera) {
     return (pointer: Phaser.Input.Pointer, gameObject: CustomSprite) => {
         gameObject.clearTint();
         if(gameObject.highlight && gameScene.selectedUnits && !gameScene.selectedUnits.includes(gameObject)) {
-            gameObject.highlight.destroy();
+            gameObject.highlight.hide();
         }
     }
 };
@@ -29,16 +46,40 @@ const unitObjectOut = function (gameScene: MainCamera) {
 const selectUnit = function (gameScene: MainCamera, unit: Unit) {
     return function (customSprite: CustomSprite) {
         if(customSprite.highlight) {
-            gameScene.spriteCache.dispose(customSprite.highlight);
+            customSprite.highlight.hide();
         }
-        var highlightSprite = gameScene.spriteCache.createSprite(customSprite.name, gameScene);
-        highlightSprite.setTintFill(0x00ffdd);
-        highlightSprite.setDepth(-1);
-        highlightSprite.setOrigin(0);
-        highlightSprite.setScale(unit.getScale())
+
+        let highlightSprite: UIElement = createUnitHighlight(gameScene, unit);
+
         customSprite.highlight = highlightSprite;
         customSprite.rangeHighlight = createRangeHighlight(gameScene, unit);
     }
+}
+
+const createUnitHighlight = (gameScene: MainCamera, unit: Unit): UIElement => {
+    
+    let unitCentre = unit.getCentre();
+    let unitSize = unit.size * GameDimensions.grid.tileSize;
+
+    let rect = gameScene.add.rectangle(unitCentre.x, unitCentre.y, unitSize, unitSize );
+
+    rect.setStrokeStyle(2, 0xFFFFFF);
+
+    let highlightSprite: UIElement = {
+        width: 0,
+        heigth: 0,
+        show: () => {},
+        hide: () => {
+            rect.setVisible(false);
+        },
+        setX: () => {},
+        setY: () => {},
+        update: () => {
+            let unitCentre = unit.getCentre();
+            rect.setPosition(unitCentre.x, unitCentre.y);
+        }
+    }
+    return highlightSprite;
 }
 
 const createRangeHighlight = function (gameScene: MainCamera, unit: Unit) {
@@ -54,7 +95,7 @@ const deselectUnit = function (gameScene: MainCamera) {
     return function (gameUnit: CustomSprite) {
         gameUnit.clearTint();
         if(gameUnit.highlight) {
-            gameUnit.highlight.destroy();
+            gameUnit.highlight.hide();
             gameUnit.highlight = null;
         }
         gameUnit.rangeHighlight.setVisible(false);

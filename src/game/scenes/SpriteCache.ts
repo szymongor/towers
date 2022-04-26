@@ -47,7 +47,7 @@ class SpriteCache {
             }
 
             if(sprite.highlight) {
-                sprite.highlight.destroy();
+                sprite.highlight.hide();
             }
             
             this.dispose(sprite);
