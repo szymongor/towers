@@ -46,7 +46,7 @@ class GameEngine {
         if(player) {
             ownerPlayer = player;
         }
-        if(unitPrototype.canPlace(unitPrototype, this.unitStorage)) {
+        if(unitPrototype.canPlace(unitPrototype, this)) {
             let unit = this.unitFactory.constructionOf(unitPrototype.unitName, 
                 unitPrototype.x, 
                 unitPrototype.y, 
@@ -72,7 +72,7 @@ class GameEngine {
             let prototype: Unit = event.data.unitPrototype;
             let player: Player = event.data.player;
             if(gameEngine.canBuild(prototype.unitName, player) 
-            && prototype.canPlace(prototype,  storage)) {
+            && prototype.canPlace(prototype,  gameEngine)) {
                 let data = {
                     player: event.data.player,
                     unitPrototype: gameEngine.placeBuilding(prototype, player)
@@ -148,7 +148,7 @@ class GameEngine {
     }
 
     canPlaceUnit(unit: Unit) {
-        return isUnitInVision(this, unit) && unit.canPlace(unit, this.unitStorage);
+        return isUnitInVision(this, unit) && unit.canPlace(unit, this);
     }
     
     orderBuilding(unitPrototype: Unit) {

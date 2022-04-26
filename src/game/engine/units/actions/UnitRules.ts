@@ -1,18 +1,38 @@
 import { GameDimensions } from "../../../GameDimensions";
+import { GameEngine } from "../../GameEngine";
+import { TerrainType } from "../../map/MapBoard";
 import { Unit } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitFilter, UnitStorage } from "../UnitsStorage";
 
 interface CanPlaceRule {
-    (unit: Unit, unitStorage: UnitStorage): boolean
+    (unit: Unit, gameEngine: GameEngine): boolean
 }
 
-const canPlaceStandard = (unit: Unit, unitStorage: UnitStorage): boolean => {
+const canPlaceStandard = (unit: Unit, gameEngine: GameEngine): boolean => {
+    let isSpaceNotOccupied = isSpaceNotOccupiedByOtherUnit(unit, gameEngine);
+    if(isSpaceNotOccupied) {
+        return isSpaceSuitableForConstruction(unit, gameEngine);
+    } else {
+        return isSpaceNotOccupied;
+    }
+}
+
+const isSpaceNotOccupiedByOtherUnit = (unit: Unit, gameEngine: GameEngine): boolean => {
+    let unitStorage = gameEngine.unitStorage;
     let units = unitStorage.getUnits({});
     return 0 == units.filter(u=> unitIntersect(u, unit.x, unit.y, unit.size)).length;
 }
 
-const canPlaceMine = (unit: Unit, unitStorage: UnitStorage): boolean => {
+const isSpaceSuitableForConstruction = (unit: Unit, gameEngine: GameEngine): boolean => {
+    let map = gameEngine.mapBoard;
+    let isTileSuitableForConstruction = (t: TerrainType) => t != TerrainType.WATER;
+    return unit.getUnitTiles()
+    .filter(v => !isTileSuitableForConstruction(map.terrain.type(v.x, v.y))).length == 0;
+}
+
+const canPlaceMine = (unit: Unit, gameEngine: GameEngine): boolean => {
+    let unitStorage = gameEngine.unitStorage;
     let filter: UnitFilter = {
         unitName: UnitName.STONES,
         range: {
