@@ -51,8 +51,6 @@ function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, owner
 
 const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, owner: Player ) => {
     let done = () => {
-        console.log("Soldier Ready");
-
         //TODO remove?
         let unitOwner = owner ? owner : gameEngine.getPlayer();
         

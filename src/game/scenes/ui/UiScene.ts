@@ -32,7 +32,6 @@ class UiScene extends Phaser.Scene {
     width: number;          //    
     originActionUIX: number;    //
     originActionUIY: number;    //TODO - UI Dimensions
-    // selectedUnitUI?: SelectedUnitUI;
 
     uiElements: UIElement[];
     uiButtons: UIButton[];
@@ -74,16 +73,21 @@ class UiScene extends Phaser.Scene {
             this.uiElements.forEach(elem => elem.hide());
             uiScene.clearButtons(uiScene);
             if(gameUnits) {
-                uiScene.uiButtons = [];
-                let units = gameUnits.filter(u => u).map(customSprite => customSprite.unit);
-                this.uiElements = getSelectedUnitsUIElements(this, units);
-                let y = this.originY +10;
-                this.uiElements.forEach(elem => {
-                    elem.setY(y);
-                    elem.setX(this.originX);
-                    elem.show()
-                    y+=elem.heigth;
-                })
+                if(areUnitsOwned(gameUnits, uiScene.gameEngine)) {
+                    console.log("Owned");
+                    
+                    uiScene.uiButtons = [];
+                    let units = gameUnits.filter(u => u).map(customSprite => customSprite.unit);
+                    this.uiElements = getSelectedUnitsUIElements(this, units);
+                    let y = this.originY +10;
+                    this.uiElements.forEach(elem => {
+                        elem.setY(y);
+                        elem.setX(this.originX);
+                        elem.show()
+                        y+=elem.heigth;
+                    })
+                }
+                
             } else {
                 createBaseUIButtons(this);
             }
@@ -106,6 +110,11 @@ class UiScene extends Phaser.Scene {
     update() {
         this.uiElements.forEach(elem => elem.update());
     }
+}
+
+const areUnitsOwned = (units: CustomSprite[], gameEngine: GameEngine): boolean => {
+    let player = gameEngine.getPlayer();
+    return units.map(u => u.unit.player).filter(unitOwner => unitOwner == player).length == units.length;
 }
 
 

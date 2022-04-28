@@ -4,7 +4,7 @@ import { Player } from './Player';
 import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 import { Unit, UnitTypes } from './units/Unit';
-import { UnitStorage } from './units/UnitsStorage';
+import { UnitFilter, UnitStorage } from './units/UnitsStorage';
 import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
@@ -180,9 +180,11 @@ class GameEngine {
             boxSelect.rightY = y+dy;
         }
 
-        let unitFilter = {
+        let unitFilter: UnitFilter = {
             boxSelect: boxSelect,
-            types: [UnitTypes.CREATURE]
+            types: [UnitTypes.CREATURE],
+            owner: this.getPlayer()
+            
         }
         return this.unitStorage.getUnits(unitFilter);
     }
