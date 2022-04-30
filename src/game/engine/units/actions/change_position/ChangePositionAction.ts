@@ -20,7 +20,7 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
         execute: (props) => {
             if(props.units) {
                 props.units.forEach(unit => {
-                    unit.addUnitTask(changePositionTask(unit, gameEngine,eventRegistry, props.target))
+                    unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, props.target))
                 })  
             }
         }

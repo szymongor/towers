@@ -74,7 +74,6 @@ class UiScene extends Phaser.Scene {
             uiScene.clearButtons(uiScene);
             if(gameUnits) {
                 if(areUnitsOwned(gameUnits, uiScene.gameEngine)) {
-                    console.log("Owned");
                     
                     uiScene.uiButtons = [];
                     let units = gameUnits.filter(u => u).map(customSprite => customSprite.unit);
