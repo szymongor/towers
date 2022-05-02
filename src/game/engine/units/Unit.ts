@@ -22,9 +22,14 @@ enum UnitTypes {
     CREATURE = "CREATURE"
 }
 
+class UnitTarget {
+    target: Vector|Unit
+}
+
 interface UnitState {
     destroyed: boolean;
     construction: boolean;
+    target?: UnitTarget;
 }
 
 interface CustomSprite extends Phaser.GameObjects.Sprite, Selectable {
@@ -115,7 +120,8 @@ class Unit {
         
         this.state = {
             destroyed: false,
-            construction: false
+            construction: false,
+            target: null
         };
         this.actions = config.actions;
         this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry, player));
@@ -216,6 +222,15 @@ class Unit {
             let event: GameEvent = new GameEvent(EventChannels.UNIT_DESTROYED, data)
             this.eventRegistry.emit(event);
         }
+    }
+
+    getLocation(): Vector {
+        return new Vector(this.x, this.y);
+    }
+ 
+    setLocation(loc: Vector) {
+        this.x = loc.x;
+        this.y = loc.y;
     }
 
     dealDamage(damage: DealtDamage) {

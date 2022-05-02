@@ -163,6 +163,8 @@ class GameEngine {
             }
             let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
             this.events.emit(orderEvent);
+            //TODO invoke by event with box to re-calculate
+            this.traversMap.calculateTraversableGrid(0, 0, this.mapBoard.height, this.mapBoard.width);
         }
     }
 

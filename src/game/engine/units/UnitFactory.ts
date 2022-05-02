@@ -4,12 +4,13 @@ import { ResourceName, Resources, ResourcesStorage } from '../Resources';
 import { UnitAction } from './actions/UnitActions';
 import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
-import { soldierProductionProvider, UnitActionUI, UnitActionUIProvider } from "./actions/UnitActionsUI";
+import { UnitActionUIProvider } from "./actions/UnitActionsUI";
 import { GameEngine } from "../GameEngine";
 import { UnitTask, UnitTaskNames } from "./UnitTask";
 import { changePositionProvider } from "./actions/change_position/ChangePositionAction";
 import { ArrowAttack } from "./actions/attack/ArrowAttackAction";
 import { MineStoneCollect, SawmillWoodCollect } from "./actions/recource_collect/ResourceCollect";
+import { soldierProductionProvider } from "./actions/production/SoldierProduction";
 
 enum UnitName {
     TOWER = "tower",

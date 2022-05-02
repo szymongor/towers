@@ -1,7 +1,7 @@
 import { GameEngine } from "../../GameEngine";
 import { Vector } from "../../map/PlayerVision";
 import { changePositionProvider } from "../../units/actions/change_position/ChangePositionAction";
-import { soldierProductionProvider } from "../../units/actions/UnitActionsUI";
+import { soldierProductionProvider } from "../../units/actions/production/SoldierProduction";
 import { UnitName } from "../../units/UnitFactory";
 
 const orderUnitAction = {

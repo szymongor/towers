@@ -1,5 +1,6 @@
 import { GameDimensions } from "../../GameDimensions";
-import { Unit } from "../units/Unit";
+import { Unit, UnitTypes } from "../units/Unit";
+import { UnitFilter } from "../units/UnitsStorage";
 import { MapBoard, TerrainType } from "./MapBoard";
 import { Vector } from "./PlayerVision";
 
