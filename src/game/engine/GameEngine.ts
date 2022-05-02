@@ -9,11 +9,13 @@ import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayer
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
 import { CampaignFactory, CampaignName } from './campaign/CampaignFactory';
+import { TraversMap } from './map/TraversMap';
 
 class GameEngine {
     unitFactory: UnitFactory;
     unitStorage: UnitStorage;
     mapBoard: MapBoard;
+    traversMap: TraversMap;
     players: Player[];
     events: EventRegistry;
     aiProcessor: AiProcessor;
@@ -31,6 +33,8 @@ class GameEngine {
         let campaign = this.campaignFactory.get(campaignName)(this);
         this.aiProcessor = campaign.aiProcessor;
         this.mapBoard = campaign.map;
+
+        this.traversMap = new TraversMap(this.mapBoard);
 
         this.registerOrderBuildingFlow();
         this.registerUnitDestroyed();

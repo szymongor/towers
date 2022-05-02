@@ -16,6 +16,10 @@ class Vector {
         this.y = y;
     }
 
+    add(vector: Vector): Vector {
+        return new Vector(this.x + vector.x, this.y + vector.y)
+    }
+
 
 }
 

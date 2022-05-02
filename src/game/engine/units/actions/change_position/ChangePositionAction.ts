@@ -67,22 +67,23 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
 
 const choseDirection = (target: Vector, unit: Unit, gameEngine: GameEngine, ): Vector => {
     let directions = [
-        {x: TILE_SIZE, y:0},
-        {x: TILE_SIZE, y: TILE_SIZE},
-        {x: 0, y:TILE_SIZE},
-        {x: -TILE_SIZE, y:TILE_SIZE},
-        {x: -TILE_SIZE, y:0},
-        {x: -TILE_SIZE, y:-TILE_SIZE},
-        {x: 0, y:-TILE_SIZE},
-        {x: TILE_SIZE, y:-TILE_SIZE},
+        new Vector(TILE_SIZE, 0),
+        new Vector(TILE_SIZE, TILE_SIZE),
+        new Vector(0, TILE_SIZE),
+        new Vector(-TILE_SIZE, TILE_SIZE),
+        new Vector(-TILE_SIZE, 0),
+        new Vector(-TILE_SIZE, -TILE_SIZE),
+        new Vector(0, -TILE_SIZE),
+        new Vector(TILE_SIZE, -TILE_SIZE),
     ];
 
-    let unitPosition = {x: unit.x, y: unit.y};
+    let unitPosition = new Vector(unit.x, unit.y);
 
     let unitDirections = directions.map(dir => {
         return  {
             dir: dir,
-            futurePos: {x: dir.x + unitPosition.x, y: dir.y + unitPosition.y}}
+            futurePos: unitPosition.add(dir)
+        }
     });
 
     let unitDist = vectorDist(unitPosition, target);
@@ -90,20 +91,18 @@ const choseDirection = (target: Vector, unit: Unit, gameEngine: GameEngine, ): V
     let possibleDirs = unitDirections
     .map(uDir => { return {dir: uDir.dir, futurePos: uDir.futurePos, dist: vectorDist(uDir.futurePos, target)}})
     .filter(uDir => uDir.dist <= unitDist )
-    .filter(uDir => isDirectionTraversable(uDir.futurePos, gameEngine) )
+    .filter(uDir => isDirectionTraversable(uDir.futurePos, unit, gameEngine) )
     .sort((a,b) => a.dist - b.dist);
 
     if(possibleDirs.length) {
         return possibleDirs[0].dir;
     } else {
-        return {x: 0, y: 0};
+        return new Vector(0, 0);
     }
 }
 
-const isDirectionTraversable = (dir: Vector, gameEngine: GameEngine): boolean => {
-    let isTerrainTraversable = gameEngine.getMap().terrain.type(dir.x, dir.y) == TerrainType.GRASS;
-
-    return isTerrainTraversable;
+const isDirectionTraversable = (dir: Vector, unit: Unit, gameEngine: GameEngine): boolean => {
+    return gameEngine.traversMap.isTileTraversableForUnit(dir, unit);
 }
 
 export { changePositionProvider }

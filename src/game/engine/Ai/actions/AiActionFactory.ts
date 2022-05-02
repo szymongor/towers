@@ -1,4 +1,5 @@
 import { GameEngine } from "../../GameEngine";
+import { Vector } from "../../map/PlayerVision";
 import { changePositionProvider } from "../../units/actions/change_position/ChangePositionAction";
 import { soldierProductionProvider } from "../../units/actions/UnitActionsUI";
 import { UnitName } from "../../units/UnitFactory";
@@ -21,7 +22,7 @@ const moveAllSoldiersUnitAction = {
         if(allBotUnits) {
             let gameActionProvider = changePositionProvider(allBotUnits[0], ge, ge.events, botPlayer);
             let actionProps = {
-                target: {x: 0, y:0},
+                target: new Vector(0, 0),
                 units: allBotUnits
             }
             gameActionProvider.execute(actionProps);

@@ -6,7 +6,7 @@ import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
-import { PlayersVision, Tile } from '../../engine/map/PlayerVision';
+import { PlayersVision, Tile, Vector } from '../../engine/map/PlayerVision';
 import { registerNewBuildingOrderEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
 import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
@@ -161,7 +161,7 @@ class MainCamera extends Phaser.Scene {
                         //TODO utils
                         var x = Math.floor((scene.input.mousePointer.x+scene.cameras.main.scrollX)/TILE_SIZE)*TILE_SIZE;
                         var y = Math.floor(((scene.input.mousePointer.y+scene.cameras.main.scrollY))/TILE_SIZE)*TILE_SIZE;
-                        let target = { x: x, y: y};
+                        let target = new Vector(x, y);
                         let action = actions[0][0];
                         let units = actions[0][1];
                         action.execute({target: target, units: units});
