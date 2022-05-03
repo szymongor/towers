@@ -1,4 +1,5 @@
 import { GameDimensions } from "../../GameDimensions";
+import { unitIntersect } from "../units/actions/UnitRules";
 import { Unit, UnitTypes } from "../units/Unit";
 import { UnitFilter } from "../units/UnitsStorage";
 import { MapBoard, TerrainType } from "./MapBoard";
@@ -63,7 +64,11 @@ class TraversMap {
     isTileTraversable(vector: Vector): boolean {
         let isTerrainTraversable = this.mapBoard.terrain.type(vector.x, vector.y) == TerrainType.GRASS;
 
-        return isTerrainTraversable;
+        let units = this.mapBoard.unitStorage.getUnits({});
+
+        let isOccupiedByOtherUnit = units.every(u => !unitIntersect(u, vector.x, vector.y, 1));
+
+        return isTerrainTraversable && isOccupiedByOtherUnit;
     }
 
     isTileTraversableForUnit(tile: Vector, unit: Unit) {

@@ -72,4 +72,4 @@ const unitIntersect = (unit: Unit, x: number, y: number, size: number) => {
     return false;
 }
 
-export { CanPlaceRule, canPlaceStandard, canPlaceMine }
+export { CanPlaceRule, canPlaceStandard, canPlaceMine, unitIntersect }
