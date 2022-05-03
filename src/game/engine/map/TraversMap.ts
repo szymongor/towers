@@ -20,7 +20,20 @@ class TraversMap {
     }
 
     getTraversableGridValue(vector: Vector): number {
-        return this.traversableGrid.get(vector.x).get(vector.y);
+        let traversRow = this.traversableGrid.get(vector.x);
+        if(traversRow!= undefined) {
+            let traversValue = traversRow.get(vector.y);
+            if(traversValue != undefined) {
+                return traversValue;
+            } else {
+                this.traversableGrid.get(vector.x).set(vector.y, 0);
+            }
+        } else {
+            this.traversableGrid.set(vector.x, new Map());
+        }
+        console.log("Cant get travers value for vector:[",vector);
+        
+        return 0;
     }
 
     initTraversableGrid() {
@@ -57,22 +70,34 @@ class TraversMap {
                 break;
             }
         }
-
         this.traversableGrid.get(vector.x).set(vector.y, traversableForSize);
     }
 
     isTileTraversable(vector: Vector): boolean {
         let isTerrainTraversable = this.mapBoard.terrain.type(vector.x, vector.y) == TerrainType.GRASS;
 
-        let units = this.mapBoard.unitStorage.getUnits({});
+        //TODO - Optimize filter ant intersect
+        let filter: UnitFilter = {
+            types: [UnitTypes.BUILDING, UnitTypes.RESOURCE]
+        }
+        let buildingsAndResources = this.mapBoard.unitStorage.getUnits(filter);
 
-        let isOccupiedByOtherUnit = units.every(u => !unitIntersect(u, vector.x, vector.y, 1));
+        let isOccupiedNotByOtherUnit = buildingsAndResources.every(u => !unitIntersect(u, vector.x, vector.y, 1));
 
-        return isTerrainTraversable && isOccupiedByOtherUnit;
+
+        return isTerrainTraversable && isOccupiedNotByOtherUnit;
     }
 
     isTileTraversableForUnit(tile: Vector, unit: Unit) {
-        return this.getTraversableGridValue(tile) >= unit.size;
+        let isTraversable = this.getTraversableGridValue(tile) >= unit.size;
+
+        let filter: UnitFilter = {
+            types: [UnitTypes.CREATURE]
+        }
+        let units = this.mapBoard.unitStorage.getUnits(filter);
+        let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, 1)))
+       
+        return isTraversable && !isOccupiedByOtherUnit
     }
 }
 

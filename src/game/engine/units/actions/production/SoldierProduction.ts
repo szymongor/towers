@@ -57,7 +57,7 @@ const findSpawnSpot = (unitSource: Unit, producedUnit: Unit, gameEngine: GameEng
     if(spawnSpot) {
         return spawnSpot
     } else {
-        spawningSpots[0];
+        return spawningSpots[0];
     }
 }
 
