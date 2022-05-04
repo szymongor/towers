@@ -1,7 +1,8 @@
 import { GameDimensions } from "../../../GameDimensions";
+import { selectUnitEmitEvent } from "../../../scenes/main/UnitsControls";
 import { GameEngine } from "../../GameEngine";
 import { TerrainType } from "../../map/MapBoard";
-import { Unit } from "../Unit";
+import { Unit, UnitTypes } from "../Unit";
 import { UnitName } from "../UnitFactory";
 import { UnitFilter, UnitStorage } from "../UnitsStorage";
 
@@ -46,30 +47,32 @@ const canPlaceMine = (unit: Unit, gameEngine: GameEngine): boolean => {
 }
 
 const unitIntersect = (unit: Unit, x: number, y: number, size: number) => {
-    var s = GameDimensions.grid.tileSize -0.01;
-    if(
-        (unit.x <= x && unit.x + unit.size*s > x)
-        ||
-        (unit.x <= x + size*s && unit.x + unit.size*s > x + size*s)
-        ||
-        (unit.x >= x  && unit.x + unit.size*s < x + size*s)
-        ||
-        (unit.x <= x  && unit.x + unit.size*s > x + size*s)
-    ) {
-        if(
-            (unit.y <= y && unit.y + unit.size*s > y)
-            ||
-            (unit.y <= y + size*s && unit.y + unit.size*s > y + size*s)
-            ||
-            (unit.y >= y  && unit.y + unit.size*s < y + size*s)
-            ||
-            (unit.y <= y  && unit.y + unit.size*s > y + size*s)
-        ) {
-            
-            return true;
-        }
+    var tileSize = GameDimensions.grid.tileSize;
+    let r1 = {
+        left: unit.x,
+        right: unit.x + unit.size*tileSize-1,
+        bottom: unit.y,
+        top: unit.y + unit.size*tileSize-1
     }
-    return false;
+
+    let r2 = {
+        left: x,
+        right: x + size*tileSize-1,
+        bottom: y,
+        top: y + size*tileSize-1
+    }
+
+    let sortedXRect = r1.left < r2.left ? {min: r1, max: r2} : {min: r2, max: r1}
+
+    let xOverlap = sortedXRect.max.left <= sortedXRect.min.right;
+
+    if(xOverlap) {
+        let sortedYRect = r1.bottom < r2.bottom ? {min: r1, max: r2} : {min: r2, max: r1}
+        let yOverlap = sortedYRect.max.bottom <= sortedYRect.min.top;
+        return yOverlap;
+    } else {
+        return xOverlap;
+    }
 }
 
 export { CanPlaceRule, canPlaceStandard, canPlaceMine, unitIntersect }

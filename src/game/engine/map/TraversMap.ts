@@ -6,7 +6,7 @@ import { MapBoard, TerrainType } from "./MapBoard";
 import { Vector } from "./PlayerVision";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
-const MAX_UNIT_SIZE = 5;
+const MAX_UNIT_SIZE = 10;
 
 class TraversMap {
 
@@ -92,10 +92,16 @@ class TraversMap {
         let isTraversable = this.getTraversableGridValue(tile) >= unit.size;
 
         let filter: UnitFilter = {
-            types: [UnitTypes.CREATURE]
+            types: [UnitTypes.CREATURE],
+            // boxSelect: {
+            //     leftX: tile.x - MAX_UNIT_SIZE,
+            //     leftY: tile.y - MAX_UNIT_SIZE,
+            //     rightX: tile.x + MAX_UNIT_SIZE,
+            //     rightY: tile.y + MAX_UNIT_SIZE
+            // }
         }
         let units = this.mapBoard.unitStorage.getUnits(filter);
-        let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, 1)))
+        let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));        
        
         return isTraversable && !isOccupiedByOtherUnit
     }
