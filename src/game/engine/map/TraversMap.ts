@@ -93,13 +93,14 @@ class TraversMap {
 
         let filter: UnitFilter = {
             types: [UnitTypes.CREATURE],
-            // boxSelect: {
-            //     leftX: tile.x - MAX_UNIT_SIZE,
-            //     leftY: tile.y - MAX_UNIT_SIZE,
-            //     rightX: tile.x + MAX_UNIT_SIZE,
-            //     rightY: tile.y + MAX_UNIT_SIZE
-            // }
+            boxSelect: {
+                leftX: tile.x - MAX_UNIT_SIZE*TILE_SIZE,
+                leftY: tile.y - MAX_UNIT_SIZE*TILE_SIZE,
+                rightX: tile.x + MAX_UNIT_SIZE*TILE_SIZE,
+                rightY: tile.y + MAX_UNIT_SIZE*TILE_SIZE,
+            }
         }
+        
         let units = this.mapBoard.unitStorage.getUnits(filter);
         let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));        
        
