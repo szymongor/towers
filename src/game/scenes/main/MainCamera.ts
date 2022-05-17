@@ -339,7 +339,7 @@ class MainCamera extends Phaser.Scene {
         let finished = new Set();
         let animations = this.transitionAnimations;
         animations.forEach((ta) => {
-            if(ta.sprite) {
+            if(ta.sprite && ta.time > 0) {
                 let progress = ta.progress/ta.time;
                 let x = ta.sourceX + (ta.targetX-ta.sourceX) * progress;
                 let y = ta.sourceY + (ta.targetY-ta.sourceY) * progress;

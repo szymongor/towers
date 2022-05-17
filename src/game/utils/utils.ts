@@ -1,4 +1,5 @@
-import { Vector } from "matter";
+
+import { Vector } from "../engine/map/PlayerVision";
 import { GameDimensions } from "../GameDimensions"
 
 const TILE_SIZE = GameDimensions.grid.tileSize;

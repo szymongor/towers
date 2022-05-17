@@ -34,9 +34,8 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
 
     let duration = 15; //TODO - get from unit props
     if(direction) {
-        duration = Math.floor(duration*vectorDist({x: 0, y: 0}, direction)/TILE_SIZE);
+        duration = Math.floor(duration*vectorDist(new Vector(0,0), direction)/TILE_SIZE);
     }
-    
     let done = () => {
         if(direction) {
             unit.x += direction.x;
