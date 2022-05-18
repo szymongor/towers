@@ -3,13 +3,13 @@ import { vectorDist } from "../../../../utils/utils"
 import { EventChannels, EventRegistry } from "../../../events/EventsRegistry"
 import { ChangePositionEventData, GameEvent } from "../../../events/GameEvent"
 import { GameEngine } from "../../../GameEngine"
-import { TerrainType } from "../../../map/MapBoard"
 import { Vector } from "../../../map/PlayerVision"
 import { Unit } from "../../Unit"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
 import { UiActionType, UnitActionUIProvider } from "../UnitActionsUI"
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
+const IDLE_TIME = 10;
 
 const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
     return {
@@ -28,28 +28,33 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
 }
 
 const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Vector ) => {
-    
-    
-    let direction = choseDirection(target, unit, gameEngine);
 
-    let duration = 15; //TODO - get from unit props
-    if(direction) {
-        duration = Math.floor(duration*vectorDist(new Vector(0,0), direction)/TILE_SIZE);
+    let direction = choseDirection(target, unit, gameEngine);
+    unit.clearUnitTaskByType(UnitTaskNames.CHANGE_POSITION);
+
+    let duration = IDLE_TIME;
+    if(direction && !direction.equal(Vector.zeroVector())) {
+        duration = Math.floor(duration*vectorDist(Vector.zeroVector(), direction)/TILE_SIZE);
     }
+
     let done = () => {
-        if(direction) {
+        let destination = unit.getLocation().add(direction)
+        if(direction && isDirectionTraversable(destination, unit, gameEngine)) {
             unit.x += direction.x;
             unit.y += direction.y;
             unit.updateTexture();
-            unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, target));
-        } else {
         }
+
+        if(unit.distanceToVector(target) > TILE_SIZE) {
+            unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, target));
+        }
+        
     }
 
     let callBack = () => {
     }
 
-    let name = UnitTaskNames.CHANGE_POSITION + Unit.name + unit.x + ":"+ unit.y;
+    let name = UnitTaskNames.CHANGE_POSITION + Date.now();
 
     if(direction) {
         let changePositionEventData : ChangePositionEventData = {
@@ -96,7 +101,7 @@ const choseDirection = (target: Vector, unit: Unit, gameEngine: GameEngine, ): V
     if(possibleDirs.length) {
         return possibleDirs[0].dir;
     } else {
-        return new Vector(0, 0);
+        return Vector.zeroVector();
     }
 }
 

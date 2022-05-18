@@ -102,7 +102,7 @@ class TraversMap {
         }
         
         let units = this.mapBoard.unitStorage.getUnits(filter);
-        let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));        
+        let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));
        
         return isTraversable && !isOccupiedByOtherUnit
     }

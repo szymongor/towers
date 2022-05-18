@@ -11,7 +11,7 @@ import { CanPlaceRule } from './actions/UnitRules';
 import { Tile, Vector } from '../map/PlayerVision';
 import { UnitActionUI } from './actions/UnitActionsUI';
 import { GameEngine } from '../GameEngine';
-import { TaskProgress, UnitTask } from './UnitTask';
+import { TaskProgress, UnitTask, UnitTaskNames } from './UnitTask';
 import { UIElement } from '../../scenes/ui/UiScene';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
@@ -190,7 +190,7 @@ class Unit {
         return Math.sqrt( dX*dX + dY*dY);
     }
 
-    distanceToTile(tile: Tile): number {
+    distanceToVector(tile: Vector): number {
         let centre = this.getCentre();
         let dX = tile.x+TILE_SIZE/2-centre.x;
         let dY = tile.y+TILE_SIZE/2-centre.y;
@@ -250,6 +250,13 @@ class Unit {
             this.sprite.progressBar.hide();
             this.sprite.progressBar = null;
         }
+    }
+
+    clearUnitTaskByType(taskType: UnitTaskNames) {
+        let currentMovementTask = Array.from(this.currentTasks.values())
+            .filter(task => task.type == taskType)
+            .map(task => task.name);
+        currentMovementTask.forEach(name => this.clearUnitTask(name));
     }
 
     containsCoord(x: number, y: number) {

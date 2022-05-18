@@ -20,6 +20,19 @@ class Vector {
         return new Vector(this.x + vector.x, this.y + vector.y)
     }
 
+    equal(vector: Vector): boolean {
+        if(this.x != vector.x) {
+            return false
+        } else if( this.y != vector.y) {
+            return false
+        }
+        return true;
+    }
+
+    static zeroVector(): Vector {
+        return new Vector(0, 0);
+    }
+
 
 }
 

@@ -25,7 +25,7 @@ const moveAllSoldiersUnitAction = {
                 target: new Vector(0, 0),
                 units: allBotUnits
             }
-            gameActionProvider.execute(actionProps);
+            // gameActionProvider.execute(actionProps);
         }
     }
 }
