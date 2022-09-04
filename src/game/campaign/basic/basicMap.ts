@@ -1,7 +1,8 @@
-import { GameEngine } from "../../../engine/GameEngine";
-import { UnitName } from "../../../engine/units/UnitFactory";
-import { MapBoard, Terrain, TerrainType } from "../../../engine/map/MapBoard";
-import { circleOfTerrain } from "../../../editor/map/terrainElements";
+import { circleOfTerrain } from "../../editor/map/TerrainElements";
+import { GameEngine } from "../../engine/GameEngine";
+import { MapBoard, Terrain, TerrainType } from "../../engine/map/MapBoard";
+import { UnitName } from "../../engine/units/UnitFactory";
+
 
 const initBasicMap  = (gameEngine: GameEngine) => {
     let terrain: Terrain = basicTerrain;

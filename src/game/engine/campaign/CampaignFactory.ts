@@ -1,7 +1,6 @@
-import { basicCampaign } from "../../rules/campaign/basic/basicCampaign";
-import { basicAiProcessorProvider } from "../../rules/campaign/basic/basicAiProcessor";
+
+import { basicCampaign } from "../../campaign/basic/basicCampaign";
 import { GameEngine } from "../GameEngine";
-import { initBasicMap } from "../../rules/campaign/basic/basicMap";
 import { Campaign } from "./Campaign";
 
 type CampaignProvider = (ge: GameEngine) => Campaign;

@@ -276,4 +276,4 @@ class Unit {
     }
 }
 
-export { Unit, UnitTypes, CustomSprite, DealtDamage as Damage };
+export { Unit, UnitTypes, CustomSprite, DealtDamage };

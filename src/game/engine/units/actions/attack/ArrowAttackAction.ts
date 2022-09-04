@@ -1,7 +1,7 @@
 import { EventChannels, EventRegistry } from "../../../events/EventsRegistry";
 import { GameEvent } from "../../../events/GameEvent";
 import { GameEngine } from "../../../GameEngine";
-import { Damage, Unit, UnitTypes } from "../../Unit";
+import { DealtDamage, Unit, UnitTypes } from "../../Unit";
 import { UnitFilter } from "../../UnitsStorage";
 import { UnitTask, UnitTaskNames } from "../../UnitTask";
 import { DamageDealtEventData, UnitAction } from "../UnitActions";
@@ -55,7 +55,7 @@ const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
 }
 
 const arrowFlightDone = (unit: Unit, nearestEnemy: Unit, eventRegistry: EventRegistry) => {
-    let dmg: Damage = {
+    let dmg: DealtDamage = {
         value: 50,
         source: unit
     }
