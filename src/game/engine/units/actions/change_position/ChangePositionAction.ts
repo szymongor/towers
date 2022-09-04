@@ -45,7 +45,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
             unit.updateTexture();
         }
 
-        if(unit.distanceToVector(target) > TILE_SIZE) {
+        if(isDestinationReached(unit, target)) {
             unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, target));
         }
         
@@ -107,6 +107,10 @@ const choseDirection = (target: Vector, unit: Unit, gameEngine: GameEngine, ): V
 
 const isDirectionTraversable = (dir: Vector, unit: Unit, gameEngine: GameEngine): boolean => {
     return gameEngine.traversMap.isTileTraversableForUnit(dir, unit);
+}
+
+const isDestinationReached = (unit: Unit, target: Vector): boolean => {
+    return unit.distanceToVector(target) > TILE_SIZE
 }
 
 export { changePositionProvider }
