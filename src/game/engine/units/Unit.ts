@@ -8,10 +8,10 @@ import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
-import { Tile, Vector } from '../map/PlayerVision';
+import { Vector } from '../map/PlayerVision';
 import { UnitActionUI } from './actions/UnitActionsUI';
 import { GameEngine } from '../GameEngine';
-import { TaskProgress, UnitTask, UnitTaskNames } from './UnitTask';
+import { UnitTask, UnitTaskNames } from './UnitTask';
 import { UIElement } from '../../scenes/ui/UiScene';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
@@ -91,15 +91,15 @@ class Unit {
     y: number;
     name: string;
     unitName: UnitName;
-    spriteName: string;
+    spriteName: string; //TODO separate Model/View
     type: UnitTypes;
     size: number;
     player: Player;
     state: UnitState;
-    sprite: CustomSprite;
+    sprite: CustomSprite; //TODO separate Model/View
     resources?: ResourcesStorage;
     actions: UnitAction[];
-    actionUI: UnitActionUI[];
+    actionUI: UnitActionUI[]; //TODO change to "commands"
     actionRange: number;
     actionInterval: number;
     currentTasks: Map<string, UnitTask>;
@@ -108,7 +108,7 @@ class Unit {
     canPlace: CanPlaceRule;
 
 
-    constructor(xPos: number, yPos: number, config: UnitConfig, gameEngine: GameEngine, eventRegistry: EventRegistry, player?: Player) {
+    constructor(xPos: number, yPos: number, config: UnitConfig, gameEngine: GameEngine, player?: Player) {
         this.x = xPos;
         this.y = yPos;
         this.name = config.name;
@@ -124,12 +124,13 @@ class Unit {
             target: null
         };
         this.actions = config.actions;
-        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, eventRegistry, player));
+        this.eventRegistry = gameEngine.events;
+        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, player));
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
         this.currentTasks = new Map();
         this.hp = new HP(config.maxHP, config.maxHP);
-        this.eventRegistry = eventRegistry;
+        
         this.canPlace = config.canPlace;
 
     }
@@ -152,6 +153,7 @@ class Unit {
         }
     }
 
+    //TODO emit event?
     updateTexture() {
         if(this.sprite) {
             this.sprite.setTexture(this.getTexture());
@@ -159,6 +161,7 @@ class Unit {
         }
     }
 
+    //TODO 
     getScale() {
         return (GameDimensions.grid.tileSize/GameDimensions.grid.imgSize)*this.size
     }
@@ -175,11 +178,11 @@ class Unit {
         return this.actionRange;
     }
 
+    //TODO emit event?
     destroy() {
         if(this.sprite) {
             this.sprite.dispose();
         }
-        
     }
 
     distanceToUnit(unit: Unit): number {

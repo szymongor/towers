@@ -1,22 +1,22 @@
 
-import { CampaignName } from "../../../../game/engine/campaign/CampaignFactory";
+import { CampaignFactory, CampaignName } from "../../../../game/engine/campaign/CampaignFactory";
 import { EventChannels } from '../../../../game/engine/events/EventsRegistry';
+import { GameFinishedEventData } from "../../../../game/engine/events/GameEvent";
 import { GameEngine } from "../../../../game/engine/GameEngine";
-import { DealtDamage } from '../../../../game/engine/units/Unit';
 import { UnitName } from '../../../../game/engine/units/UnitFactory';
-import { UnitFilter } from '../../../../game/engine/units/UnitsStorage';
 
 
-const gameEngine = new GameEngine(CampaignName.BASIC_CAMPAIGN);
+const campaignFactory = new CampaignFactory();
 
 describe("Game Finished tests", () => {
     test('should finish the game when player lost Castle', () => {
         //given
+        let campaignProvider = campaignFactory.get(CampaignName.BASIC_CAMPAIGN);
+        let gameEngine = new GameEngine(campaignProvider);
         let player = gameEngine.getPlayer();
         let castleFilter = {
             owner: player,
             unitName: UnitName.CASTLE
-
         }
         let castle = gameEngine.unitStorage.getUnits(castleFilter)[0];
         let dealtDamage = {
@@ -28,11 +28,15 @@ describe("Game Finished tests", () => {
         castle.dealDamage(dealtDamage);
 
         //then
-        expect(hasGameFinishedEvent(gameEngine)).toBeTruthy();
-        
+        expect(hasGameFinishedEventWithBotWinner(gameEngine)).toBeTruthy();
     });
 });
 
-const hasGameFinishedEvent = (gameEngine: GameEngine): Boolean => {
-    return gameEngine.events.getChannelEvents(EventChannels.GAME_FINISHED).length == 1
+const hasGameFinishedEventWithBotWinner = (gameEngine: GameEngine): Boolean => {
+    let finishedGameEvents = gameEngine.events.getChannelEvents(EventChannels.GAME_FINISHED);
+    if(finishedGameEvents.length == 1 ) {
+        let finishedGameEventData: GameFinishedEventData = finishedGameEvents[0].data;
+        return finishedGameEventData.winner.id == '2';
+    }
+    return false;
 }

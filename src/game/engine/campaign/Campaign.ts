@@ -1,17 +1,25 @@
 import { AiProcessor } from "../Ai/processor/AiProcessor";
 import { MapBoard } from "../map/MapBoard";
+import { Player } from "../Player";
+import { GameRuleConfigurator } from "../rules/GameStateRules";
 
 
 class Campaign {
 
-    map: MapBoard;
+    mapSupplier: () => MapBoard;
     aiProcessor: AiProcessor;
+    rulesConfig: GameRuleConfigurator[];
+    players: Player[];
 
-    constructor(map: MapBoard, aiProcessor: AiProcessor) {
-        this.map = map;
+    constructor(mapSupplier: () => MapBoard, aiProcessor: AiProcessor, rulesConfig: GameRuleConfigurator[], players: Player[]) {
+        this.mapSupplier = mapSupplier;
         this.aiProcessor = aiProcessor;
+        this.rulesConfig = rulesConfig;
+        this.players = players;
     }
 
 }
 
-export { Campaign }
+type MapBoardSupplier = () => MapBoard
+
+export { Campaign, MapBoardSupplier}

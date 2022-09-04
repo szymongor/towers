@@ -31,7 +31,7 @@ import { GameEvent, GameFinishedEventData } from '../engine/events/GameEvent';
 import { FinishScene, GameResult } from './meta/FinishScene';
 import { SpriteCache } from './SpriteCache';
 import { KeyboardListener } from './KeyboardListener';
-import { CampaignName } from '../engine/campaign/CampaignFactory';
+import { CampaignFactory, CampaignName } from '../engine/campaign/CampaignFactory';
 
 
 class TowerGame extends Phaser.Scene {
@@ -88,7 +88,9 @@ class TowerGame extends Phaser.Scene {
 
     startNewGame(campaignName: CampaignName) {
         this.scene.remove(Scenes.StartScene);
-        let gameEngine = new GameEngine(campaignName);
+        let campaignFactory = new CampaignFactory();
+
+        let gameEngine = new GameEngine(campaignFactory.get(campaignName));
         this.gameEngine = gameEngine
         this.registerOnGameFinished(gameEngine);
         var mainBackground = this.add.rectangle(0, 0, this.renderer.width, this.renderer.height, GameDimensions.backgroundColor);

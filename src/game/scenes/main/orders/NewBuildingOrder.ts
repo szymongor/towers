@@ -2,7 +2,7 @@ import { EventChannels } from "../../../engine/events/EventsRegistry";
 import { GameEvent } from "../../../engine/events/GameEvent";
 import { GameDimensions, Scenes } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
-import { UiSceneEvents, UiSetBuildingModeEvent } from "../../ui/UiSceneEvents";
+import { UiSetBuildingModeEvent } from "../../ui/UiSceneEvents";
 import { MainCamera, UiMode } from "../MainCamera";
 import { selectUnitEmitEventOnClickProvider } from "../UnitsControls";
 
@@ -64,7 +64,7 @@ const onBuildBuilding = function(scene: MainCamera) {
             x: -100,
             y: -100
         }
-        let unitPrototype = scene.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y, null);
+        let unitPrototype = scene.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y, scene.gameEngine);
         scene.cursorFollow = scene.add.sprite(tempCoords.x, tempCoords.y, unitPrototype.getTexture());
         scene.cursorFollow.setOrigin(0);
         scene.cursorFollow.unitPrototype = unitPrototype;

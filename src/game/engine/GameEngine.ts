@@ -5,10 +5,10 @@ import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 import { Unit, UnitTypes } from './units/Unit';
 import { UnitFilter, UnitStorage } from './units/UnitsStorage';
-import { registerGameFinishedCheckFlow, registerGameFinishedFlow, registerPlayerLostFlow } from './rules/GameStateRules';
+import { GameRuleConfigurator } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
-import { CampaignFactory, CampaignName } from './campaign/CampaignFactory';
+import { CampaignFactory, CampaignProvider } from './campaign/CampaignFactory';
 import { TraversMap } from './map/TraversMap';
 
 class GameEngine {
@@ -22,83 +22,28 @@ class GameEngine {
     round: number;
     campaignFactory: CampaignFactory;
 
-    constructor(campaignName: CampaignName) {
+    constructor(campaignProvider: CampaignProvider) {
+
+        //TODO UnitConfig from campaign
         this.unitFactory = new UnitFactory(this);
+
         this.unitStorage = new UnitStorage();
-        this.players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
         this.events = new EventRegistry();
 
-        //Campaign
-        this.campaignFactory = new CampaignFactory();
-        let campaign = this.campaignFactory.get(campaignName)(this);
+        let campaign = campaignProvider(this);
+        this.players = campaign.players;
         this.aiProcessor = campaign.aiProcessor;
-        this.mapBoard = campaign.map;
+        this.mapBoard = campaign.mapSupplier();
+        this.registerRules(campaign.rulesConfig);
 
         this.traversMap = new TraversMap(this.mapBoard);
-
-        this.registerOrderBuildingFlow();
-        this.registerUnitDestroyed();
-
-        registerPlayerLostFlow(this);
-        registerGameFinishedCheckFlow(this);
-        registerGameFinishedFlow(this);
         this.round = 0;
     }
 
-    private placeBuilding(unitPrototype: Unit, player: Player) {
-        let ownerPlayer = this.getPlayer();
-        if(player) {
-            ownerPlayer = player;
-        }
-        if(unitPrototype.canPlace(unitPrototype, this)) {
-            let unit = this.unitFactory.constructionOf(unitPrototype.unitName, 
-                unitPrototype.x, 
-                unitPrototype.y, 
-                this.events,
-                ownerPlayer);
-            let unitCosts = this.unitFactory.getConfig(unitPrototype.unitName).cost;
-            ownerPlayer.chargeResources(unitCosts);
-            this.unitStorage.addUnit(unit);
-            return unit;
-        }
-    }
-
-    private registerOrderBuildingFlow() {
-        var subscriber = {
-            call: this.receiveBuildingOrder(this)
-        }
-        this.events.subscribe(EventChannels.ORDER_BUILDING, subscriber);
-    }
-
-    private receiveBuildingOrder(gameEngine: GameEngine) {
-        let storage = this.unitStorage;
-        return (event: any) => {
-            let prototype: Unit = event.data.unitPrototype;
-            let player: Player = event.data.player;
-            if(gameEngine.canBuild(prototype.unitName, player) 
-            && prototype.canPlace(prototype,  gameEngine)) {
-                let data = {
-                    player: event.data.player,
-                    unitPrototype: gameEngine.placeBuilding(prototype, player)
-                };
-                let placeBuildingEvent = new GameEvent(EventChannels.BUILDING_PLACED, data);
-                gameEngine.events.emit(placeBuildingEvent);
-            }
-        }
-    }
-
-    private registerUnitDestroyed() {
-        var subscriber = {
-            call: this.receiveUnitDestroyed(this)
-        }
-        this.events.subscribe(EventChannels.UNIT_DESTROYED, subscriber);
-    }
-
-    private receiveUnitDestroyed(gameEngine: GameEngine) {
-        return (event: GameEvent) => {
-            let unitDestroyed = event.data.unit;
-            gameEngine.unitStorage.destroyUnit(unitDestroyed);
-        }
+    private registerRules(rulesConfig: GameRuleConfigurator[]) {
+        rulesConfig.forEach(rule => {
+            rule(this)
+        });
     }
 
     private runUnitActionsAndTasks() {

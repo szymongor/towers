@@ -205,14 +205,6 @@ class UnitFactory {
         }
     }
 
-    createTower(x: number, y: number, eventRegistry: EventRegistry, player: Player): Unit {
-        let tower = new Unit(x, y,
-            this.unitConfig.tower, this.gameEngine, eventRegistry, player);
-        
-        tower.hp.value = tower.hp.max;
-        return tower;
-    }
-
     addResource(unit: Unit, type: UnitName): Unit {
         let initResources = new Resources(this.unitConfig[type].resources);
         let resources = new ResourcesStorage(initResources);
@@ -220,8 +212,8 @@ class UnitFactory {
         return unit;
     }
 
-    of(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player?: Player): Unit {
-        let unit = new Unit(x, y, this.unitConfig[type], this.gameEngine, eventRegistry, player);
+    of(type: UnitName, x: number, y: number, gameEngine: GameEngine, player?: Player): Unit {
+        let unit = new Unit(x, y, this.unitConfig[type], gameEngine, player);
 
         if(this.unitConfig[type].type == UnitTypes.RESOURCE) {
             this.addResource(unit, type);
@@ -229,8 +221,8 @@ class UnitFactory {
         return unit;
     }
 
-    constructionOf(type: UnitName, x: number, y: number, eventRegistry: EventRegistry, player: Player) {
-        let constructedUnit = this.of(type, x, y, eventRegistry, player);
+    constructionOf(type: UnitName, x: number, y: number, gameEngine: GameEngine, player: Player) {
+        let constructedUnit = this.of(type, x, y, gameEngine, player);
         constructedUnit.state.construction = true;
         constructedUnit.hp.value = 0;
 

@@ -1,6 +1,27 @@
-import { EventChannels } from "../../events/EventsRegistry";
+import { EventChannels, Subscriber } from "../../events/EventsRegistry";
 import { GameEvent, GameFinishedEventData } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
+import { GameRuleConfigurator } from "../GameStateRules";
+
+
+const registerGameFinishedRule: GameRuleConfigurator = (gameEngine: GameEngine) => {
+    let subscriber: Subscriber = {
+        call: gameFinishedRule(gameEngine)
+    }
+    gameEngine.events.subscribe(EventChannels.PLAYER_LOST, subscriber);
+    console.log("registerGameFinishedRule");
+}
+
+const logGameFinishedEvent: GameRuleConfigurator = (gameEngine: GameEngine) => {
+    let subscriber: Subscriber = {
+        call: (event: GameEvent) => {
+            console.log("Game Finished!");
+            let data: GameFinishedEventData = event.data;
+            console.log("Winner: " + data.winner.name);
+        }
+    }
+    gameEngine.events.subscribe(EventChannels.GAME_FINISHED, subscriber);
+}
 
 const gameFinishedRule = (gameEngine: GameEngine) => {
     return (event: GameEvent) => {
@@ -29,4 +50,4 @@ const gameFinishedRule = (gameEngine: GameEngine) => {
     }
 }
 
-export { gameFinishedRule }
+export { registerGameFinishedRule, logGameFinishedEvent}

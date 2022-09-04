@@ -1,26 +1,28 @@
 import { circleOfTerrain } from "../../editor/map/TerrainElements";
+import { MapBoardSupplier } from "../../engine/campaign/Campaign";
 import { GameEngine } from "../../engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../engine/map/MapBoard";
 import { UnitName } from "../../engine/units/UnitFactory";
 
 
-const initBasicMap  = (gameEngine: GameEngine) => {
-    let terrain: Terrain = basicTerrain;
-    var basicMap = new MapBoard(1000 ,1000, gameEngine, terrain);
-    basicMapInitAddStartBuildings(gameEngine);
 
-    return basicMap;
+const basicMapSupplier = (gameEngine: GameEngine): MapBoardSupplier => {
+    return () => {
+        let terrain: Terrain = basicTerrain;
+        var basicMap = new MapBoard(1000 ,1000, gameEngine, terrain);
+        basicMapInitAddStartBuildings(gameEngine);
+        return basicMap;
+    }
 }
 
 const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
     let unitFactory = gameEngine.unitFactory;
     let unitStorage = gameEngine.unitStorage;
-    let eventRegistry = gameEngine.events;
     let p1 = gameEngine.players[0];
     let p2 = gameEngine.players[1];
     let units = [];
-    units.push(unitFactory.of(UnitName.CASTLE,720, 720, eventRegistry, p2));
-    units.push(unitFactory.of(UnitName.CASTLE,100, 100, eventRegistry, p1));
+    units.push(unitFactory.of(UnitName.CASTLE,720, 720, gameEngine, p2));
+    units.push(unitFactory.of(UnitName.CASTLE,100, 100, gameEngine, p1));
 
     let stones = [{x: 360, y: 140}, {x: 320, y: 320}, {x: 140, y: 360}];
 
@@ -33,15 +35,15 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
     ];
 
     stones.forEach(s => {
-        units.push(unitFactory.of(UnitName.STONES,s.x, s.y, eventRegistry))
+        units.push(unitFactory.of(UnitName.STONES,s.x, s.y, gameEngine))
     })
 
     trees.forEach(s => {
-        units.push(unitFactory.of(UnitName.TREE,s.x, s.y, eventRegistry))
+        units.push(unitFactory.of(UnitName.TREE,s.x, s.y, gameEngine))
     })
 
     towersP2.forEach(s => {
-        units.push(unitFactory.of(UnitName.TOWER,s.x, s.y, eventRegistry, p2))
+        units.push(unitFactory.of(UnitName.TOWER,s.x, s.y, gameEngine, p2))
     })
 
     unitStorage.addUnits(units);
@@ -59,4 +61,4 @@ const basicTerrain = {
     }
 }
 
-export { initBasicMap }
+export { basicMapSupplier }

@@ -22,4 +22,4 @@ class CampaignFactory {
     }
 }
 
-export { CampaignFactory, CampaignName }
+export { CampaignFactory, CampaignName, CampaignProvider }

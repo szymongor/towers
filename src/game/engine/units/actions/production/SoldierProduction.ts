@@ -1,5 +1,5 @@
 import { GameDimensions } from "../../../../GameDimensions"
-import { EventRegistry, EventChannels } from "../../../events/EventsRegistry"
+import { EventChannels } from "../../../events/EventsRegistry"
 import { GameEvent } from "../../../events/GameEvent"
 import { GameEngine } from "../../../GameEngine"
 import { Vector } from "../../../map/PlayerVision"
@@ -12,24 +12,24 @@ import { UiActionType, UnitActionUIProvider } from "../UnitActionsUI"
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
 const soldierProductionProvider : UnitActionUIProvider = 
-function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, owner: Player) {
+function(unit: Unit, gameEngine: GameEngine, owner: Player) {
     return {
         actionName: 'soldierProduction',
         type: UiActionType.ORDERING,
         actionIcon: "soldier_production_icon",
         canExecute: () => true,
         execute: () => {
-            unit.addUnitTask(soldierProductionTask(unit, gameEngine,eventRegistry, owner))
+            unit.addUnitTask(soldierProductionTask(unit, gameEngine, owner))
         }
     }
 }
 
-const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, owner: Player ) => {
+const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player ) => {
     let done = () => {
         //TODO remove?
         let unitOwner = owner ? owner : gameEngine.getPlayer();
         
-        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, eventRegistry, unitOwner);
+        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, gameEngine, unitOwner);
 
         let spawnSpot = findSpawnSpot(unit, soldier, gameEngine);
         
@@ -43,7 +43,7 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry
             unitPrototype: soldier
         }
         let event = new GameEvent(EventChannels.BUILDING_PLACED, data)
-        eventRegistry.emit(event);
+        gameEngine.events.emit(event);
     }
     let constructionTime = gameEngine.unitFactory.unitConfig[UnitName.SOLDIER].constructionTime;
     return new UnitTask(UnitTaskNames.PRODUCTION, UnitTaskNames.PRODUCTION, constructionTime, done);

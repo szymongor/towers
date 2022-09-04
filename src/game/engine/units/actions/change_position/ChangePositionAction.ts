@@ -11,7 +11,7 @@ import { UiActionType, UnitActionUIProvider } from "../UnitActionsUI"
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const IDLE_TIME = 10;
 
-const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry) {
+const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine) {
     return {
         actionName: 'changePosition',
         type: UiActionType.TARGETING,
@@ -20,14 +20,14 @@ const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameE
         execute: (props) => {
             if(props.units) {
                 props.units.forEach(unit => {
-                    unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, props.target))
+                    unit.addUnitTask(changePositionTask(unit, gameEngine, props.target))
                 })  
             }
         }
     }
 }
 
-const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, target: Vector ) => {
+const changePositionTask = (unit: Unit, gameEngine: GameEngine, target: Vector ) => {
 
     let direction = choseDirection(target, unit, gameEngine);
     unit.clearUnitTaskByType(UnitTaskNames.CHANGE_POSITION);
@@ -46,7 +46,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
         }
 
         if(isDestinationReached(unit, target)) {
-            unit.addUnitTask(changePositionTask(unit, gameEngine, eventRegistry, target));
+            unit.addUnitTask(changePositionTask(unit, gameEngine, target));
         }
         
     }
@@ -63,7 +63,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, eventRegistry: E
             interval: duration
         }
         let changePositionEvent = new GameEvent(EventChannels.CHANGE_POSITION, changePositionEventData);
-        eventRegistry.emit(changePositionEvent);
+        gameEngine.events.emit(changePositionEvent);
     }
 
     return new UnitTask(name, UnitTaskNames.CHANGE_POSITION, duration, done, callBack);

@@ -7,7 +7,7 @@ import { Unit } from "../Unit";
 
 //TODO get ownerPlayer as source unit owner?
 interface UnitActionUIProvider {
-    (unit: Unit, gameEngine: GameEngine, eventRegistry: EventRegistry, player: Player): UnitActionUI
+    (unit: Unit, gameEngine: GameEngine, player: Player): UnitActionUI
 }
 
 interface UnitActionParams {

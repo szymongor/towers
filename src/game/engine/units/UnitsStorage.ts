@@ -41,10 +41,6 @@ class UnitStorage {
     }
 
     destroyUnit(unit: Unit) {
-        // let indexOf = this.units.indexOf(unit);
-        // if(indexOf != -1) {
-        //     this.units.splice(indexOf, 1);
-        // }
         this.units = this.units.filter(u => u != unit);
         unit.destroy();
     }

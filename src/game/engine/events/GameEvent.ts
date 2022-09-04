@@ -1,4 +1,4 @@
-import { Tile, Vector } from '../map/PlayerVision';
+import { Vector } from '../map/PlayerVision';
 import { Player } from '../Player';
 import { Unit } from '../units/Unit';
 import { EventChannels } from './EventsRegistry';
