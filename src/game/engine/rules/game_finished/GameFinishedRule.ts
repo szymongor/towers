@@ -9,13 +9,11 @@ const registerGameFinishedRule: GameRuleConfigurator = (gameEngine: GameEngine) 
         call: gameFinishedRule(gameEngine)
     }
     gameEngine.events.subscribe(EventChannels.PLAYER_LOST, subscriber);
-    console.log("registerGameFinishedRule");
 }
 
 const logGameFinishedEvent: GameRuleConfigurator = (gameEngine: GameEngine) => {
     let subscriber: Subscriber = {
         call: (event: GameEvent) => {
-            console.log("Game Finished!");
             let data: GameFinishedEventData = event.data;
             console.log("Winner: " + data.winner.name);
         }

@@ -1,12 +1,12 @@
 
 import { AiProcessor } from "../../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../../game/engine/campaign/Campaign";
-import { CampaignFactory, CampaignName } from "../../../../game/engine/campaign/CampaignFactory";
 import { EventChannels } from '../../../../game/engine/events/EventsRegistry';
 import { GameFinishedEventData } from "../../../../game/engine/events/GameEvent";
 import { GameEngine } from "../../../../game/engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../../../game/engine/map/MapBoard";
 import { Player } from "../../../../game/engine/Player";
+import { ResourceName, Resources } from "../../../../game/engine/Resources";
 import { registerGameFinishedRule } from "../../../../game/engine/rules/game_finished/GameFinishedRule";
 import { registerPlayerLostRule } from "../../../../game/engine/rules/player_lost/PlayerLostRule";
 import { registerUnitDestroyedRule } from "../../../../game/engine/rules/unit_destroyed/UnitDestroyedRule";
@@ -14,7 +14,8 @@ import { UnitName } from '../../../../game/engine/units/UnitFactory';
 
 
 const testCampaignProvider = (gameEngine: GameEngine) => {
-    let players = [new Player('1', 'Player1'), new Player('2', 'Bot')];
+    let initResources = new Resources([[ResourceName.WOOD, 2000], [ResourceName.STONE, 1000]]);
+    let players = [new Player('1', 'Player1', initResources), new Player('2', 'Bot', initResources)];
 
     let terrain: Terrain = { type: (x: number, y: number) => TerrainType.DEFAULT }
     let mapSupplier = () => new MapBoard(1, 1, gameEngine, terrain);
@@ -26,8 +27,8 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
 
     let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players);
 
-    let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 20, 20, gameEngine, players[0])
-    let castle2 = gameEngine.unitFactory.of(UnitName.CASTLE, 80, 80, gameEngine, players[1])
+    let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 20, 20, players[0])
+    let castle2 = gameEngine.unitFactory.of(UnitName.CASTLE, 80, 80, players[1])
 
     gameEngine.unitStorage.addUnit(castle1);
     gameEngine.unitStorage.addUnit(castle2);

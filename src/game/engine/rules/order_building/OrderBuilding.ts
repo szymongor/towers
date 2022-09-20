@@ -41,6 +41,7 @@ const placeBuilding = (gameEngine: GameEngine, unitPrototype: Unit, player: Play
             ownerPlayer);
         let unitCosts = gameEngine.unitFactory.getConfig(unitPrototype.unitName).cost;
         ownerPlayer.chargeResources(unitCosts);
+        
         gameEngine.unitStorage.addUnit(unit);
         return unit;
     }

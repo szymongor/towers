@@ -64,7 +64,7 @@ const onBuildBuilding = function(scene: MainCamera) {
             x: -100,
             y: -100
         }
-        let unitPrototype = scene.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y, scene.gameEngine);
+        let unitPrototype = scene.gameEngine.unitFactory.of(e.building, tempCoords.x, tempCoords.y);
         scene.cursorFollow = scene.add.sprite(tempCoords.x, tempCoords.y, unitPrototype.getTexture());
         scene.cursorFollow.setOrigin(0);
         scene.cursorFollow.unitPrototype = unitPrototype;

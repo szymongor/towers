@@ -21,8 +21,8 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
     let p1 = gameEngine.players[0];
     let p2 = gameEngine.players[1];
     let units = [];
-    units.push(unitFactory.of(UnitName.CASTLE,720, 720, gameEngine, p2));
-    units.push(unitFactory.of(UnitName.CASTLE,100, 100, gameEngine, p1));
+    units.push(unitFactory.of(UnitName.CASTLE,720, 720, p2));
+    units.push(unitFactory.of(UnitName.CASTLE,100, 100, p1));
 
     let stones = [{x: 360, y: 140}, {x: 320, y: 320}, {x: 140, y: 360}];
 
@@ -35,15 +35,15 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
     ];
 
     stones.forEach(s => {
-        units.push(unitFactory.of(UnitName.STONES,s.x, s.y, gameEngine))
+        units.push(unitFactory.of(UnitName.STONES,s.x, s.y))
     })
 
     trees.forEach(s => {
-        units.push(unitFactory.of(UnitName.TREE,s.x, s.y, gameEngine))
+        units.push(unitFactory.of(UnitName.TREE,s.x, s.y))
     })
 
     towersP2.forEach(s => {
-        units.push(unitFactory.of(UnitName.TOWER,s.x, s.y, gameEngine, p2))
+        units.push(unitFactory.of(UnitName.TOWER,s.x, s.y, p2))
     })
 
     unitStorage.addUnits(units);

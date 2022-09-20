@@ -212,8 +212,8 @@ class UnitFactory {
         return unit;
     }
 
-    of(type: UnitName, x: number, y: number, gameEngine: GameEngine, player?: Player): Unit {
-        let unit = new Unit(x, y, this.unitConfig[type], gameEngine, player);
+    of(type: UnitName, x: number, y: number, player?: Player): Unit {
+        let unit = new Unit(x, y, this.unitConfig[type], this.gameEngine, player);
 
         if(this.unitConfig[type].type == UnitTypes.RESOURCE) {
             this.addResource(unit, type);
@@ -222,7 +222,7 @@ class UnitFactory {
     }
 
     constructionOf(type: UnitName, x: number, y: number, gameEngine: GameEngine, player: Player) {
-        let constructedUnit = this.of(type, x, y, gameEngine, player);
+        let constructedUnit = this.of(type, x, y, player);
         constructedUnit.state.construction = true;
         constructedUnit.hp.value = 0;
 

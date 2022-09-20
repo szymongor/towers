@@ -5,10 +5,9 @@ class Player {
     name: string;
     resourcesSorage: ResourcesStorage;
     
-    constructor (id: string, name: string) {
+    constructor (id: string, name: string, initResources: Resources) {
         this.id = id;
         this.name = name;
-        let initResources = new Resources([[ResourceName.WOOD, 2000], [ResourceName.STONE, 1000]]);
         this.resourcesSorage = new ResourcesStorage(initResources);
     }
 

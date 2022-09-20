@@ -29,7 +29,7 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player
         //TODO remove?
         let unitOwner = owner ? owner : gameEngine.getPlayer();
         
-        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, gameEngine, unitOwner);
+        let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, unitOwner);
 
         let spawnSpot = findSpawnSpot(unit, soldier, gameEngine);
         
