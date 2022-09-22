@@ -6,28 +6,28 @@ import { Player } from "../../Player";
 import { Unit } from "../Unit";
 
 //TODO get ownerPlayer as source unit owner?
-interface UnitActionUIProvider {
-    (unit: Unit, gameEngine: GameEngine, player: Player): UnitActionUI
+interface UnitCommandProvider {
+    (unit: Unit, gameEngine: GameEngine, player: Player): UnitCommand
 }
 
-interface UnitActionParams {
+interface UnitCommandParams {
     target: Vector,
     units?: Unit[]
 }
 
-enum UiActionType {
+enum UnitCommandType {
     ORDERING = "ORDERING",
     TARGETING = "TARGETING"
 
 }
 
-interface UnitActionUI {
-    actionName: string;
-    type: UiActionType;
+interface UnitCommand {
+    commandName: string;
+    type: UnitCommandType;
     actionIcon: string;
     canExecute: () => boolean;
-    execute: (params?: UnitActionParams) => void;
+    executeCommand: (params?: UnitCommandParams) => void;
 }
 
 
-export { UnitActionUI, UnitActionUIProvider, UiActionType }
+export { UnitCommand, UnitCommandProvider, UnitCommandType }

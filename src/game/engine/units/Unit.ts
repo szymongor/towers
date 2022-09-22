@@ -9,7 +9,7 @@ import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
 import { Vector } from '../map/PlayerVision';
-import { UnitActionUI } from './actions/UnitActionsUI';
+import { UnitCommand } from './actions/UnitCommands';
 import { GameEngine } from '../GameEngine';
 import { UnitTask, UnitTaskNames } from './UnitTask';
 import { UIElement } from '../../scenes/ui/UiScene';
@@ -99,7 +99,7 @@ class Unit {
     sprite: CustomSprite; //TODO separate Model/View
     resources?: ResourcesStorage;
     actions: UnitAction[];
-    actionUI: UnitActionUI[]; //TODO change to "commands"
+    commands: UnitCommand[];
     actionRange: number;
     actionInterval: number;
     currentTasks: Map<string, UnitTask>;
@@ -125,7 +125,7 @@ class Unit {
         };
         this.actions = config.actions;
         this.eventRegistry = gameEngine.events;
-        this.actionUI = config.uiActions.map(actionProvider => actionProvider(this, gameEngine, player));
+        this.commands = config.commands.map(commandProvider => commandProvider(this, gameEngine, player));
         this.actionRange = config.actionRange;
         this.actionInterval = config.actionInterval ? config.actionInterval : 1;
         this.currentTasks = new Map();
@@ -161,7 +161,7 @@ class Unit {
         }
     }
 
-    //TODO 
+    //TODO separate model from view
     getScale() {
         return (GameDimensions.grid.tileSize/GameDimensions.grid.imgSize)*this.size
     }

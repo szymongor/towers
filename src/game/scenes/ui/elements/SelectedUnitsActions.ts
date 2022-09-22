@@ -1,4 +1,4 @@
-import { UiActionType, UnitActionUI } from "../../../engine/units/actions/UnitActionsUI";
+import { UnitCommand, UnitCommandType } from "../../../engine/units/actions/UnitCommands";
 import { Unit } from "../../../engine/units/Unit";
 import { UIDimensions } from "../../../GameDimensions";
 import { UIElement, UiScene } from "../UiScene";
@@ -6,7 +6,7 @@ import { TargetingActionEvent, UiSceneEvents } from "../UiSceneEvents";
 import { Coord } from "../utils/UIGrid";
 
 const getSelectedUnitsActionsUIElement = (scene: UiScene, selectedUnits: Unit[]): UIElement => {
-    let actionsToDraw = getActionsForUnits(selectedUnits);
+    let actionsToDraw = getCommandsForUnits(selectedUnits);
 
     let icons = actionsToDraw.map((actionParams) => 
         getActionUIImage(scene, actionParams[0], actionParams[1], actionParams[2])
@@ -37,29 +37,29 @@ const getSelectedUnitsActionsUIElement = (scene: UiScene, selectedUnits: Unit[])
     return iconsUIElement;
 }
 
-const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[], Coord][] => {
-    let actions = new Map<string, Unit[]>();
+const getCommandsForUnits = (units: Unit[]) : [UnitCommand, Unit[], Coord][] => {
+    let command = new Map<string, Unit[]>();
 
     let buttonGrid: Coord[] = UIDimensions.buttonGrid;
     let btnIndex = 0;
     
     units.forEach(unit => {
-        unit.actionUI.forEach(unitAction => {
-            if(actions.has(unitAction.actionName)) {
-                let unitsWithAction = actions.get(unitAction.actionName);
+        unit.commands.forEach(unitCommand => {
+            if(command.has(unitCommand.commandName)) {
+                let unitsWithAction = command.get(unitCommand.commandName);
                 unitsWithAction.push(unit);
-                actions.set(unitAction.actionName, unitsWithAction);
+                command.set(unitCommand.commandName, unitsWithAction);
             } else {
-                actions.set(unitAction.actionName, [unit]);
+                command.set(unitCommand.commandName, [unit]);
             }
         })
     });
 
-    let actionTuples: [UnitActionUI, Unit[], Coord][] = [];
+    let actionTuples: [UnitCommand, Unit[], Coord][] = [];
 
-    actions.forEach((selectedUnitsWithAction: Unit[], actionName: string) => {
+    command.forEach((selectedUnitsWithAction: Unit[], commandName: string) => {
         if(selectedUnitsWithAction.length == units.length) {
-            let action =  selectedUnitsWithAction[0].actionUI.find((action => action.actionName == actionName));
+            let action =  selectedUnitsWithAction[0].commands.find((action => action.commandName == commandName));
             actionTuples.push([action, units, buttonGrid[btnIndex++]]);
         }
     });
@@ -68,38 +68,38 @@ const getActionsForUnits = (units: Unit[]) : [UnitActionUI, Unit[], Coord][] => 
 }
 
 
-const getActionUIImage = (scene: UiScene, actionUI: UnitActionUI, selectedUnits: Unit[], coord: Coord): Phaser.GameObjects.Image => {
-    switch(actionUI.type) {
-        case UiActionType.ORDERING:
-            return createOrderingButton(scene, actionUI, coord);
-        case UiActionType.TARGETING: 
-            return createTargetingButton(scene, actionUI, selectedUnits, coord);
+const getActionUIImage = (scene: UiScene, unitCommand: UnitCommand, selectedUnits: Unit[], coord: Coord): Phaser.GameObjects.Image => {
+    switch(unitCommand.type) {
+        case UnitCommandType.ORDERING:
+            return createOrderingButton(scene, unitCommand, coord);
+        case UnitCommandType.TARGETING: 
+            return createTargetingButton(scene, unitCommand, selectedUnits, coord);
     }
 }
 
-const createOrderingButton = (scene: UiScene, actionUI: UnitActionUI, coord: Coord ): Phaser.GameObjects.Image => {
-    let icon = scene.add.image(coord[0], coord[1], actionUI.actionIcon);
+const createOrderingButton = (scene: UiScene, unitCommand: UnitCommand, coord: Coord ): Phaser.GameObjects.Image => {
+    let icon = scene.add.image(coord[0], coord[1], unitCommand.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
         icon.setInteractive();
-        icon.on(Phaser.Input.Events.POINTER_DOWN,actionUI.execute);
+        icon.on(Phaser.Input.Events.POINTER_DOWN,unitCommand.executeCommand);
     return icon;
 }
 
-const createTargetingButton = (scene: UiScene, actionUI: UnitActionUI, units: Unit[], coord: Coord ): Phaser.GameObjects.Image => {
-    let icon = scene.add.image(coord[0], coord[1], actionUI.actionIcon);
+const createTargetingButton = (scene: UiScene, unitCommand: UnitCommand, units: Unit[], coord: Coord ): Phaser.GameObjects.Image => {
+    let icon = scene.add.image(coord[0], coord[1], unitCommand.actionIcon);
         icon.setOrigin(0);
         icon.setScale(0.25);
         icon.setInteractive();
-        icon.on(Phaser.Input.Events.POINTER_DOWN,createTargetingCursorFollow(scene, actionUI, units));
+        icon.on(Phaser.Input.Events.POINTER_DOWN,createTargetingCursorFollow(scene, unitCommand, units));
     return icon;
 }
 
-const createTargetingCursorFollow = (scene: UiScene, actionUI: UnitActionUI, units: Unit[] ) => {
+const createTargetingCursorFollow = (scene: UiScene, unitCommand: UnitCommand, units: Unit[] ) => {
     return () => {
-        let eventData: TargetingActionEvent = {action: actionUI, unitsSource: units};
+        let eventData: TargetingActionEvent = {command: unitCommand, unitsSource: units};
         scene.events.emit(UiSceneEvents.TARGETING_ACTION, eventData);
     }
 }
 
-export { getSelectedUnitsActionsUIElement, getActionsForUnits }
+export { getSelectedUnitsActionsUIElement, getCommandsForUnits as getActionsForUnits }

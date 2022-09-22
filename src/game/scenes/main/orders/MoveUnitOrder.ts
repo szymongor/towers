@@ -15,13 +15,13 @@ const onTargetingActionProvider = (scene: MainCamera) => {
             x: -100,
             y: -100
         }
-        scene.cursorFollow = scene.add.sprite(tempCoords.x, tempCoords.y, e.action.actionIcon);
+        scene.cursorFollow = scene.add.sprite(tempCoords.x, tempCoords.y, e.command.actionIcon);
         scene.cursorFollow.setScale(0.25);
         scene.cursorFollow.setTintFill(0x00ff00);
         scene.cursorFollow.action = UiMode.TARGETING_ACTION;
         scene.cursorFollow.actionOnClick = () => {
             let target = new Vector(scene.cursorFollow.x,scene.cursorFollow.y);
-            e.action.execute({target, units: e.unitsSource});
+            e.command.executeCommand({target, units: e.unitsSource});
             scene.cursorFollow.destroy();
             scene.cursorFollow = null;
         };

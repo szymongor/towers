@@ -2,9 +2,8 @@ import { Unit, UnitTypes } from "./Unit";
 import { Player } from "../Player";
 import { ResourceName, Resources, ResourcesStorage } from '../Resources';
 import { UnitAction } from './actions/UnitActions';
-import { EventRegistry } from "../events/EventsRegistry";
 import { canPlaceMine, CanPlaceRule, canPlaceStandard } from "./actions/UnitRules";
-import { UnitActionUIProvider } from "./actions/UnitActionsUI";
+import { UnitCommandProvider } from "./actions/UnitCommands";
 import { GameEngine } from "../GameEngine";
 import { UnitTask, UnitTaskNames } from "./UnitTask";
 import { changePositionProvider } from "./actions/change_position/ChangePositionAction";
@@ -37,7 +36,7 @@ interface UnitConfig {
     resources?: [ResourceName, number][];
     constructionTime: number;
     actions: UnitAction[];
-    uiActions?: UnitActionUIProvider[];
+    commands?: UnitCommandProvider[];
     actionRange: number;
     actionInterval?: number;
     maxHP?: number;
@@ -71,7 +70,7 @@ class UnitFactory {
                 ],
                 canPlace: canPlaceStandard,
                 actions: [ArrowAttack],
-                uiActions: [],
+                commands: [],
                 actionInterval: 10,
                 actionRange: 300,
                 constructionTime: 20,
@@ -99,7 +98,7 @@ class UnitFactory {
                     SawmillWoodCollect
                 ],
                 actionInterval: 15,
-                uiActions: [],
+                commands: [],
                 actionRange: 200,
                 maxHP: 200
             },
@@ -124,7 +123,7 @@ class UnitFactory {
                 actions: [
                     MineStoneCollect
                 ],
-                uiActions: [],
+                commands: [],
                 actionRange: 0,
                 actionInterval: 15,
                 maxHP: 200
@@ -148,7 +147,7 @@ class UnitFactory {
                 canPlace: canPlaceStandard,
                 constructionTime: 30,
                 actions: [],
-                uiActions: [soldierProductionProvider],
+                commands: [soldierProductionProvider],
                 actionRange: 250,
                 maxHP: 2000
             },
@@ -161,7 +160,7 @@ class UnitFactory {
                 cost: [],
                 resources: [[ResourceName.WOOD, 200]],
                 actions: [],
-                uiActions: [],
+                commands: [],
                 actionRange: 0,
                 constructionTime: 0
             },
@@ -174,7 +173,7 @@ class UnitFactory {
                 cost: [],
                 resources: [[ResourceName.STONE, 400]],
                 actions: [],
-                uiActions: [],
+                commands: [],
                 actionRange: 0,
                 constructionTime: 0
             },
@@ -195,7 +194,7 @@ class UnitFactory {
                     ]
                 ],
                 actions: [ArrowAttack],
-                uiActions: [changePositionProvider],
+                commands: [changePositionProvider],
                 actionInterval: 5,
                 actionRange: 200,
                 constructionTime: 10,

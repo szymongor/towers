@@ -6,18 +6,18 @@ import { GameEngine } from "../../../GameEngine"
 import { Vector } from "../../../map/PlayerVision"
 import { Unit } from "../../Unit"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
-import { UiActionType, UnitActionUIProvider } from "../UnitActionsUI"
+import {  UnitCommandProvider, UnitCommandType } from "../UnitCommands"
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const IDLE_TIME = 10;
 
-const changePositionProvider : UnitActionUIProvider = function(unit: Unit, gameEngine: GameEngine) {
+const changePositionProvider : UnitCommandProvider = function(unit: Unit, gameEngine: GameEngine) {
     return {
-        actionName: 'changePosition',
-        type: UiActionType.TARGETING,
+        commandName: 'changePosition',
+        type: UnitCommandType.TARGETING,
         actionIcon: "change_position_icon",
         canExecute: () => true,
-        execute: (props) => {
+        executeCommand: (props) => {
             if(props.units) {
                 props.units.forEach(unit => {
                     unit.addUnitTask(changePositionTask(unit, gameEngine, props.target))

@@ -10,7 +10,7 @@ const orderUnitAction = {
         let castle = ge.unitStorage.getUnits({owner: botPlayer, unitName: UnitName.CASTLE});
         if(castle.length == 1) {
             let gameActionProvider = soldierProductionProvider(castle[0], ge, botPlayer);
-            gameActionProvider.execute();
+            gameActionProvider.executeCommand();
         }
     }
 }
@@ -20,12 +20,12 @@ const moveAllSoldiersUnitAction = {
         let botPlayer = ge.players[1];
         let allBotUnits = ge.unitStorage.getUnits({owner: botPlayer, unitName: UnitName.SOLDIER});
         if(allBotUnits) {
-            let gameActionProvider = changePositionProvider(allBotUnits[0], ge, botPlayer);
+            let unitCommandProvider = changePositionProvider(allBotUnits[0], ge, botPlayer);
             let actionProps = {
                 target: new Vector(0, 0),
                 units: allBotUnits
             }
-            gameActionProvider.execute(actionProps);
+            unitCommandProvider.executeCommand(actionProps);
         }
     }
 }

@@ -7,24 +7,24 @@ import { Player } from "../../../Player"
 import { Unit } from "../../Unit"
 import { UnitName } from "../../UnitFactory"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
-import { UiActionType, UnitActionUIProvider } from "../UnitActionsUI"
+import { UnitCommandProvider, UnitCommandType } from "../UnitCommands"
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
-const soldierProductionProvider : UnitActionUIProvider = 
-function(unit: Unit, gameEngine: GameEngine, owner: Player) {
+const soldierProductionProvider : UnitCommandProvider = 
+(unit: Unit, gameEngine: GameEngine, owner: Player) => {
     return {
-        actionName: 'soldierProduction',
-        type: UiActionType.ORDERING,
+        commandName: 'soldierProduction',
+        type: UnitCommandType.ORDERING,
         actionIcon: "soldier_production_icon",
         canExecute: () => true,
-        execute: () => {
+        executeCommand: () => {
             unit.addUnitTask(soldierProductionTask(unit, gameEngine, owner))
         }
     }
 }
 
-const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player ) => {
+const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player ): UnitTask => {
     let done = () => {
         //TODO remove?
         let unitOwner = owner ? owner : gameEngine.getPlayer();

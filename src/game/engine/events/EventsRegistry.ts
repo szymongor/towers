@@ -9,7 +9,6 @@ enum EventChannels {
     PLAYER_LOST = "PLAYER_LOST",
     GAME_FINISHED = "GAME_FINISHED",
     CHANGE_POSITION = "CHANGE_POSITION"
-
 }
 
 interface Subscriber {
@@ -33,7 +32,6 @@ class EventRegistry {
         if(channelSubscribers) {
             channelSubscribers.forEach( (sub) => sub.call(event));
         }
-        
     }
 
     subscribe(channel: EventChannels, subscriber: Subscriber) {

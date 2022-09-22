@@ -164,7 +164,7 @@ class MainCamera extends Phaser.Scene {
                         let target = new Vector(x, y);
                         let action = actions[0][0];
                         let units = actions[0][1];
-                        action.execute({target: target, units: units});
+                        action.executeCommand({target: target, units: units});
                         return;
                     }
                 }

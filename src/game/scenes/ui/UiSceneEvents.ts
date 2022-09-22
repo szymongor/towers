@@ -1,4 +1,4 @@
-import { UnitActionUI } from "../../engine/units/actions/UnitActionsUI";
+import { UnitCommand } from "../../engine/units/actions/UnitCommands";
 import { Unit } from "../../engine/units/Unit";
 import { UnitName } from "../../engine/units/UnitFactory";
 
@@ -13,7 +13,7 @@ interface UiSetBuildingModeEvent {
 }
 
 interface TargetingActionEvent {
-    action: UnitActionUI,
+    command: UnitCommand,
     unitsSource: Unit[],
 }
 
