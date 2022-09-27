@@ -8,6 +8,7 @@ import { registerPlayerLostRule } from "../../engine/rules/player_lost/PlayerLos
 import { registerUnitDestroyedRule } from "../../engine/rules/unit_destroyed/UnitDestroyedRule";
 import { basicAiProcessorProvider } from "./basicAiProcessor";
 import { basicMapSupplier } from "./basicMap";
+import { basicUnitConfig } from "./basicUnitConfig";
 
 const basicCampaign = (gameEngine: GameEngine): Campaign => {
     let initResources = new Resources([[ResourceName.WOOD, 2000], [ResourceName.STONE, 1000]]);
@@ -20,7 +21,8 @@ const basicCampaign = (gameEngine: GameEngine): Campaign => {
         logGameFinishedEvent,
         registerOrderBuildingRule];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
+    
     
     return campaign;
 }

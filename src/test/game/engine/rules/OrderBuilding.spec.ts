@@ -1,3 +1,4 @@
+import { basicUnitConfig } from "../../../../game/campaign/basic/basicUnitConfig";
 import { AiProcessor } from "../../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../../game/engine/campaign/Campaign";
 import { GameEngine } from "../../../../game/engine/GameEngine";
@@ -19,21 +20,24 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
 
     let rulesConfig = [registerOrderBuildingRule];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
 
-    let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 100, 100, players[0])
-    // let castle2 = gameEngine.unitFactory.of(UnitName.CASTLE, 80, 80, players[1])
 
-    gameEngine.unitStorage.addUnit(castle1);
-    // gameEngine.unitStorage.addUnit(castle2);
     
     return campaign;
+}
+
+const setGameUnist = (gameEngine: GameEngine) => {
+    let players = gameEngine.players;
+    let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 100, 100, players[0]);
+    gameEngine.unitStorage.addUnit(castle1);
 }
 
 describe("Order building test", () => {
     test("Should consume required resources", () => {
         //given
         let gameEngine = new GameEngine(testCampaignProvider);
+        setGameUnist(gameEngine);
         let towerPrototype = gameEngine.unitFactory.of(UnitName.TOWER, 280, 220);
 
         //when

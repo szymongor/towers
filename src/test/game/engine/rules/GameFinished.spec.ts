@@ -1,4 +1,5 @@
 
+import { basicUnitConfig } from "../../../../game/campaign/basic/basicUnitConfig";
 import { AiProcessor } from "../../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../../game/engine/campaign/Campaign";
 import { EventChannels } from '../../../../game/engine/events/EventsRegistry';
@@ -25,15 +26,20 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
     let rulesConfig = [registerUnitDestroyedRule, registerPlayerLostRule, 
         registerGameFinishedRule];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
 
+    
+    
+    return campaign;
+}
+
+const setGameUnist = (gameEngine: GameEngine) => {
+    let players = gameEngine.players;
     let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 20, 20, players[0])
     let castle2 = gameEngine.unitFactory.of(UnitName.CASTLE, 80, 80, players[1])
 
     gameEngine.unitStorage.addUnit(castle1);
     gameEngine.unitStorage.addUnit(castle2);
-    
-    return campaign;
 }
 
 describe("Game Finished tests", () => {
@@ -41,6 +47,7 @@ describe("Game Finished tests", () => {
         //given
         let gameEngine = new GameEngine(testCampaignProvider);
         let player = gameEngine.getPlayer();
+        setGameUnist(gameEngine);
         let castleFilter = {
             owner: player,
             unitName: UnitName.CASTLE

@@ -24,18 +24,16 @@ class GameEngine {
 
     constructor(campaignProvider: CampaignProvider) {
 
-        //TODO UnitConfig from campaign
-        this.unitFactory = new UnitFactory(this);
-
         this.unitStorage = new UnitStorage();
         this.events = new EventRegistry();
 
         let campaign = campaignProvider(this);
+        this.unitFactory = new UnitFactory(this, campaign.unitsConfig);
         this.players = campaign.players;
         this.aiProcessor = campaign.aiProcessor;
         this.mapBoard = campaign.mapSupplier();
         this.registerRules(campaign.rulesConfig);
-
+        
         this.traversMap = new TraversMap(this.mapBoard);
         this.round = 0;
     }

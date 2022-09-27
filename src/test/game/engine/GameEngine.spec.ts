@@ -1,3 +1,4 @@
+import { basicUnitConfig } from "../../../game/campaign/basic/basicUnitConfig";
 import { AiProcessor } from "../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../game/engine/campaign/Campaign";
 import { GameEngine } from "../../../game/engine/GameEngine"
@@ -23,7 +24,7 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
         logGameFinishedEvent,
         registerOrderBuildingRule];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
     
     return campaign;
 }

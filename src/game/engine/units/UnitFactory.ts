@@ -36,7 +36,7 @@ interface UnitConfig {
     resources?: [ResourceName, number][];
     constructionTime: number;
     actions: UnitAction[];
-    commands?: UnitCommandProvider[];
+    commands: UnitCommandProvider[];
     actionRange: number;
     actionInterval?: number;
     maxHP?: number;
@@ -49,159 +49,9 @@ class UnitFactory {
     gameEngine: GameEngine;
     static Units: { [key: string]: UnitName };
 
-    constructor (gameEngine: GameEngine) {
+    constructor (gameEngine: GameEngine, unitConfig: UnitsConfig ) {
         this.gameEngine = gameEngine;
-        this.unitConfig = {
-            tower: {
-                name: "Tower",
-                unitName: UnitName.TOWER,
-                spriteName: 'tower',
-                size: 5,
-                type: UnitTypes.BUILDING,
-                cost: [
-                    [
-                        ResourceName.WOOD,
-                        50
-                    ],
-                    [
-                        ResourceName.STONE,
-                        50
-                    ]
-                ],
-                canPlace: canPlaceStandard,
-                actions: [ArrowAttack],
-                commands: [],
-                actionInterval: 10,
-                actionRange: 300,
-                constructionTime: 20,
-                maxHP: 800
-            },
-            sawmill: {
-                name: 'Sawmill',
-                unitName: UnitName.SAWMILL,
-                spriteName: 'sawmill',
-                size: 4,
-                type: UnitTypes.BUILDING,
-                cost: [
-                    [
-                        ResourceName.WOOD,
-                        50
-                    ],
-                    [
-                        ResourceName.STONE,
-                        25
-                    ]
-                ],
-                canPlace: canPlaceStandard,
-                constructionTime: 30,
-                actions: [
-                    SawmillWoodCollect
-                ],
-                actionInterval: 15,
-                commands: [],
-                actionRange: 200,
-                maxHP: 200
-            },
-            mine: {
-                name: 'Mine',
-                unitName: UnitName.MINE,
-                spriteName: 'mine',
-                size: 4,
-                type: UnitTypes.BUILDING,
-                cost: [
-                    [
-                        ResourceName.WOOD,
-                        50
-                    ],
-                    [
-                        ResourceName.STONE,
-                        50
-                    ]
-                ],
-                canPlace: canPlaceMine,
-                constructionTime: 30,
-                actions: [
-                    MineStoneCollect
-                ],
-                commands: [],
-                actionRange: 0,
-                actionInterval: 15,
-                maxHP: 200
-            },
-            castle: {
-                name: 'Castle',
-                unitName: UnitName.CASTLE,
-                spriteName: 'castle',
-                size: 9,
-                type: UnitTypes.BUILDING,
-                cost: [
-                    [
-                        ResourceName.WOOD,
-                        50
-                    ],
-                    [
-                        ResourceName.STONE,
-                        50
-                    ]
-                ],
-                canPlace: canPlaceStandard,
-                constructionTime: 30,
-                actions: [],
-                commands: [soldierProductionProvider],
-                actionRange: 250,
-                maxHP: 2000
-            },
-            tree: {
-                name: "Tree",
-                unitName: UnitName.TREE,
-                spriteName: 'tree',
-                size: 3,
-                type: UnitTypes.RESOURCE,
-                cost: [],
-                resources: [[ResourceName.WOOD, 200]],
-                actions: [],
-                commands: [],
-                actionRange: 0,
-                constructionTime: 0
-            },
-            stones: {
-                name: 'Stones',
-                unitName: UnitName.STONES,
-                spriteName: 'stones',
-                size: 4,
-                type: UnitTypes.RESOURCE,
-                cost: [],
-                resources: [[ResourceName.STONE, 400]],
-                actions: [],
-                commands: [],
-                actionRange: 0,
-                constructionTime: 0
-            },
-            soldier: {
-                name: 'Soldier',
-                unitName: UnitName.SOLDIER,
-                spriteName: 'soldier',
-                size: 2,
-                type: UnitTypes.CREATURE,
-                cost: [
-                    [
-                        ResourceName.WOOD,
-                        10
-                    ],
-                    [
-                        ResourceName.STONE,
-                        10
-                    ]
-                ],
-                actions: [ArrowAttack],
-                commands: [changePositionProvider],
-                actionInterval: 5,
-                actionRange: 200,
-                constructionTime: 10,
-                maxHP: 200
-            }
-
-        }
+        this.unitConfig = unitConfig;
     }
 
     addResource(unit: Unit, type: UnitName): Unit {
@@ -253,4 +103,4 @@ UnitFactory.Units = {
     "SAWMILL":UnitName.SAWMILL
 }
 
-export { UnitFactory, UnitName, UnitConfig };
+export { UnitFactory, UnitName, UnitConfig, UnitsConfig };
