@@ -4,7 +4,7 @@ import { GameEngine } from "../../GameEngine";
 import { TerrainType } from "../../map/MapBoard";
 import { Unit, UnitTypes } from "../Unit";
 import { UnitName } from "../UnitFactory";
-import { UnitFilter, UnitStorage } from "../UnitsStorage";
+import { UnitFilter, UnitStorage } from "../unit_storage/UnitsStorage";
 
 interface CanPlaceRule {
     (unit: Unit, gameEngine: GameEngine): boolean

@@ -34,15 +34,13 @@ const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player
         let spawnSpot = findSpawnSpot(unit, soldier, gameEngine);
         
         soldier.setLocation(spawnSpot);
-
-        gameEngine.unitStorage.addUnit(soldier);
-
-        // TODO BUILDING_PLACED event_data type
+        
+        // TODO UNIT_CREATED event_data type
         // TODO UNIT_PRODUCED event and event_data types
         let data : any = {
             unitPrototype: soldier
         }
-        let event = new GameEvent(EventChannels.BUILDING_PLACED, data)
+        let event = new GameEvent(EventChannels.UNIT_CREATED, data)
         gameEngine.events.emit(event);
     }
     let constructionTime = gameEngine.unitFactory.unitConfig[UnitName.SOLDIER].constructionTime;

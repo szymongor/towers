@@ -2,7 +2,7 @@ import { EventChannels, EventRegistry } from "../../../events/EventsRegistry";
 import { GameEvent } from "../../../events/GameEvent";
 import { GameEngine } from "../../../GameEngine";
 import { DealtDamage, Unit, UnitTypes } from "../../Unit";
-import { UnitFilter } from "../../UnitsStorage";
+import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTask, UnitTaskNames } from "../../UnitTask";
 import { DamageDealtEventData, UnitAction } from "../UnitActions";
 

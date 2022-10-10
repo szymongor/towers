@@ -1,7 +1,7 @@
 import { GameDimensions } from "../../GameDimensions";
 import { GameEngine } from "../GameEngine";
 import { Unit } from "../units/Unit";
-import { UnitFilter } from "../units/UnitsStorage";
+import { UnitFilter } from "../units/unit_storage/UnitsStorage";
 import { Terrain, TerrainType } from "./MapBoard";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;

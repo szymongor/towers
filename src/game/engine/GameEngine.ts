@@ -4,7 +4,7 @@ import { Player } from './Player';
 import { EventRegistry, EventChannels } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 import { Unit, UnitTypes } from './units/Unit';
-import { UnitFilter, UnitStorage } from './units/UnitsStorage';
+import { UnitFilter, UnitStorage } from './units/unit_storage/UnitsStorage';
 import { GameRuleConfigurator } from './rules/GameStateRules';
 import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
@@ -24,8 +24,9 @@ class GameEngine {
 
     constructor(campaignProvider: CampaignProvider) {
 
-        this.unitStorage = new UnitStorage();
         this.events = new EventRegistry();
+        this.unitStorage = new UnitStorage(this.events);
+        
 
         let campaign = campaignProvider(this);
         this.unitFactory = new UnitFactory(this, campaign.unitsConfig);
@@ -112,35 +113,6 @@ class GameEngine {
             this.traversMap.calculateTraversableGrid(0, 0, this.mapBoard.height, this.mapBoard.width);
         }
     }
-
-    boxSelect(x:number, y: number, dx: number, dy: number): Unit[] {
-        let boxSelect = {leftX: 0, leftY: 0, rightX: 0, rightY: 0};
-        if(dx < 0) {
-            boxSelect.leftX = x+dx;
-            boxSelect.rightX = x;
-        } else {
-            boxSelect.leftX = x;
-            boxSelect.rightX = x+dx;
-        }
-
-        if(dy < 0) {
-            boxSelect.leftY = y+dy;
-            boxSelect.rightY = y;
-        } else {
-            boxSelect.leftY = y;
-            boxSelect.rightY = y+dy;
-        }
-
-        let unitFilter: UnitFilter = {
-            boxSelect: boxSelect,
-            types: [UnitTypes.CREATURE],
-            owner: this.getPlayer()
-            
-        }
-        return this.unitStorage.getUnits(unitFilter);
-    }
-
-    
 
 }
 

@@ -3,7 +3,7 @@ import { GameEvent, PlayerLostEventData } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
 import { Player } from "../../Player";
 import { UnitName } from "../../units/UnitFactory";
-import { UnitFilter } from "../../units/UnitsStorage";
+import { UnitFilter } from "../../units/unit_storage/UnitsStorage";
 import { GameRuleConfigurator } from "../GameStateRules";
 
 const registerPlayerLostRule: GameRuleConfigurator = (gameEngine: GameEngine) => {

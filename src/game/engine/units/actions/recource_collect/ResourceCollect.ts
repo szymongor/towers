@@ -4,7 +4,7 @@ import { GameEngine } from "../../../GameEngine";
 import { ResourceName } from "../../../Resources";
 import { Unit, UnitTypes } from "../../Unit";
 import { UnitName } from "../../UnitFactory";
-import { UnitFilter } from "../../UnitsStorage";
+import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTaskNames, UnitTask } from "../../UnitTask";
 import { UnitAction, ResourceCollectedEventData, UnitDestroyedEventData } from "../UnitActions";
 

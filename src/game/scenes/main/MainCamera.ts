@@ -386,8 +386,9 @@ class MainCamera extends Phaser.Scene {
             let y = this.cursorSelect.y;
             let dx = this.cursorSelect.width;
             let dy = this.cursorSelect.height;
+            let owner = this.gameEngine.getPlayer();
 
-            let units = this.gameEngine.boxSelect(x, y, dx, dy);
+            let units = this.gameEngine.unitStorage.boxSelect(x, y, dx, dy, owner);
             selectUnitEmitEvent(this, units.map(u => u.sprite));
             
             this.cursorSelect.destroy();

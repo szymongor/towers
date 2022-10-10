@@ -1,7 +1,7 @@
 import { GameDimensions } from "../../GameDimensions";
 import { unitIntersect } from "../units/actions/UnitRules";
 import { Unit, UnitTypes } from "../units/Unit";
-import { UnitFilter } from "../units/UnitsStorage";
+import { UnitFilter } from "../units/unit_storage/UnitsStorage";
 import { MapBoard, TerrainType } from "./MapBoard";
 import { Vector } from "./PlayerVision";
 

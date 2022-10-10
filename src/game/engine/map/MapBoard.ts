@@ -2,7 +2,7 @@ import { GameDimensions } from  '../../GameDimensions';
 import { GameEngine } from '../GameEngine';
 import { Unit } from '../units/Unit';
 import { UnitFactory, UnitName } from '../units/UnitFactory';
-import { UnitStorage } from '../units/UnitsStorage';
+import { UnitStorage } from '../units/unit_storage/UnitsStorage';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 

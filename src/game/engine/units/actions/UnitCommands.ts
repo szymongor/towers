@@ -21,6 +21,7 @@ enum UnitCommandType {
 
 }
 
+//TODO Separate Ui and Engine - move actionIcon
 interface UnitCommand {
     commandName: string;
     type: UnitCommandType;

@@ -12,6 +12,8 @@ interface UiSetBuildingModeEvent {
     building: UnitName
 }
 
+//TODO TargetSelectedEvent?
+//TODO Domain Event?
 interface TargetingActionEvent {
     command: UnitCommand,
     unitsSource: Unit[],

@@ -13,12 +13,12 @@ const registerNewBuildingOrderEvents = function(scene: MainCamera): void {
 
 const registerUnitPlaced = function(scene: MainCamera): void {
     let subscriber = {
-        call: unitPlaced(scene)
+        call: unitCreated(scene)
     }
-    scene.gameEngine.events.subscribe(EventChannels.BUILDING_PLACED, subscriber);
+    scene.gameEngine.events.subscribe(EventChannels.UNIT_CREATED, subscriber);
 }
 
-const unitPlaced = function(scene: MainCamera): (event: GameEvent) => void {
+const unitCreated = function(scene: MainCamera): (event: GameEvent) => void {
     return (event: GameEvent) => {
         let unit = event.data.unitPrototype;
         if(unit) {

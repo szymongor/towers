@@ -22,7 +22,7 @@ const receiveBuildingOrder = (gameEngine: GameEngine) =>  {
                 player: event.data.player,
                 unitPrototype: placeBuilding(gameEngine, prototype, player)
             };
-            let placeBuildingEvent = new GameEvent(EventChannels.BUILDING_PLACED, data);
+            let placeBuildingEvent = new GameEvent(EventChannels.UNIT_CREATED, data);
             gameEngine.events.emit(placeBuildingEvent);
         }
     }
@@ -42,7 +42,6 @@ const placeBuilding = (gameEngine: GameEngine, unitPrototype: Unit, player: Play
         let unitCosts = gameEngine.unitFactory.getConfig(unitPrototype.unitName).cost;
         ownerPlayer.chargeResources(unitCosts);
         
-        gameEngine.unitStorage.addUnit(unit);
         return unit;
     }
 }

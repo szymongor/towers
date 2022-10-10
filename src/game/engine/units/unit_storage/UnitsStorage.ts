@@ -1,7 +1,9 @@
-import { Tile } from "../map/PlayerVision";
-import { Player } from "../Player";
-import { Unit, UnitTypes } from "./Unit";
-import { UnitName } from "./UnitFactory";
+import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
+import { GameEvent } from "../../events/GameEvent";
+import { Tile } from "../../map/PlayerVision";
+import { Player } from "../../Player";
+import { Unit, UnitTypes } from "../Unit";
+import { UnitName } from "../UnitFactory";
 
 interface UnitFilter {
     owner?: Player;
@@ -27,10 +29,40 @@ interface RangeFilter {
 class UnitStorage {
 
     units: Unit[];
+    eventRegistry: EventRegistry;
 
-    constructor() {
+    constructor(eventRegistry: EventRegistry) {
         this.units = [];
+        this.eventRegistry = eventRegistry;
+
+        var subscribeAddUnit = {
+            call: this.onUnitCreated()
+        }
+        this.eventRegistry.subscribe(EventChannels.UNIT_CREATED, subscribeAddUnit);
+
+        var subscribeDestroyUnit = {
+            call: this.onUnitDestroyed()
+        }
+        this.eventRegistry.subscribe(EventChannels.UNIT_DESTROYED, subscribeDestroyUnit);
     }
+
+    onUnitCreated() {
+        let us = this;
+        return (eventData: GameEvent) => {
+            let unit = eventData.data.unitPrototype;
+            us.addUnit(unit);
+        }
+    }
+
+    onUnitDestroyed() {
+        let us = this;
+        return (eventData: GameEvent) => {
+            let unit = eventData.data.unit;
+            us.destroyUnit(unit);
+        }
+    }
+
+    //COMMANDS
 
     addUnit(unit: Unit){
         this.units.push(unit);
@@ -42,8 +74,9 @@ class UnitStorage {
 
     destroyUnit(unit: Unit) {
         this.units = this.units.filter(u => u != unit);
-        unit.destroy();
     }
+
+    //QUERIES
 
     getUnits(unitFilter: UnitFilter): Unit[] {
         let units = this.units;
@@ -85,16 +118,10 @@ class UnitStorage {
     getUnitsInVision(unitFilter: UnitFilter, vision: Set<Tile>) {
         let units = this.getUnits(unitFilter);
         units = units.filter(u => {
-            return this.isUnitInVision(u, vision);
+            return u.isUnitInVision(vision);
         } );
         
         return units;
-    }
-
-    isUnitInVision(unit: Unit, vision: Set<Tile>): boolean {
-        return Array.from(vision).some(tile => {
-            return unit.containsCoord(tile.x, tile.y);
-        })
     }
 
     getUnitsInRange(unitFilter: UnitFilter, unit: Unit, range: Number): Unit[] {
@@ -119,6 +146,33 @@ class UnitStorage {
         });
 
         return closestUnit;
+    }
+
+    boxSelect(x:number, y: number, dx: number, dy: number, owner: Player): Unit[] {
+        let boxSelect = {leftX: 0, leftY: 0, rightX: 0, rightY: 0};
+        if(dx < 0) {
+            boxSelect.leftX = x+dx;
+            boxSelect.rightX = x;
+        } else {
+            boxSelect.leftX = x;
+            boxSelect.rightX = x+dx;
+        }
+
+        if(dy < 0) {
+            boxSelect.leftY = y+dy;
+            boxSelect.rightY = y;
+        } else {
+            boxSelect.leftY = y;
+            boxSelect.rightY = y+dy;
+        }
+
+        let unitFilter: UnitFilter = {
+            boxSelect: boxSelect,
+            types: [UnitTypes.CREATURE],
+            owner: owner
+            
+        }
+        return this.getUnits(unitFilter);
     }
 
 }

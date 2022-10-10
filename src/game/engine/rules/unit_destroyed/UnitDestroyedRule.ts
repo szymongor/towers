@@ -8,13 +8,12 @@ const registerUnitDestroyedRule: GameRuleConfigurator = (gameEngine: GameEngine)
         call: receiveUnitDestroyed(gameEngine)
     }
     gameEngine.events.subscribe(EventChannels.UNIT_DESTROYED, subscriber);
-    console.log("registerUnitDestroyedRule");
 }
 
 const  receiveUnitDestroyed = (gameEngine: GameEngine) => {
     return (event: GameEvent) => {
-        let unitDestroyed = event.data.unit;
-        gameEngine.unitStorage.destroyUnit(unitDestroyed);
+        // let unitDestroyed = event.data.unit;
+        // gameEngine.unitStorage.destroyUnit(unitDestroyed);
     }
 }
 

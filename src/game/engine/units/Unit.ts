@@ -8,7 +8,7 @@ import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
-import { Vector } from '../map/PlayerVision';
+import { Tile, Vector } from '../map/PlayerVision';
 import { UnitCommand } from './actions/UnitCommands';
 import { GameEngine } from '../GameEngine';
 import { UnitTask, UnitTaskNames } from './UnitTask';
@@ -135,25 +135,9 @@ class Unit {
 
     }
 
-    getProgress(): Map<string, number> {
-        var taskNameToProgress = new Map();
+    //COMMANDS
 
-        this.currentTasks.forEach(({progress}, key) => {
-            taskNameToProgress.set(key, progress.value/progress.limit);
-        });
-
-        return taskNameToProgress;
-    }
-
-    getTexture() {
-        if(this.state.construction) {
-            return 'construction';
-        } else {
-            return this.spriteName;
-        }
-    }
-
-    //TODO emit event?
+    //TODO Separate UI and Engine
     updateTexture() {
         if(this.sprite) {
             this.sprite.setTexture(this.getTexture());
@@ -161,62 +145,12 @@ class Unit {
         }
     }
 
-    //TODO separate model from view
-    getScale() {
-        return (GameDimensions.grid.tileSize/GameDimensions.grid.imgSize)*this.size
-    }
-
-    getCentre(): {x: number, y: number} {
-        let centre = {
-            x: this.x + this.size * GameDimensions.grid.tileSize/2,
-            y: this.y + this.size * GameDimensions.grid.tileSize/2,
-        };
-        return centre;
-    }
-
-    getActionRange() {
-        return this.actionRange;
-    }
-
-    //TODO emit event?
-    destroy() {
+    kill() {
+        //TODO UI component subscribe on UNIT_DESTROYED
         if(this.sprite) {
             this.sprite.dispose();
         }
-    }
-
-    distanceToUnit(unit: Unit): number {
-        let centre = this.getCentre();
-        let unitCentre = unit.getCentre();
-        let dX = unitCentre.x-centre.x;
-        let dY = unitCentre.y-centre.y;
-        return Math.sqrt( dX*dX + dY*dY);
-    }
-
-    distanceToVector(tile: Vector): number {
-        let centre = this.getCentre();
-        let dX = tile.x+TILE_SIZE/2-centre.x;
-        let dY = tile.y+TILE_SIZE/2-centre.y;
-        return Math.sqrt( dX*dX + dY*dY);
-    }
-
-    isUnitInRange(unit: Unit): boolean {
-        let distnace = this.distanceToUnit(unit);
-        return distnace < this.actionRange + (unit.size * GameDimensions.grid.tileSize);
-    }
-
-    getUnitInfo(): UnitInfo {
-        let unitInfo = {
-            name: this.unitName,
-            hp: this.hp,
-            player: this.player,
-            x: this.x,
-            y: this.y
-        }
-        return unitInfo;
-    }
-
-    kill() {
+        
         if(this.eventRegistry && !this.state.destroyed) {
             this.state.destroyed = true;
             let data = {
@@ -224,11 +158,8 @@ class Unit {
             };
             let event: GameEvent = new GameEvent(EventChannels.UNIT_DESTROYED, data)
             this.eventRegistry.emit(event);
+            
         }
-    }
-
-    getLocation(): Vector {
-        return new Vector(this.x, this.y);
     }
  
     setLocation(loc: Vector) {
@@ -262,6 +193,78 @@ class Unit {
         currentMovementTask.forEach(name => this.clearUnitTask(name));
     }
 
+    //QUERIES
+
+    getProgress(): Map<string, number> {
+        var taskNameToProgress = new Map();
+
+        this.currentTasks.forEach(({progress}, key) => {
+            taskNameToProgress.set(key, progress.value/progress.limit);
+        });
+
+        return taskNameToProgress;
+    }
+
+    getTexture() {
+        if(this.state.construction) {
+            return 'construction';
+        } else {
+            return this.spriteName;
+        }
+    }
+
+    //TODO separate model from view
+    getScale() {
+        return (GameDimensions.grid.tileSize/GameDimensions.grid.imgSize)*this.size
+    }
+
+    getCentre(): {x: number, y: number} {
+        let centre = {
+            x: this.x + this.size * GameDimensions.grid.tileSize/2,
+            y: this.y + this.size * GameDimensions.grid.tileSize/2,
+        };
+        return centre;
+    }
+
+    getActionRange() {
+        return this.actionRange;
+    }
+
+    distanceToUnit(unit: Unit): number {
+        let centre = this.getCentre();
+        let unitCentre = unit.getCentre();
+        let dX = unitCentre.x-centre.x;
+        let dY = unitCentre.y-centre.y;
+        return Math.sqrt( dX*dX + dY*dY);
+    }
+
+    distanceToVector(tile: Vector): number {
+        let centre = this.getCentre();
+        let dX = tile.x+TILE_SIZE/2-centre.x;
+        let dY = tile.y+TILE_SIZE/2-centre.y;
+        return Math.sqrt( dX*dX + dY*dY);
+    }
+
+    isUnitInRange(unit: Unit): boolean {
+        let distnace = this.distanceToUnit(unit);
+        return distnace < this.actionRange + (unit.size * GameDimensions.grid.tileSize);
+    }
+
+    getUnitInfo(): UnitInfo {
+        let unitInfo = {
+            name: this.unitName,
+            hp: this.hp,
+            player: this.player,
+            x: this.x,
+            y: this.y
+        }
+        return unitInfo;
+    }
+
+    getLocation(): Vector {
+        return new Vector(this.x, this.y);
+    }
+
     containsCoord(x: number, y: number) {
         return Math.abs(x - this.x) < this.size * GameDimensions.grid.tileSize/2
         &&
@@ -276,6 +279,12 @@ class Unit {
             }
         }
         return tiles;
+    }
+
+    isUnitInVision(vision: Set<Tile>): boolean {
+        return Array.from(vision).some(tile => {
+            return this.containsCoord(tile.x, tile.y);
+        })
     }
 }
 
