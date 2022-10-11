@@ -20,7 +20,7 @@ const registerUnitPlaced = function(scene: MainCamera): void {
 
 const unitCreated = function(scene: MainCamera): (event: GameEvent) => void {
     return (event: GameEvent) => {
-        let unit = event.data.unitPrototype;
+        let unit = event.data.unit;
         if(unit) {
             scene.latestVisibleSprites.units.add(scene.createCustomSprite(scene, unit));
             scene.drawMap(scene.gameEngine);
@@ -43,6 +43,7 @@ const updateBuildingOrderCursor = function(scene: MainCamera): void {
         scene.cursorFollow.setPosition(posX, posY);
         scene.cursorFollow.unitPrototype.x = posX;
         scene.cursorFollow.unitPrototype.y = posY;
+        scene.cursorFollow.unitPrototype.player = scene.gameEngine.getPlayer();
         if(!scene.gameEngine.canPlaceUnit(scene.cursorFollow.unitPrototype)) {
             scene.cursorFollow.setTintFill(0xff0000);
         } else {

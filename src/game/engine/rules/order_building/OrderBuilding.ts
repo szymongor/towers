@@ -1,3 +1,4 @@
+import { UnitCreatedEventData } from "../../events/EventDataTypes";
 import { EventChannels } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
 import { GameEngine } from "../../GameEngine";
@@ -14,13 +15,12 @@ const registerOrderBuildingRule: GameRuleConfigurator = (gameEngine: GameEngine)
 
 const receiveBuildingOrder = (gameEngine: GameEngine) =>  {
     return (event: any) => {
-        let prototype: Unit = event.data.unitPrototype;
-        let player: Player = event.data.player;
-        if(gameEngine.canBuild(prototype.unitName, player) 
+        let data: UnitCreatedEventData = event.data;
+        let prototype: Unit = data.unit;
+        if(gameEngine.canBuild(prototype.unitName, prototype.player) 
         && prototype.canPlace(prototype,  gameEngine)) {
-            let data = {
-                player: event.data.player,
-                unitPrototype: placeBuilding(gameEngine, prototype, player)
+            let data: UnitCreatedEventData = {
+                unit: placeBuilding(gameEngine, prototype, prototype.player)
             };
             let placeBuildingEvent = new GameEvent(EventChannels.UNIT_CREATED, data);
             gameEngine.events.emit(placeBuildingEvent);

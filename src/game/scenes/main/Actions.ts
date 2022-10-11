@@ -2,9 +2,9 @@ import { GameEvent } from "../../engine/events/GameEvent"
 import { GameEngine } from "../../engine/GameEngine"
 import { MainCamera } from "./MainCamera"
 import { Subscriber, EventChannels } from '../../engine/events/EventsRegistry'
-import { ResourceCollectedEventData, DamageDealtEventData } from '../../engine/units/actions/UnitActions';
 import { ResourceName } from "../../engine/Resources"
-import { ANIMATION_RATE, CustomAnimation, customAnimationFromSprite, TransitionAnimation } from "./animation/Animation";
+import { ANIMATION_RATE, customAnimationFromSprite, TransitionAnimation } from "./animation/Animation";
+import { DamageDealtEventData, ResourceCollectedEventData } from "../../engine/events/EventDataTypes"
 
 const registerOnResourceCollect = (scene: MainCamera, engine: GameEngine) => {
     let subscriber: Subscriber = {
@@ -14,11 +14,11 @@ const registerOnResourceCollect = (scene: MainCamera, engine: GameEngine) => {
 
 }
 
-const registerOnDamageDealt = (scene: MainCamera, engine: GameEngine) => {
+const registerOnProjectileFired = (scene: MainCamera, engine: GameEngine) => {
     let subscriber: Subscriber = {
         call: animateDamageDealt(scene)
     }
-    engine.events.subscribe(EventChannels.DAMAGE_DEALT, subscriber);
+    engine.events.subscribe(EventChannels.PROJECTILE_FIRED, subscriber);
 
 }
 
@@ -101,4 +101,4 @@ const animateDamageDealt = (scene: MainCamera) => {
     }
 }
 
-export { registerOnResourceCollect, registerOnDamageDealt }
+export { registerOnResourceCollect, registerOnProjectileFired as registerOnDamageDealt }

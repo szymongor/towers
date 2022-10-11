@@ -1,6 +1,9 @@
+import { Game } from "phaser";
 import { basicUnitConfig } from "../../../../game/campaign/basic/basicUnitConfig";
 import { AiProcessor } from "../../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../../game/engine/campaign/Campaign";
+import { EventChannels } from "../../../../game/engine/events/EventsRegistry";
+import { GameEvent } from "../../../../game/engine/events/GameEvent";
 import { GameEngine } from "../../../../game/engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../../../game/engine/map/MapBoard";
 import { Player } from "../../../../game/engine/Player";
@@ -30,7 +33,8 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
 const setGameUnist = (gameEngine: GameEngine) => {
     let players = gameEngine.players;
     let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 100, 100, players[0]);
-    gameEngine.unitStorage.addUnit(castle1);
+    let unitCreatedEvent = new GameEvent(EventChannels.UNIT_CREATED, {unit: castle1})
+    gameEngine.events.emit(unitCreatedEvent);
 }
 
 describe("Order building test", () => {
@@ -47,7 +51,6 @@ describe("Order building test", () => {
         console.log("Resources:" +gameEngine.players[0].resourcesSorage.resources.get(ResourceName.WOOD));
         
         expect(gameEngine.players[0].resourcesSorage.resources.get(ResourceName.WOOD)).toEqual(0);
-        
 
     })
 })

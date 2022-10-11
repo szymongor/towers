@@ -4,7 +4,8 @@ import { GameEngine } from "../../../GameEngine";
 import { DealtDamage, Unit, UnitTypes } from "../../Unit";
 import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTask, UnitTaskNames } from "../../UnitTask";
-import { DamageDealtEventData, UnitAction } from "../UnitActions";
+import { UnitAction } from "../UnitActions";
+import { DamageDealtEventData } from "../../../events/EventDataTypes";
 
 const ARROW_SPEED = 50; //TODO create config file
 
@@ -21,25 +22,7 @@ const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
         }
         let nearestEnemy = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
         if(nearestEnemy) {
-            let done = () => {
-                let distance = unit.distanceToUnit(nearestEnemy);
-                let flighTime = distance/ARROW_SPEED;
-                
-                let damageDealtEventData : DamageDealtEventData = {
-                    target: nearestEnemy,
-                    source: unit,
-                    time: flighTime
-                }
-                let damageDealtEvent = new GameEvent(EventChannels.DAMAGE_DEALT, damageDealtEventData);
-                eventRegistry.emit(damageDealtEvent);
-                
-                let arrowFlightTask = new UnitTask(UnitTaskNames.ARROW_FLIGHT, UnitTaskNames.ARROW_FLIGHT,
-                    flighTime,
-                    () => arrowFlightDone(unit, nearestEnemy, eventRegistry),
-                    () => {}
-                    )
-                unit.currentTasks.set(UnitTaskNames.ARROW_FLIGHT, arrowFlightTask);
-            }
+            let done = onArrowAttackDone(unit, nearestEnemy, eventRegistry)
 
             let callback = () => {};
 
@@ -54,12 +37,34 @@ const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameE
     }
 }
 
+function onArrowAttackDone(unit: Unit, nearestEnemy: Unit, eventRegistry: EventRegistry) {
+    return () => {
+        let distance = unit.distanceToUnit(nearestEnemy);
+        let flighTime = distance / ARROW_SPEED;
+
+        let damageDealtEventData: DamageDealtEventData = {
+            target: nearestEnemy,
+            source: unit,
+            time: flighTime
+        };
+        let damageDealtEvent = new GameEvent(EventChannels.PROJECTILE_FIRED, damageDealtEventData);
+        eventRegistry.emit(damageDealtEvent);
+
+        let arrowFlightTask = new UnitTask(UnitTaskNames.ARROW_FLIGHT, UnitTaskNames.ARROW_FLIGHT,
+            flighTime,
+            () => arrowFlightDone(unit, nearestEnemy, eventRegistry),
+            () => { }
+        );
+        unit.currentTasks.set(UnitTaskNames.ARROW_FLIGHT, arrowFlightTask);
+    };
+}
+
 const arrowFlightDone = (unit: Unit, nearestEnemy: Unit, eventRegistry: EventRegistry) => {
     let dmg: DealtDamage = {
         value: 50,
         source: unit
     }
-    nearestEnemy.dealDamage(dmg);
+    nearestEnemy.dealDamage(dmg); //TODO DAMAGE_DEALT event
     unit.currentTasks.delete(UnitTaskNames.TOWER_ATTACK);
 }
 
@@ -68,3 +73,5 @@ const isUnitReadyToAttack = (unit: Unit): boolean => {
 }
 
 export { ArrowAttack }
+
+

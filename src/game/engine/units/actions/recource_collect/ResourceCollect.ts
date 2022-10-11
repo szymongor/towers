@@ -6,7 +6,8 @@ import { Unit, UnitTypes } from "../../Unit";
 import { UnitName } from "../../UnitFactory";
 import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTaskNames, UnitTask } from "../../UnitTask";
-import { UnitAction, ResourceCollectedEventData, UnitDestroyedEventData } from "../UnitActions";
+import { UnitAction } from "../UnitActions";
+import { ResourceCollectedEventData, UnitDestroyedEventData } from "../../../events/EventDataTypes";
 
 
 const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {

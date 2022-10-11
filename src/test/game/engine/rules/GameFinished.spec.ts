@@ -3,7 +3,7 @@ import { basicUnitConfig } from "../../../../game/campaign/basic/basicUnitConfig
 import { AiProcessor } from "../../../../game/engine/Ai/processor/AiProcessor";
 import { Campaign } from "../../../../game/engine/campaign/Campaign";
 import { EventChannels } from '../../../../game/engine/events/EventsRegistry';
-import { GameFinishedEventData } from "../../../../game/engine/events/GameEvent";
+import { GameEvent, GameFinishedEventData } from "../../../../game/engine/events/GameEvent";
 import { GameEngine } from "../../../../game/engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../../../game/engine/map/MapBoard";
 import { Player } from "../../../../game/engine/Player";
@@ -28,8 +28,6 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
 
     let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
 
-    
-    
     return campaign;
 }
 
@@ -38,8 +36,10 @@ const setGameUnist = (gameEngine: GameEngine) => {
     let castle1 = gameEngine.unitFactory.of(UnitName.CASTLE, 20, 20, players[0])
     let castle2 = gameEngine.unitFactory.of(UnitName.CASTLE, 80, 80, players[1])
 
-    gameEngine.unitStorage.addUnit(castle1);
-    gameEngine.unitStorage.addUnit(castle2);
+    let unitCreatedEvent1 = new GameEvent(EventChannels.UNIT_CREATED, {unit: castle1})
+    let unitCreatedEvent2 = new GameEvent(EventChannels.UNIT_CREATED, {unit: castle2})
+    gameEngine.events.emit(unitCreatedEvent1);
+    gameEngine.events.emit(unitCreatedEvent2);
 }
 
 describe("Game Finished tests", () => {

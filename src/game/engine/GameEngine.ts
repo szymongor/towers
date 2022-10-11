@@ -102,11 +102,9 @@ class GameEngine {
     orderBuilding(unitPrototype: Unit) {
         if(this.canPlaceUnit(unitPrototype)) {
             let data = {
-                unitPrototype: unitPrototype,
-                player: this.getPlayer()
+                unit: unitPrototype
             }
             let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
-            console.log("orderBuilding");
             
             this.events.emit(orderEvent);
             //TODO invoke by event with box to re-calculate

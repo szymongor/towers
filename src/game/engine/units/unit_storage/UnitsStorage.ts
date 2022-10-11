@@ -1,3 +1,4 @@
+import { UnitCreatedEventData, UnitDestroyedEventData } from "../../events/EventDataTypes";
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
 import { Tile } from "../../map/PlayerVision";
@@ -36,43 +37,34 @@ class UnitStorage {
         this.eventRegistry = eventRegistry;
 
         var subscribeAddUnit = {
-            call: this.onUnitCreated()
+            call: this.onUnitCreated
         }
         this.eventRegistry.subscribe(EventChannels.UNIT_CREATED, subscribeAddUnit);
 
         var subscribeDestroyUnit = {
-            call: this.onUnitDestroyed()
+            call: this.onUnitDestroyed
         }
         this.eventRegistry.subscribe(EventChannels.UNIT_DESTROYED, subscribeDestroyUnit);
     }
 
-    onUnitCreated() {
-        let us = this;
-        return (eventData: GameEvent) => {
-            let unit = eventData.data.unitPrototype;
-            us.addUnit(unit);
-        }
+    onUnitCreated = (eventData: GameEvent) => {
+        let data: UnitCreatedEventData = eventData.data;
+        let unit = data.unit;
+        this.addUnit(unit);
     }
 
-    onUnitDestroyed() {
-        let us = this;
-        return (eventData: GameEvent) => {
-            let unit = eventData.data.unit;
-            us.destroyUnit(unit);
-        }
+    onUnitDestroyed = (eventData: GameEvent) => {
+        let data: UnitDestroyedEventData = eventData.data;
+        this.destroyUnit(data.unit);
     }
 
     //COMMANDS
 
-    addUnit(unit: Unit){
+    private addUnit(unit: Unit){
         this.units.push(unit);
     }
 
-    addUnits(units: Unit[]){
-        this.units = this.units.concat(units);
-    }
-
-    destroyUnit(unit: Unit) {
+    private destroyUnit(unit: Unit) {
         this.units = this.units.filter(u => u != unit);
     }
 

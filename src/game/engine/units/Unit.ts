@@ -13,6 +13,7 @@ import { UnitCommand } from './actions/UnitCommands';
 import { GameEngine } from '../GameEngine';
 import { UnitTask, UnitTaskNames } from './UnitTask';
 import { UIElement } from '../../scenes/ui/UiScene';
+import { UnitDestroyedEventData } from '../events/EventDataTypes';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 
@@ -153,7 +154,7 @@ class Unit {
         
         if(this.eventRegistry && !this.state.destroyed) {
             this.state.destroyed = true;
-            let data = {
+            let data: UnitDestroyedEventData = {
                 unit: this
             };
             let event: GameEvent = new GameEvent(EventChannels.UNIT_DESTROYED, data)

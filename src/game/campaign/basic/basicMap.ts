@@ -1,7 +1,10 @@
 import { circleOfTerrain } from "../../editor/map/TerrainElements";
 import { MapBoardSupplier } from "../../engine/campaign/Campaign";
+import { EventChannels } from "../../engine/events/EventsRegistry";
+import { GameEvent } from "../../engine/events/GameEvent";
 import { GameEngine } from "../../engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../engine/map/MapBoard";
+import { Unit } from "../../engine/units/Unit";
 import { UnitName } from "../../engine/units/UnitFactory";
 
 
@@ -46,7 +49,11 @@ const basicMapInitAddStartBuildings = (gameEngine: GameEngine) => {
         units.push(unitFactory.of(UnitName.TOWER,s.x, s.y, p2))
     })
 
-    unitStorage.addUnits(units);
+    units.map(mapUnitToEvent).forEach(e => gameEngine.events.emit(e));
+}
+
+const mapUnitToEvent = (unit: Unit) => {
+    return new GameEvent(EventChannels.UNIT_CREATED, {unit: unit})
 }
 
 const basicTerrain = {
