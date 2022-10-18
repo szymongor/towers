@@ -1,6 +1,7 @@
 import { GameEvent } from "./GameEvent";
 
 enum EventChannels {
+    COMMAND_SENT = "COMMAND_SEND",
     ORDER_BUILDING = "ORDER_BUILDING", //TODO Command
     UNIT_CREATED = "UNIT_CREATED",
     RESOURCE_COLLECTED = "RESOURCE_COLLECTED", //when building collects resource from nearest unit

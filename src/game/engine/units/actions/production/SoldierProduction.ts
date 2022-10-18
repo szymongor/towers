@@ -1,4 +1,5 @@
 import { GameDimensions } from "../../../../GameDimensions"
+import { CommandBuilder, CommandDataBuilder, CommandType } from "../../../commands/Command"
 import { UnitCreatedEventData } from "../../../events/EventDataTypes"
 import { EventChannels } from "../../../events/EventsRegistry"
 import { GameEvent } from "../../../events/GameEvent"
@@ -20,6 +21,17 @@ const soldierProductionProvider : UnitCommandProvider =
         actionIcon: "soldier_production_icon",
         canExecute: () => true,
         executeCommand: () => {
+            //TODO Command helper?
+            //TODO Unit test
+            let senderPlayer = owner? owner: gameEngine.getPlayer(); 
+            let commandData = new CommandDataBuilder().targetUnit(unit).build();
+            let command = new CommandBuilder()
+                .data(commandData)
+                .sender(senderPlayer)
+                .type(CommandType.ORDER_PRODUCTION)
+                .build();
+            gameEngine.commandLog.add(command);
+            
             unit.addUnitTask(soldierProductionTask(unit, gameEngine, owner))
         }
     }

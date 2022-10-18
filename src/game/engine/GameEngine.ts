@@ -1,7 +1,7 @@
 import { MapBoard } from './map/MapBoard';
 import { UnitFactory, UnitName } from './units/UnitFactory';
 import { Player } from './Player';
-import { EventRegistry, EventChannels } from './events/EventsRegistry';
+import { EventRegistry, EventChannels, Subscriber } from './events/EventsRegistry';
 import { GameEvent } from './events/GameEvent';
 import { Unit, UnitTypes } from './units/Unit';
 import { UnitFilter, UnitStorage } from './units/unit_storage/UnitsStorage';
@@ -10,6 +10,8 @@ import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
 import { CampaignFactory, CampaignProvider } from './campaign/CampaignFactory';
 import { TraversMap } from './map/TraversMap';
+import { CommandLog } from './commands/CommandLog';
+import { Command, CommandBuilder, CommandData, CommandDataBuilder, CommandType } from './commands/Command';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -21,10 +23,12 @@ class GameEngine {
     aiProcessor: AiProcessor;
     round: number;
     campaignFactory: CampaignFactory;
+    commandLog: CommandLog;
 
     constructor(campaignProvider: CampaignProvider) {
 
         this.events = new EventRegistry();
+        this.commandLog = new CommandLog(this.events);
         this.unitStorage = new UnitStorage(this.events);
         
 
@@ -37,6 +41,23 @@ class GameEngine {
         
         this.traversMap = new TraversMap(this.mapBoard);
         this.round = 0;
+
+        this.registerCommandProcessor();
+        
+    }
+
+    private registerCommandProcessor() {
+        //
+        let subCommand : Subscriber = {
+            call: (event: GameEvent) => {
+                let command: Command = event.data.command;
+                if(command.sender.id == '1') {
+                    console.log(event.data)
+                }
+            }
+        }
+        this.events.subscribe(EventChannels.COMMAND_SENT, subCommand);
+        //
     }
 
     private registerRules(rulesConfig: GameRuleConfigurator[]) {
@@ -105,8 +126,19 @@ class GameEngine {
                 unit: unitPrototype
             }
             let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
-            
             this.events.emit(orderEvent);
+
+            //TODO Command helper?
+            //TODO Unit test
+            let senderPlayer = unitPrototype.player;
+            let commandData = new CommandDataBuilder().targetUnit(unitPrototype).build();
+            let command = new CommandBuilder()
+                .data(commandData)
+                .sender(senderPlayer)
+                .type(CommandType.ORDER_BUILDING)
+                .build();
+            this.commandLog.add(command);
+
             //TODO invoke by event with box to re-calculate
             this.traversMap.calculateTraversableGrid(0, 0, this.mapBoard.height, this.mapBoard.width);
         }

@@ -1,9 +1,11 @@
 import { GameDimensions } from "../../../../GameDimensions"
 import { vectorDist } from "../../../../utils/utils"
+import { CommandBuilder, CommandDataBuilder, CommandType } from "../../../commands/Command"
 import { EventChannels, EventRegistry } from "../../../events/EventsRegistry"
 import { ChangePositionEventData, GameEvent } from "../../../events/GameEvent"
 import { GameEngine } from "../../../GameEngine"
 import { Vector } from "../../../map/PlayerVision"
+import { Player } from "../../../Player"
 import { Unit } from "../../Unit"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
 import {  UnitCommandProvider, UnitCommandType } from "../UnitCommands"
@@ -11,13 +13,25 @@ import {  UnitCommandProvider, UnitCommandType } from "../UnitCommands"
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const IDLE_TIME = 10;
 
-const changePositionProvider : UnitCommandProvider = function(unit: Unit, gameEngine: GameEngine) {
+const changePositionProvider : UnitCommandProvider = function(unit: Unit, gameEngine: GameEngine, player?: Player) {
     return {
         commandName: 'changePosition',
         type: UnitCommandType.TARGETING,
         actionIcon: "change_position_icon",
         canExecute: () => true,
         executeCommand: (props) => {
+            //TODO Command helper?
+            //TODO Unit test - Command is sended
+            let senderPlayer = player? player: gameEngine.getPlayer(); 
+            let commandData = new CommandDataBuilder().recivers(props.units).targetVector(props.target).build();
+            let command = new CommandBuilder()
+                .data(commandData)
+                .sender(senderPlayer)
+                .type(CommandType.CHANGE_POSITION)
+                .build();
+            gameEngine.commandLog.add(command);
+            
+            
             if(props.units) {
                 props.units.forEach(unit => {
                     unit.addUnitTask(changePositionTask(unit, gameEngine, props.target))

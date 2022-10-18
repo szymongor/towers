@@ -43,6 +43,7 @@ describe("Order building test", () => {
         let gameEngine = new GameEngine(testCampaignProvider);
         setGameUnist(gameEngine);
         let towerPrototype = gameEngine.unitFactory.of(UnitName.TOWER, 280, 220);
+        towerPrototype.player = gameEngine.getPlayer();
 
         //when
         gameEngine.orderBuilding(towerPrototype);

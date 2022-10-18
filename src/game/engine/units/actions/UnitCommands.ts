@@ -1,5 +1,3 @@
-import { GameDimensions } from "../../../GameDimensions";
-import { EventRegistry } from "../../events/EventsRegistry";
 import { GameEngine } from "../../GameEngine";
 import { Vector } from "../../map/PlayerVision";
 import { Player } from "../../Player";
@@ -31,4 +29,4 @@ interface UnitCommand {
 }
 
 
-export { UnitCommand, UnitCommandProvider, UnitCommandType }
+export { UnitCommand, UnitCommandProvider, UnitCommandType };
