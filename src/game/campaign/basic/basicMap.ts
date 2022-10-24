@@ -12,7 +12,7 @@ import { UnitName } from "../../engine/units/UnitFactory";
 const basicMapSupplier = (gameEngine: GameEngine): MapBoardSupplier => {
     return () => {
         let terrain: Terrain = basicTerrain;
-        var basicMap = new MapBoard(1000 ,1000, gameEngine, terrain);
+        var basicMap = new MapBoard(5000 ,5000, gameEngine, terrain);
         basicMapInitAddStartBuildings(gameEngine);
         return basicMap;
     }

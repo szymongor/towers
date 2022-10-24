@@ -12,6 +12,7 @@ import { CampaignFactory, CampaignProvider } from './campaign/CampaignFactory';
 import { TraversMap } from './map/TraversMap';
 import { CommandLog } from './commands/CommandLog';
 import { Command, CommandBuilder, CommandData, CommandDataBuilder, CommandType } from './commands/Command';
+import { GameDimensions } from '../GameDimensions';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -121,28 +122,38 @@ class GameEngine {
     }
     
     orderBuilding(unitPrototype: Unit) {
-        if(this.canPlaceUnit(unitPrototype)) {
+        // if(this.canPlaceUnit(unitPrototype)) {
             let data = {
                 unit: unitPrototype
             }
             let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
             this.events.emit(orderEvent);
 
-            //TODO Command helper?
-            //TODO Unit test
-            let senderPlayer = unitPrototype.player;
-            let commandData = new CommandDataBuilder().targetUnit(unitPrototype).build();
-            let command = new CommandBuilder()
-                .data(commandData)
-                .sender(senderPlayer)
-                .type(CommandType.ORDER_BUILDING)
-                .build();
-            this.commandLog.add(command);
-
             //TODO invoke by event with box to re-calculate
             this.traversMap.calculateTraversableGrid(0, 0, this.mapBoard.height, this.mapBoard.width);
-        }
+        // }
     }
+
+    // orderBuilding(unitPrototype: Unit) {
+    //     //TODO Command helper?
+    //     //TODO Unit test
+    //     let senderPlayer = unitPrototype.player;
+    //     let commandData = new CommandDataBuilder().targetUnit(unitPrototype).build();
+    //     let command = new CommandBuilder()
+    //         .data(commandData)
+    //         .sender(senderPlayer)
+    //         .type(CommandType.ORDER_BUILDING)
+    //         .build();
+    //     this.commandLog.add(command);
+
+    //TODO invoke by event with box to re-calculate
+                // let tile_size = GameDimensions.grid.tileSize;
+                // let x1 = unitPrototype.x - unitPrototype.size*tile_size;
+                // let x2 = unitPrototype.x + unitPrototype.size*tile_size;
+                // let y1 = unitPrototype.y - unitPrototype.size*tile_size;
+                // let y2 = unitPrototype.y + unitPrototype.size*tile_size;
+                // gameEngine.traversMap.calculateTraversableGrid(x1, y1, x2, y2);
+    // }
 
 }
 

@@ -6,6 +6,7 @@ import { Player } from "../../Player";
 import { Unit } from "../../units/Unit";
 import { GameRuleConfigurator } from "../GameStateRules";
 
+
 const registerOrderBuildingRule: GameRuleConfigurator = (gameEngine: GameEngine) => {
     var subscriber = {
         call: receiveBuildingOrder(gameEngine)
@@ -46,4 +47,4 @@ const placeBuilding = (gameEngine: GameEngine, unitPrototype: Unit, player: Play
     }
 }
 
-export { registerOrderBuildingRule }
+export { registerOrderBuildingRule };
