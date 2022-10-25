@@ -49,7 +49,7 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
 
     let rulesConfig: GameRuleConfigurator[] = [];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, unitsConfig);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, unitsConfig, () => {});
 
     return campaign;
 }

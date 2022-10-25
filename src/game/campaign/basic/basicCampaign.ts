@@ -3,10 +3,11 @@ import { GameEngine } from "../../engine/GameEngine";
 import { Player } from "../../engine/Player";
 import { ResourceName, Resources } from "../../engine/Resources";
 import { logGameFinishedEvent, registerGameFinishedRule } from "../../engine/rules/game_finished/GameFinishedRule";
-import { registerOrderBuildingRule } from "../../engine/rules/order_building/OrderBuilding";
+import { registerOrderBuildingCommand } from "../../engine/rules/order_building/OrderBuilding";
 import { registerPlayerLostRule } from "../../engine/rules/player_lost/PlayerLostRule";
 import { registerUnitDestroyedRule } from "../../engine/rules/unit_destroyed/UnitDestroyedRule";
 import { basicAiProcessorProvider } from "./basicAiProcessor";
+import { basicMapInitAddStartBuildings } from "./basicInitCampaign";
 import { basicMapSupplier } from "./basicMap";
 import { basicUnitConfig } from "./basicUnitConfig";
 
@@ -19,9 +20,9 @@ const basicCampaign = (gameEngine: GameEngine): Campaign => {
     let rulesConfig = [registerUnitDestroyedRule, registerPlayerLostRule, 
         registerGameFinishedRule,
         logGameFinishedEvent,
-        registerOrderBuildingRule];
+        registerOrderBuildingCommand];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig, basicMapInitAddStartBuildings);
     
     
     return campaign;

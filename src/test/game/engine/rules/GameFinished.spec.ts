@@ -26,7 +26,7 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
     let rulesConfig = [registerUnitDestroyedRule, registerPlayerLostRule, 
         registerGameFinishedRule];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig, () => {});
 
     return campaign;
 }

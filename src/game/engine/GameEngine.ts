@@ -31,34 +31,32 @@ class GameEngine {
         this.events = new EventRegistry();
         this.commandLog = new CommandLog(this.events);
         this.unitStorage = new UnitStorage(this.events);
-        
 
         let campaign = campaignProvider(this);
-        this.unitFactory = new UnitFactory(this, campaign.unitsConfig);
         this.players = campaign.players;
-        this.aiProcessor = campaign.aiProcessor;
+        this.unitFactory = new UnitFactory(this, campaign.unitsConfig);
         this.mapBoard = campaign.mapSupplier();
         this.registerRules(campaign.rulesConfig);
+        this.traversMap = new TraversMap(this.mapBoard, this.events);
+        this.aiProcessor = campaign.aiProcessor;
+
+        campaign.initCampaign(this);
         
-        this.traversMap = new TraversMap(this.mapBoard);
         this.round = 0;
 
         this.registerCommandProcessor();
-        
     }
 
     private registerCommandProcessor() {
-        //
         let subCommand : Subscriber = {
             call: (event: GameEvent) => {
                 let command: Command = event.data.command;
                 if(command.sender.id == '1') {
-                    console.log(event.data)
+                    // console.log("COMMAND",event.data)
                 }
             }
         }
         this.events.subscribe(EventChannels.COMMAND_SENT, subCommand);
-        //
     }
 
     private registerRules(rulesConfig: GameRuleConfigurator[]) {
@@ -122,29 +120,15 @@ class GameEngine {
     }
     
     orderBuilding(unitPrototype: Unit) {
-        // if(this.canPlaceUnit(unitPrototype)) {
-            let data = {
-                unit: unitPrototype
-            }
-            let orderEvent = new GameEvent(EventChannels.ORDER_BUILDING, data);
-            this.events.emit(orderEvent);
-
-            //TODO invoke by event with box to re-calculate
-            this.traversMap.calculateTraversableGrid(0, 0, this.mapBoard.height, this.mapBoard.width);
-        // }
+        let senderPlayer = unitPrototype.player;
+        let commandData = new CommandDataBuilder().targetUnit(unitPrototype).build();
+        let command = new CommandBuilder()
+            .data(commandData)
+            .sender(senderPlayer)
+            .type(CommandType.ORDER_BUILDING)
+            .build();
+        this.commandLog.add(command);
     }
-
-    // orderBuilding(unitPrototype: Unit) {
-    //     //TODO Command helper?
-    //     //TODO Unit test
-    //     let senderPlayer = unitPrototype.player;
-    //     let commandData = new CommandDataBuilder().targetUnit(unitPrototype).build();
-    //     let command = new CommandBuilder()
-    //         .data(commandData)
-    //         .sender(senderPlayer)
-    //         .type(CommandType.ORDER_BUILDING)
-    //         .build();
-    //     this.commandLog.add(command);
 
     //TODO invoke by event with box to re-calculate
                 // let tile_size = GameDimensions.grid.tileSize;

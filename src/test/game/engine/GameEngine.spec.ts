@@ -6,7 +6,7 @@ import { MapBoard, Terrain, TerrainType } from "../../../game/engine/map/MapBoar
 import { Player } from "../../../game/engine/Player";
 import { ResourceName, Resources } from "../../../game/engine/Resources";
 import { logGameFinishedEvent, registerGameFinishedRule } from "../../../game/engine/rules/game_finished/GameFinishedRule";
-import { registerOrderBuildingRule } from "../../../game/engine/rules/order_building/OrderBuilding";
+import { registerOrderBuildingCommand } from "../../../game/engine/rules/order_building/OrderBuilding";
 import { registerPlayerLostRule } from "../../../game/engine/rules/player_lost/PlayerLostRule";
 import { registerUnitDestroyedRule } from "../../../game/engine/rules/unit_destroyed/UnitDestroyedRule";
 
@@ -22,9 +22,9 @@ const testCampaignProvider = (gameEngine: GameEngine) => {
     let rulesConfig = [registerUnitDestroyedRule, registerPlayerLostRule, 
         registerGameFinishedRule,
         logGameFinishedEvent,
-        registerOrderBuildingRule];
+        registerOrderBuildingCommand];
 
-    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
+    let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig, () => {});
     
     return campaign;
 }

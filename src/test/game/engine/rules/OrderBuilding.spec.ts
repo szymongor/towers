@@ -8,7 +8,7 @@ import { GameEngine } from "../../../../game/engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../../../game/engine/map/MapBoard";
 import { Player } from "../../../../game/engine/Player";
 import { ResourceName, Resources } from "../../../../game/engine/Resources";
-import { registerOrderBuildingRule } from "../../../../game/engine/rules/order_building/OrderBuilding";
+import { registerOrderBuildingCommand } from "../../../../game/engine/rules/order_building/OrderBuilding";
 import { UnitName } from "../../../../game/engine/units/UnitFactory";
 
 const fullInitialResources = () =>  new Resources([[ResourceName.WOOD, 50], [ResourceName.STONE, 50]]);
@@ -64,6 +64,8 @@ describe("Order building test", () => {
         expect(gameEngine.events.getChannelEvents(EventChannels.UNIT_CREATED)).toHaveLength(1);
 
     })
+
+    //TODO Building mine test
 })
 
 
@@ -77,9 +79,9 @@ const testCampaignProvider = (initialResources: Resources) => {
 
         let aiProcessor =  new AiProcessor(gameEngine);
 
-        let rulesConfig = [registerOrderBuildingRule];
+        let rulesConfig = [registerOrderBuildingCommand];
 
-        let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig);
+        let campaign = new Campaign(mapSupplier, aiProcessor, rulesConfig, players, basicUnitConfig, () => {});
         return campaign;
     }
 }
