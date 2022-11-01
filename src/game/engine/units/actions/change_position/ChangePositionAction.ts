@@ -1,14 +1,14 @@
 import { GameDimensions } from "../../../../GameDimensions"
 import { vectorDist } from "../../../../utils/utils"
 import { CommandBuilder, CommandDataBuilder, CommandType } from "../../../commands/Command"
-import { EventChannels, EventRegistry } from "../../../events/EventsRegistry"
+import { EventChannels } from "../../../events/EventsRegistry"
 import { ChangePositionEventData, GameEvent } from "../../../events/GameEvent"
 import { GameEngine } from "../../../GameEngine"
 import { Vector } from "../../../map/PlayerVision"
 import { Player } from "../../../Player"
 import { Unit } from "../../Unit"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
-import {  UnitCommandProvider, UnitCommandType } from "../UnitCommands"
+import { UnitCommandProvider, UnitCommandType } from "../UnitCommands"
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const IDLE_TIME = 10;
@@ -31,7 +31,8 @@ const changePositionProvider : UnitCommandProvider = function(unit: Unit, gameEn
                 .build();
             gameEngine.commandLog.add(command);
             
-            
+            //TODO On Command Sent event
+            //TODO Set Unit target + Unit State: WALK?
             if(props.units) {
                 props.units.forEach(unit => {
                     unit.addUnitTask(changePositionTask(unit, gameEngine, props.target))

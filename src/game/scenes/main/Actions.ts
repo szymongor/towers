@@ -52,9 +52,6 @@ const animateResourceCollected = (scene: MainCamera) => {
             sourceY: sourceCentre.y,
             targetX: targetCentre.x,
             targetY: targetCentre.y,
-            // dX: (targetCentre.x - sourceCentre.x)/steps,
-            // dY: (targetCentre.y - sourceCentre.y)/steps,
-            // steps: steps,
             progress: 0,
             time: 500, //TODO calculate from dist?
             transient: true

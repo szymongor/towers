@@ -22,7 +22,6 @@ const soldierProductionProvider : UnitCommandProvider =
         canExecute: () => true,
         executeCommand: () => {
             //TODO Command helper?
-            //TODO Unit test
             let senderPlayer = owner? owner: gameEngine.getPlayer(); 
             let commandData = new CommandDataBuilder().targetUnit(unit).build();
             let command = new CommandBuilder()
@@ -39,7 +38,6 @@ const soldierProductionProvider : UnitCommandProvider =
 
 const soldierProductionTask = (unit: Unit, gameEngine: GameEngine, owner: Player ): UnitTask => {
     let done = () => {
-        //TODO remove?
         let unitOwner = owner ? owner : gameEngine.getPlayer();
         
         let soldier = gameEngine.unitFactory.of(UnitName.SOLDIER, unit.x, unit.y, unitOwner);

@@ -1,18 +1,17 @@
-import { MapBoard } from './map/MapBoard';
-import { UnitFactory, UnitName } from './units/UnitFactory';
-import { Player } from './Player';
-import { EventRegistry, EventChannels, Subscriber } from './events/EventsRegistry';
-import { GameEvent } from './events/GameEvent';
-import { Unit, UnitTypes } from './units/Unit';
-import { UnitFilter, UnitStorage } from './units/unit_storage/UnitsStorage';
-import { GameRuleConfigurator } from './rules/GameStateRules';
-import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
 import { AiProcessor } from './Ai/processor/AiProcessor';
 import { CampaignFactory, CampaignProvider } from './campaign/CampaignFactory';
-import { TraversMap } from './map/TraversMap';
+import { Command, CommandBuilder, CommandDataBuilder, CommandType } from './commands/Command';
 import { CommandLog } from './commands/CommandLog';
-import { Command, CommandBuilder, CommandData, CommandDataBuilder, CommandType } from './commands/Command';
-import { GameDimensions } from '../GameDimensions';
+import { EventChannels, EventRegistry, Subscriber } from './events/EventsRegistry';
+import { GameEvent } from './events/GameEvent';
+import { MapBoard } from './map/MapBoard';
+import { getPlayerVision, isUnitInVision } from './map/PlayerVision';
+import { TraversMap } from './map/TraversMap';
+import { Player } from './Player';
+import { GameRuleConfigurator } from './rules/GameStateRules';
+import { Unit } from './units/Unit';
+import { UnitFactory, UnitName } from './units/UnitFactory';
+import { UnitStorage } from './units/unit_storage/UnitsStorage';
 
 class GameEngine {
     unitFactory: UnitFactory;
@@ -130,15 +129,6 @@ class GameEngine {
         this.commandLog.add(command);
     }
 
-    //TODO invoke by event with box to re-calculate
-                // let tile_size = GameDimensions.grid.tileSize;
-                // let x1 = unitPrototype.x - unitPrototype.size*tile_size;
-                // let x2 = unitPrototype.x + unitPrototype.size*tile_size;
-                // let y1 = unitPrototype.y - unitPrototype.size*tile_size;
-                // let y2 = unitPrototype.y + unitPrototype.size*tile_size;
-                // gameEngine.traversMap.calculateTraversableGrid(x1, y1, x2, y2);
-    // }
-
 }
 
-export { GameEngine }
+export { GameEngine };

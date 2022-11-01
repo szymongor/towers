@@ -1,5 +1,4 @@
 import { GameDimensions } from "../../GameDimensions";
-import { Command } from "../commands/Command";
 import { UnitCreatedEventData } from "../events/EventDataTypes";
 import { EventChannels, EventRegistry, Subscriber } from "../events/EventsRegistry";
 import { GameEvent } from "../events/GameEvent";
@@ -21,8 +20,6 @@ class TraversMap {
     constructor(mapBoard: MapBoard, events: EventRegistry) {
         this.mapBoard = mapBoard;
         this.initTraversableGrid();
-        //TODO Recalculate only on event
-        // this.calculateTraversableGrid(0, 0, mapBoard.width, mapBoard.height);
         this.events = events;
         this.registerRecalculateMap(events, this);
     }
@@ -50,7 +47,7 @@ class TraversMap {
 
     }
 
-    getTraversableGridValue(vector: Vector): number {
+    private getTraversableGridValue(vector: Vector): number {
         let traversRow = this.traversableGrid.get(vector.x);
         if(traversRow!= undefined) {
             let traversValue = traversRow.get(vector.y);
@@ -67,7 +64,7 @@ class TraversMap {
         return 0;
     }
 
-    initTraversableGrid() {
+    private initTraversableGrid() {
         this.traversableGrid = new Map();
         for(let i = 0; i < this.mapBoard.width ; i += TILE_SIZE) {
             this.traversableGrid.set(i, new Map())
@@ -77,8 +74,7 @@ class TraversMap {
         }
     }
 
-    calculateTraversableGrid(x0: number, y0: number, x1: number, y1: number) {
-
+    private calculateTraversableGrid(x0: number, y0: number, x1: number, y1: number) {
         let mapX0 = x0 < 0 ? 0 : x0;
         let mapY0 = y0 < 0 ? 0 : y0;
         let mapX1 = x1 > this.mapBoard.width ? this.mapBoard.width : x1;
@@ -90,10 +86,9 @@ class TraversMap {
                 this.calculateTraversableForUnits(vector, MAX_UNIT_SIZE);
             }
         }
-
     }
 
-    calculateTraversableForUnits(vector: Vector, maxSize: number) {
+    private calculateTraversableForUnits(vector: Vector, maxSize: number) {
         let traversableForSize = 0;
         for(let i = 1; i < maxSize; i++) {
             let borderTiles = sideBorderVectors[i].map(border => border.add(vector));
@@ -114,7 +109,7 @@ class TraversMap {
         }
     }
 
-    isTileTraversable(vector: Vector): boolean {
+    private isTileTraversable(vector: Vector): boolean {
         let isTerrainTraversable = this.mapBoard.terrain.type(vector.x, vector.y) == TerrainType.GRASS;
 
         //TODO - Optimize filter ant intersect
@@ -145,8 +140,12 @@ class TraversMap {
         
         let units = this.mapBoard.unitStorage.getUnits(filter);
         let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));
+
+        //TODO Test
+        //TODO Query Unit if cant trespass this TerrainType
+        let isTraversableForUnit = this.mapBoard.terrain.type(tile.x, tile.y) != TerrainType.WATER;
        
-        return isTraversable && !isOccupiedByOtherUnit
+        return isTraversable && !isOccupiedByOtherUnit && isTraversableForUnit;
     }
 }
 
@@ -167,4 +166,4 @@ const getSideBorderVectors = (size: number): Vector[] => {
 
 const sideBorderVectors = Array.from(Array(MAX_UNIT_SIZE).keys()).map(i => getSideBorderVectors(i));
 
-export { TraversMap }
+export { TraversMap };

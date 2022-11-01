@@ -23,7 +23,7 @@ const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine
     if(isUnitReadyToCollectResources(unit)) {
         let nearestTree = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
         let resourceCollect: [ResourceName, number][] = [[ResourceName.WOOD, 25]];
-        //TODO && unit.isUnitInRange(nearestTree) replace with Optional<nearestTreeInRange> in line 42
+        //TODO && unit.isUnitInRange(nearestTree) replace with Optional<nearestTreeInRange> in line 24
         if(nearestTree && unit.isUnitInRange(nearestTree)) {
             let callback = () => {
                 if(nearestTree.resources.checkEnoughResources(resourceCollect)) {
