@@ -1,7 +1,7 @@
 import { GameDimensions } from "../../GameDimensions";
 import { GameEngine } from "../GameEngine";
 import { Unit } from "../units/Unit";
-import { UnitFilter } from "../units/unit_storage/UnitsStorage";
+import { BoxSelect, UnitFilter } from "../units/unit_storage/UnitsStorage";
 import { Terrain, TerrainType } from "./MapBoard";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
@@ -31,6 +31,16 @@ class Vector {
 
     static zeroVector(): Vector {
         return new Vector(0, 0);
+    }
+
+    boundaryBox(size: number): BoxSelect {
+        let searchBox = {
+            leftX: this.x - size,
+            leftY: this.y - size,
+            rightX: this.x + size,
+            rightY: this.y + size,
+        }
+        return searchBox;
     }
 
 

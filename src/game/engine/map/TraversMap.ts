@@ -10,6 +10,7 @@ import { Vector } from "./PlayerVision";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const MAX_UNIT_SIZE = 10;
+const UNIT_TILES_SIZE = MAX_UNIT_SIZE*TILE_SIZE;
 
 class TraversMap {
 
@@ -109,16 +110,25 @@ class TraversMap {
         }
     }
 
+    private getColidingUnitsFilter(vector: Vector): UnitFilter {
+        let searchBox = vector.boundaryBox(UNIT_TILES_SIZE);
+        
+        let colidingUnitsFilter: UnitFilter = {
+            types: [UnitTypes.BUILDING, UnitTypes.RESOURCE],
+            boxSelect: searchBox
+        }
+
+        return colidingUnitsFilter;
+    }
+
     private isTileTraversable(vector: Vector): boolean {
         let isTerrainTraversable = this.mapBoard.terrain.type(vector.x, vector.y) == TerrainType.GRASS;
 
         //TODO - Optimize filter ant intersect
-        let filter: UnitFilter = {
-            types: [UnitTypes.BUILDING, UnitTypes.RESOURCE]
-        }
-        let buildingsAndResources = this.mapBoard.unitStorage.getUnits(filter);
+        let colidingUnitsFilter = this.getColidingUnitsFilter(vector);
+        let colidingUnits = this.mapBoard.unitStorage.getUnits(colidingUnitsFilter);
 
-        let isNotOccupiedByOtherUnit = buildingsAndResources.every(u => !unitIntersect(u, vector.x, vector.y, 1));
+        let isNotOccupiedByOtherUnit = colidingUnits.every(u => !unitIntersect(u, vector.x, vector.y, 1));
 
 
         return isTerrainTraversable && isNotOccupiedByOtherUnit;
