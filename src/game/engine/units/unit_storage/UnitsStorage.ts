@@ -1,7 +1,7 @@
 import { UnitCreatedEventData, UnitDestroyedEventData } from "../../events/EventDataTypes";
 import { EventChannels, EventRegistry } from "../../events/EventsRegistry";
 import { GameEvent } from "../../events/GameEvent";
-import { Tile } from "../../map/PlayerVision";
+import { Tile } from "../../map/Tile";
 import { Player } from "../../Player";
 import { Unit, UnitTypes } from "../Unit";
 import { UnitName } from "../UnitFactory";

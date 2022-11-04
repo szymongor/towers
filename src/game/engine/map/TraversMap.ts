@@ -6,7 +6,7 @@ import { unitIntersect } from "../units/actions/UnitRules";
 import { Unit, UnitTypes } from "../units/Unit";
 import { UnitFilter } from "../units/unit_storage/UnitsStorage";
 import { MapBoard, TerrainType } from "./MapBoard";
-import { Vector } from "./PlayerVision";
+import { Vector } from "./Tile";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 const MAX_UNIT_SIZE = 10;

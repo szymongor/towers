@@ -6,7 +6,7 @@ import { EventChannels } from '../../engine/events/EventsRegistry';
 import { GameEngine } from '../../engine/GameEngine';
 import { registerOnResourceCollect, registerOnDamageDealt } from './Actions';
 import { Bar } from '../utils/bars';
-import { PlayersVision, Tile, Vector } from '../../engine/map/PlayerVision';
+import { PlayersVision } from '../../engine/map/PlayerVision';
 import { registerNewBuildingOrderEvents } from './orders/NewBuildingOrder';
 import { UnitTaskNames } from '../../engine/units/UnitTask';
 import { registerOuterUIEvents } from './orders/RegisterOuterUIEvents';
@@ -16,6 +16,7 @@ import { KeyboardListener } from '../KeyboardListener';
 import { TransitionAnimation } from './animation/Animation';
 import { getActionsForUnits } from '../ui/elements/SelectedUnitsActions';
 import { TerrainType } from '../../engine/map/MapBoard';
+import { Tile, Vector } from '../../engine/map/Tile';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 

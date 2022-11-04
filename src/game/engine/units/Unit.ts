@@ -8,12 +8,12 @@ import { Bar } from '../../scenes/utils/bars';
 import { EventChannels, EventRegistry } from '../events/EventsRegistry';
 import { GameEvent } from '../events/GameEvent';
 import { CanPlaceRule } from './actions/UnitRules';
-import { Tile, Vector } from '../map/PlayerVision';
 import { UnitCommand } from './actions/UnitCommands';
 import { GameEngine } from '../GameEngine';
 import { UnitTask, UnitTaskNames } from './UnitTask';
 import { UIElement } from '../../scenes/ui/UiScene';
 import { UnitDestroyedEventData } from '../events/EventDataTypes';
+import { Tile, Vector } from '../map/Tile';
 
 const TILE_SIZE = GameDimensions.grid.tileSize;
 

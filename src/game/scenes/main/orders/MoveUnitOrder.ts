@@ -1,5 +1,5 @@
 import { ChangePositionEventData, GameEvent } from "../../../engine/events/GameEvent";
-import { Tile, Vector } from "../../../engine/map/PlayerVision";
+import { Vector } from "../../../engine/map/Tile";
 import { GameClockMilisInterval, GameDimensions } from "../../../GameDimensions";
 import { tileSizeFloor } from "../../../utils/utils";
 import { TargetingActionEvent } from "../../ui/UiSceneEvents";

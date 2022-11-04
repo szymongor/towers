@@ -1,5 +1,5 @@
 import { GameEngine } from "../../GameEngine";
-import { Vector } from "../../map/PlayerVision";
+import { Vector } from "../../map/Tile";
 import { changePositionProvider } from "../../units/actions/change_position/ChangePositionAction";
 import { soldierProductionProvider } from "../../units/actions/production/SoldierProduction";
 import { UnitName } from "../../units/UnitFactory";

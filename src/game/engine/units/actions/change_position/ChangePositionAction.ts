@@ -1,10 +1,9 @@
 import { GameDimensions } from "../../../../GameDimensions"
-import { vectorDist } from "../../../../utils/utils"
 import { CommandBuilder, CommandDataBuilder, CommandType } from "../../../commands/Command"
 import { EventChannels } from "../../../events/EventsRegistry"
 import { ChangePositionEventData, GameEvent } from "../../../events/GameEvent"
 import { GameEngine } from "../../../GameEngine"
-import { Vector } from "../../../map/PlayerVision"
+import { Vector } from "../../../map/Tile"
 import { Player } from "../../../Player"
 import { Unit } from "../../Unit"
 import { UnitTask, UnitTaskNames } from "../../UnitTask"
@@ -49,7 +48,7 @@ const changePositionTask = (unit: Unit, gameEngine: GameEngine, target: Vector )
 
     let duration = IDLE_TIME;
     if(direction && !direction.equal(Vector.zeroVector())) {
-        duration = Math.floor(duration*vectorDist(Vector.zeroVector(), direction)/TILE_SIZE);
+        duration = Math.floor(duration*Vector.zeroVector().distanceTo(direction)/TILE_SIZE);
     }
 
     let done = () => {
@@ -105,10 +104,10 @@ const choseDirection = (target: Vector, unit: Unit, gameEngine: GameEngine, ): V
         }
     });
 
-    let unitDist = vectorDist(unitPosition, target);
+    let unitDist = unitPosition.distanceTo(target);
 
     let possibleDirs = unitDirections
-    .map(uDir => { return {dir: uDir.dir, futurePos: uDir.futurePos, dist: vectorDist(uDir.futurePos, target)}})
+    .map(uDir => { return {dir: uDir.dir, futurePos: uDir.futurePos, dist: uDir.futurePos.distanceTo(target)}})
     .filter(uDir => uDir.dist <= unitDist )
     .filter(uDir => isDirectionTraversable(uDir.futurePos, unit, gameEngine) )
     .sort((a,b) => a.dist - b.dist);

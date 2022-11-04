@@ -1,5 +1,5 @@
 import { GameEngine } from "../../GameEngine";
-import { Vector } from "../../map/PlayerVision";
+import { Vector } from "../../map/Tile";
 import { Player } from "../../Player";
 import { Unit } from "../Unit";
 

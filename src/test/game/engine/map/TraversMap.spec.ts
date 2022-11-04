@@ -5,7 +5,7 @@ import { EventChannels } from "../../../../game/engine/events/EventsRegistry";
 import { GameEvent } from "../../../../game/engine/events/GameEvent";
 import { GameEngine } from "../../../../game/engine/GameEngine";
 import { MapBoard, Terrain, TerrainType } from "../../../../game/engine/map/MapBoard";
-import { Vector } from "../../../../game/engine/map/PlayerVision";
+import { Vector } from "../../../../game/engine/map/Tile";
 import { Player } from "../../../../game/engine/Player";
 import { Resources } from "../../../../game/engine/Resources";
 import { registerOrderBuildingCommand } from "../../../../game/engine/rules/order_building/OrderBuilding";
