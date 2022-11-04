@@ -124,7 +124,6 @@ class TraversMap {
     private isTileTraversable(vector: Vector): boolean {
         let isTerrainTraversable = this.mapBoard.terrain.type(vector.x, vector.y) == TerrainType.GRASS;
 
-        //TODO - Optimize filter ant intersect
         let colidingUnitsFilter = this.getColidingUnitsFilter(vector);
         let colidingUnits = this.mapBoard.unitStorage.getUnits(colidingUnitsFilter);
 
@@ -134,28 +133,32 @@ class TraversMap {
         return isTerrainTraversable && isNotOccupiedByOtherUnit;
     }
 
-    isTileTraversableForUnit(tile: Vector, unit: Unit) {
+    isTileTraversableForUnit(tile: Vector, unit: Unit): boolean {
         let traversableForSize = this.getTraversableGridValue(tile);
         let isTraversable =  traversableForSize >= unit.size;
 
+        if(!isTraversable) {
+            return isTraversable;
+        }
+
+        let boxSelect = tile.boundaryBox(UNIT_TILES_SIZE);
+
         let filter: UnitFilter = {
             types: [UnitTypes.CREATURE],
-            boxSelect: {
-                leftX: tile.x - MAX_UNIT_SIZE*TILE_SIZE,
-                leftY: tile.y - MAX_UNIT_SIZE*TILE_SIZE,
-                rightX: tile.x + MAX_UNIT_SIZE*TILE_SIZE,
-                rightY: tile.y + MAX_UNIT_SIZE*TILE_SIZE,
-            }
+            boxSelect: boxSelect
         }
         
         let units = this.mapBoard.unitStorage.getUnits(filter);
         let isOccupiedByOtherUnit = units.some(u => (u != unit)&&(unitIntersect(u, tile.x, tile.y, unit.size )));
 
+        if(isOccupiedByOtherUnit) {
+            return false;
+        }
         //TODO Test
         //TODO Query Unit if cant trespass this TerrainType
         let isTraversableForUnit = this.mapBoard.terrain.type(tile.x, tile.y) != TerrainType.WATER;
        
-        return isTraversable && !isOccupiedByOtherUnit && isTraversableForUnit;
+        return isTraversableForUnit;
     }
 }
 
