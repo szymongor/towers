@@ -2,9 +2,9 @@ import { GameDimensions } from "../../../GameDimensions";
 import { selectUnitEmitEvent } from "../../../scenes/main/UnitsControls";
 import { GameEngine } from "../../GameEngine";
 import { TerrainType } from "../../map/MapBoard";
-import { Unit, UnitTypes } from "../Unit";
+import { Unit } from "../Unit";
 import { UnitName } from "../UnitFactory";
-import { UnitFilter, UnitStorage } from "../unit_storage/UnitsStorage";
+import { UnitFilter } from "../unit_storage/UnitFilter";
 
 interface CanPlaceRule {
     (unit: Unit, gameEngine: GameEngine): boolean

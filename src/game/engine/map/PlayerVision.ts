@@ -1,7 +1,7 @@
 import { GameDimensions } from "../../GameDimensions";
 import { GameEngine } from "../GameEngine";
 import { Unit } from "../units/Unit";
-import { UnitFilter } from "../units/unit_storage/UnitsStorage";
+import { UnitFilter } from "../units/unit_storage/UnitFilter";
 import { Tile } from "./Tile";
 
 const TILE_SIZE = GameDimensions.grid.tileSize;

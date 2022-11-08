@@ -4,7 +4,7 @@ import { EventChannels, EventRegistry, Subscriber } from "../events/EventsRegist
 import { GameEvent } from "../events/GameEvent";
 import { unitIntersect } from "../units/actions/UnitRules";
 import { Unit, UnitTypes } from "../units/Unit";
-import { UnitFilter } from "../units/unit_storage/UnitsStorage";
+import { UnitFilter } from "../units/unit_storage/UnitFilter";
 import { MapBoard, TerrainType } from "./MapBoard";
 import { Vector } from "./Tile";
 

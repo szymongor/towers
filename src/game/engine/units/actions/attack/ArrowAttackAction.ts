@@ -2,24 +2,17 @@ import { EventChannels, EventRegistry } from "../../../events/EventsRegistry";
 import { GameEvent } from "../../../events/GameEvent";
 import { GameEngine } from "../../../GameEngine";
 import { DealtDamage, Unit, UnitTypes } from "../../Unit";
-import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTask, UnitTaskNames } from "../../UnitTask";
 import { UnitAction } from "../UnitActions";
 import { DamageDealtEventData } from "../../../events/EventDataTypes";
+import { UnitFilter } from "../../unit_storage/UnitFilter";
 
-const ARROW_SPEED = 50; //TODO create config file
+const ARROW_SPEED = 50;
 
 const ArrowAttack: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {
     
     if(isUnitReadyToAttack(unit)) {
-        let unitFilter: UnitFilter = {
-            types: [UnitTypes.BUILDING, UnitTypes.CREATURE ],
-            range: {
-                unit: unit,
-                range: unit.actionRange,
-            },
-            player_ne: unit.player
-        }
+        let unitFilter = UnitFilter.nearestEnemy(unit);
         let nearestEnemy = gameEngine.unitStorage.getNearestUnit(unitFilter, unit);
         if(nearestEnemy) {
             let done = onArrowAttackDone(unit, nearestEnemy, eventRegistry)

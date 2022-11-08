@@ -4,10 +4,10 @@ import { GameEngine } from "../../../GameEngine";
 import { ResourceName } from "../../../Resources";
 import { Unit, UnitTypes } from "../../Unit";
 import { UnitName } from "../../UnitFactory";
-import { UnitFilter } from "../../unit_storage/UnitsStorage";
 import { UnitTaskNames, UnitTask } from "../../UnitTask";
 import { UnitAction } from "../UnitActions";
 import { ResourceCollectedEventData, UnitDestroyedEventData } from "../../../events/EventDataTypes";
+import { UnitFilter } from "../../unit_storage/UnitFilter";
 
 
 const SawmillWoodCollect: UnitAction = (eventRegistry: EventRegistry, gameEngine: GameEngine, unit: Unit) => {

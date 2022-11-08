@@ -4,31 +4,9 @@ import { GameEvent } from "../../events/GameEvent";
 import { Tile } from "../../map/Tile";
 import { Player } from "../../Player";
 import { Unit, UnitTypes } from "../Unit";
-import { UnitName } from "../UnitFactory";
-
-interface UnitFilter {
-    owner?: Player;
-    player_ne?: Player;
-    types?: UnitTypes[];
-    unitName?: UnitName;
-    range?: RangeFilter;
-    boxSelect?: BoxSelect;
-}
-
-interface BoxSelect {
-    leftX: number,
-    leftY: number,
-    rightX: number,
-    rightY: number
-}
-
-interface RangeFilter {
-    unit: Unit;
-    range: number;
-}
+import { UnitFilter } from "./UnitFilter";
 
 class UnitStorage {
-
     units: Unit[];
     eventRegistry: EventRegistry;
 
@@ -169,4 +147,4 @@ class UnitStorage {
 
 }
 
-export { UnitStorage, UnitFilter, BoxSelect }
+export { UnitStorage, };

@@ -1,4 +1,4 @@
-import { BoxSelect } from "../units/unit_storage/UnitsStorage";
+import { BoxSelect } from "../units/unit_storage/UnitFilter";
 import { Terrain, TerrainType } from "./MapBoard";
 
 class Vector {
